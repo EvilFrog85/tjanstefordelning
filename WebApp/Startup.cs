@@ -19,7 +19,7 @@ namespace WebApp
         {
             string connStr = @"Data Source=lagombra.database.windows.net;Initial Catalog=Gyllensvard;Persist Security Info=True;User ID=lagombra;Password=BananKakaCitron123";
             services.AddDbContext<IdentityDbContext>(OptionsConfigurationServiceCollectionExtensions => OptionsConfigurationServiceCollectionExtensions.UseSqlServer(connStr));
-
+            //Hejhej jag vill få en ändring i denna
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
                 options.Password.RequiredLength = 3; //TODO password options
