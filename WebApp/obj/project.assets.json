@@ -5007,7 +5007,7 @@
       ]
     },
     "Microsoft.Extensions.Logging.Debug/1.1.1": {
-      "sha512": "YpbaLyiEPtDAEQuGpdcbmYLs538HMZHauapnzruoY1Kd5kQjEkSjZnUBlJzYkoXhPlCO2X3LwKEtch8mg6RETw==",
+      "sha512": "H1hgouH60iGJ/QWNB3V+4kb+IxmZK5UlYQSaIDr011Q/yc7WsGWKbMWTwiBbWfuBjTY9lkfcTEZZq8TiPoBb6g==",
       "type": "package",
       "path": "microsoft.extensions.logging.debug/1.1.1",
       "files": [
@@ -10342,10 +10342,10 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Projects\\Slutprojekt\\WebApp\\WebApp.csproj",
+      "projectUniqueName": "C:\\Projects\\Github\\tjanstefordelning\\WebApp\\WebApp.csproj",
       "projectName": "WebApp",
-      "projectPath": "C:\\Projects\\Slutprojekt\\WebApp\\WebApp.csproj",
-      "outputPath": "C:\\Projects\\Slutprojekt\\WebApp\\obj\\",
+      "projectPath": "C:\\Projects\\Github\\tjanstefordelning\\WebApp\\WebApp.csproj",
+      "outputPath": "C:\\Projects\\Github\\tjanstefordelning\\WebApp\\obj\\",
       "projectStyle": "PackageReference",
       "originalTargetFrameworks": [
         "netcoreapp1.1"
