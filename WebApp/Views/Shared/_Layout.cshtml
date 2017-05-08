@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>PageTitle - @ViewBag.Title</title>
+</head>
+<body>
+    <div id="layout">
+        <header>
+            <div id="innerHeader">
+                <div id="hamburgerBtn">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <nav>
+                    <a asp-action="Index">Home</a>
+                    <a href="#">Link 2</a>
+                    <a href="#">Link 3</a>
+                    <a href="#">Link 4</a>
+                </nav>
+            </div>
+        </header>
+        <main>
+            @RenderBody()
+            <section>
+                <article>Article 1</article>
+                <article>Article 2</article>
+                <article>Article 3</article>
+            </section>
+        </main>
+        <footer>
+            <div id="innerFooter">
+                <p>&copy; 2017</p>
+            </div>
+        </footer>
+    </div>
+
+    <link href="~/css/StyleSheet.css" property="stylesheet" rel="stylesheet" />
+    <environment names="Development">
+        <script src="~/js/jquery-3.1.0.js"></script>
+        <script src="~/js/jquery.validate.js"></script>
+        <script src="~/js/jquery.validate.unobtrusive.js"></script>
+    </environment>
+    <environment names="Production">
+        <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.0.min.js"></script>
+        <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"></script>
+        <script src="http://ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.min.js"></script>
+    </environment>
+    <script src="~/js/myScripts.js"></script>
+</body>
+</html>

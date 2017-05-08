@@ -1,0 +1,4 @@
+C:\Projects\[Basmall]\WebApp\WebApp\wwwroot\js\myScripts.js
+C:\Projects\[Basmall]\WebApp\WebApp\wwwroot\js\myScripts.js.map
+C:\Projects\[Basmall]\WebApp\WebApp\wwwroot\js\myScripts.js
+C:\Projects\[Basmall]\WebApp\WebApp\wwwroot\js\myScripts.js.map

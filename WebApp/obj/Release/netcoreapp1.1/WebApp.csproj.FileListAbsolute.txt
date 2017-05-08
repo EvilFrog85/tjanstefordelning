@@ -1,0 +1,9 @@
+C:\Projects\[Basmall]\WebApp\WebApp\bin\Release\netcoreapp1.1\WebApp.deps.json
+C:\Projects\[Basmall]\WebApp\WebApp\bin\Release\netcoreapp1.1\WebApp.runtimeconfig.json
+C:\Projects\[Basmall]\WebApp\WebApp\bin\Release\netcoreapp1.1\WebApp.runtimeconfig.dev.json
+C:\Projects\[Basmall]\WebApp\WebApp\bin\Release\netcoreapp1.1\WebApp.dll
+C:\Projects\[Basmall]\WebApp\WebApp\bin\Release\netcoreapp1.1\WebApp.pdb
+C:\Projects\[Basmall]\WebApp\WebApp\obj\Release\netcoreapp1.1\WebApp.csprojResolveAssemblyReference.cache
+C:\Projects\[Basmall]\WebApp\WebApp\obj\Release\netcoreapp1.1\WebApp.AssemblyInfo.cs
+C:\Projects\[Basmall]\WebApp\WebApp\obj\Release\netcoreapp1.1\WebApp.dll
+C:\Projects\[Basmall]\WebApp\WebApp\obj\Release\netcoreapp1.1\WebApp.pdb
