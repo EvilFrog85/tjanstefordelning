@@ -9732,10 +9732,10 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Projects\\[Basmall]\\WebApp\\WebApp\\WebApp.csproj",
+      "projectUniqueName": "C:\\Projects\\slutprojekt\\tjanstefordelning\\WebApp\\WebApp.csproj",
       "projectName": "WebApp",
-      "projectPath": "C:\\Projects\\[Basmall]\\WebApp\\WebApp\\WebApp.csproj",
-      "outputPath": "C:\\Projects\\[Basmall]\\WebApp\\WebApp\\obj\\",
+      "projectPath": "C:\\Projects\\slutprojekt\\tjanstefordelning\\WebApp\\WebApp.csproj",
+      "outputPath": "C:\\Projects\\slutprojekt\\tjanstefordelning\\WebApp\\obj\\",
       "projectStyle": "PackageReference",
       "originalTargetFrameworks": [
         "netcoreapp1.1"
