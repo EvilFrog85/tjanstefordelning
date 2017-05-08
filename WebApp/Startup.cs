@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-//using WebApp.Models.Entities;
+using WebApp.Models.Entities;
 
 namespace WebApp
 {
@@ -18,8 +18,8 @@ namespace WebApp
         public void ConfigureServices(IServiceCollection services)
         {
             string connStr = @"Data Source=lagombra.database.windows.net;Initial Catalog=Gyllensvard;Persist Security Info=True;User ID=lagombra;Password=BananKakaCitron123";
+            services.AddDbContext<TFContext>(options => options.UseSqlServer(connStr));
             services.AddDbContext<IdentityDbContext>(OptionsConfigurationServiceCollectionExtensions => OptionsConfigurationServiceCollectionExtensions.UseSqlServer(connStr));
-            //Hejhej jag vill få en ändring i denna
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
                 options.Password.RequiredLength = 3; //TODO password options

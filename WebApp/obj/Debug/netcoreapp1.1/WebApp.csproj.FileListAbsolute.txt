@@ -16,3 +16,12 @@ C:\Projects\slutprojekt\tjanstefordelning\WebApp\obj\Debug\netcoreapp1.1\WebApp.
 C:\Projects\slutprojekt\tjanstefordelning\WebApp\obj\Debug\netcoreapp1.1\WebApp.AssemblyInfo.cs
 C:\Projects\slutprojekt\tjanstefordelning\WebApp\obj\Debug\netcoreapp1.1\WebApp.dll
 C:\Projects\slutprojekt\tjanstefordelning\WebApp\obj\Debug\netcoreapp1.1\WebApp.pdb
+C:\Projects\Github\tjanstefordelning\WebApp\bin\Debug\netcoreapp1.1\WebApp.deps.json
+C:\Projects\Github\tjanstefordelning\WebApp\bin\Debug\netcoreapp1.1\WebApp.runtimeconfig.json
+C:\Projects\Github\tjanstefordelning\WebApp\bin\Debug\netcoreapp1.1\WebApp.runtimeconfig.dev.json
+C:\Projects\Github\tjanstefordelning\WebApp\bin\Debug\netcoreapp1.1\WebApp.dll
+C:\Projects\Github\tjanstefordelning\WebApp\bin\Debug\netcoreapp1.1\WebApp.pdb
+C:\Projects\Github\tjanstefordelning\WebApp\obj\Debug\netcoreapp1.1\WebApp.csprojResolveAssemblyReference.cache
+C:\Projects\Github\tjanstefordelning\WebApp\obj\Debug\netcoreapp1.1\WebApp.AssemblyInfo.cs
+C:\Projects\Github\tjanstefordelning\WebApp\obj\Debug\netcoreapp1.1\WebApp.dll
+C:\Projects\Github\tjanstefordelning\WebApp\obj\Debug\netcoreapp1.1\WebApp.pdb
