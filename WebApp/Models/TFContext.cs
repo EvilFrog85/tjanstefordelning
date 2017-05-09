@@ -4,13 +4,16 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using WebApp.Models.VM;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace WebApp.Models.Entities
 {
     public partial class TFContext : DbContext
     {
-       //TODO lots of stuff
-
+        //TODO lots of stuff
+        public TFContext(DbContextOptions<TFContext> options) : base(options)
+        {
+        }
         internal void AddNewPersonnel(PersonnelCreateVM viewModel)
         {
             var newPersonnel = new Personnel
@@ -24,15 +27,29 @@ namespace WebApp.Models.Entities
             };
         }
 
-        internal async Task AddNewProgram(ProgramCreateVM viewModel, string id)
+        internal async Task<bool> AddNewProgram(ProgramCreateVM viewModel, string id)
         {
-            await AddAsync(new Program
+
+            var programToAdd = new Program
             {
                 Name = viewModel.Name,
                 SchoolId = id,
-            });
+            };
 
-            await SaveChangesAsync();
+            this.Program.Add(programToAdd);
+
+            return await SaveChangesAsync() == 1;
+        }
+
+        internal async Task RemoveProgram(int id)
+        {
+            var programToRemove = await Program.SingleOrDefaultAsync(c => c.Id == id);
+            Program.Remove(programToRemove);
+        }
+
+        internal async Task<Program[]> GetAllPrograms(string id)
+        {
+            return await Program.Where(p => p.SchoolId == id).ToArrayAsync();
         }
     }
 }

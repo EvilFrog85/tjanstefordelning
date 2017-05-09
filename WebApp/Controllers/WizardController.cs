@@ -32,11 +32,16 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task NewProgram(ProgramCreateVM viewModel)
+        public async Task<bool> NewProgram(ProgramCreateVM viewModel)
         {
             //TODO : Validation
             var userId = _userManager.GetUserId(User);
-            await _context.AddNewProgram(viewModel, userId); 
+            return await _context.AddNewProgram(viewModel, userId);
+        }
+        [HttpGet]
+        public async Task<Models.Entities.Program[]> GetPrograms()
+        {
+            return await _context.GetAllPrograms(_userManager.GetUserId(User));
         }
     }
 }

@@ -11,6 +11,16 @@ function SubmitProgram() {
     });
 }
 
+function GetPrograms() {
+    $.ajax({
+        type: 'GET',
+        url: '/Wizard/GetPrograms',
+        success: function (data) {
+            console.log(data);
+        }
+    });
+}
+
 $(function () {
     var name = $('<input/>', {
         id: 'programName',
@@ -21,4 +31,11 @@ $(function () {
         text: 'Submit',
     });
     $('section').append(name).append(submitBtn);
+
+    var getDataBtnTest = $('<button/>', {
+        text: 'Get All Programs',
+        onclick: 'GetPrograms()'
+    });
+
+    $('section').append(getDataBtnTest);
 });

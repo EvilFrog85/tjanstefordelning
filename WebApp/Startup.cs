@@ -45,9 +45,10 @@ namespace WebApp
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
             else
+            {
                 app.UseExceptionHandler("/Error/ServerError");
-
-            app.UseStatusCodePagesWithRedirects("/Error/HttpError/{0}");
+                app.UseStatusCodePagesWithRedirects("/Error/HttpError/{0}");
+            }
 
             app.UseMvcWithDefaultRoute();
         }
