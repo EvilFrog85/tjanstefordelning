@@ -261,5 +261,5 @@ __pycache__/
 *.pyc
 
 #Custom ignoring
-Debug/
 obj/
+bin/
