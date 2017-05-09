@@ -5,7 +5,7 @@ function SubmitProgram() {
     $.ajax({
         type: 'POST',
         url: '/Wizard/NewProgram/',
-        data: { "Name": newName},
+        data: { "Name": newName },
         success: function (result) {
             console.log(result);
         }
@@ -19,16 +19,21 @@ function GetPrograms() {
         url: '/Wizard/GetPrograms',
         success: function (data) {
             data.forEach(function (element) {
-                $('section').append($('<button/>', {
+                $('#programCrud').append($('<button/>', {
                     text: element.name,
                     onclick: 'DeleteProgram(' + element.id + ')',
                     class: 'programButton',
                     id: 'programButton' + element.id
                 }));
+                $('#programIdInput').append($('<option/>', {
+                    text: element.name,
+                    value: element.id
+                }));
             });
         }
     });
 }
+
 
 function DeleteProgram(id) {
     $('#programButton' + id).remove();
@@ -50,12 +55,68 @@ $(function () {
         onclick: 'SubmitProgram()',
         text: 'Submit',
     });
-    $('section').append(name).append(submitBtn);
+    $('#programCrud').append(name).append(submitBtn);
 
     var getDataBtnTest = $('<button/>', {
         text: 'Get All Programs',
         onclick: 'GetPrograms()'
     });
 
-    $('section').append(getDataBtnTest);
+    $('#programCrud').append(getDataBtnTest);
+});
+
+//Get all subjects to be able to choose competences
+$(function () {
+    var $target = $('#personnelCrud');
+    $.ajax({
+        type: 'GET',
+        url: '/Wizard/GetAllSubjects',
+        success: function (data) {
+            console.log(data);
+            var newDropDown = $('<select/>');
+            data.forEach(function (subject) {
+                newDropDown.append($('<option/>', {
+                    value: subject.id,
+                    text: subject.subjectCode
+                }));
+            });
+            $target.append(newDropDown);
+        }
+    });
+});
+
+$(function () {
+    var $firstNameInput = $('<input/>', {
+        placeholder: 'Förnamn..',
+        id: 'firstNameInput'
+    });
+    var $lastNameInput = $('<input/>', {
+        placeholder: 'Efternamn..',
+        id: 'lastNameInput'
+    });
+    var $imgUrlInput = $('<input/>', {
+        placeholder: 'Bild..',
+        id: 'imgUrlInput'
+    });
+    var $ProgramIdInput = $('<select/>', { text: 'Välj Avdelning', id: 'programIdInput' });
+    var $AvailablePointsInput = $('<input/>', {
+        type: 'range',
+        name: 'Points',
+        min: '0',
+        max: '100'
+    });
+    var $ContractInput = $('<input/>', {
+        type: 'number',
+        min: '1',
+        max: '5'
+    });
+
+
+    $('#personnelCrud')
+        .append($firstNameInput)
+        .append($lastNameInput)
+        .append($imgUrlInput)
+        .append($ProgramIdInput)
+        .append($AvailablePointsInput)
+        .append($ContractInput);
 });
