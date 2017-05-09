@@ -23,6 +23,11 @@ namespace WebApp
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
                 options.Password.RequiredLength = 3; //TODO password options
+                options.Password.RequireDigit = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+
                 
             })
                 .AddEntityFrameworkStores<IdentityDbContext>()

@@ -3879,7 +3879,7 @@
     "microsoft.extensions.logging.debug/1.1.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-H1hgouH60iGJ/QWNB3V+4kb+IxmZK5UlYQSaIDr011Q/yc7WsGWKbMWTwiBbWfuBjTY9lkfcTEZZq8TiPoBb6g==",
+      "sha512": "sha512-YpbaLyiEPtDAEQuGpdcbmYLs538HMZHauapnzruoY1Kd5kQjEkSjZnUBlJzYkoXhPlCO2X3LwKEtch8mg6RETw==",
       "path": "microsoft.extensions.logging.debug/1.1.1",
       "hashPath": "microsoft.extensions.logging.debug.1.1.1.nupkg.sha512"
     },

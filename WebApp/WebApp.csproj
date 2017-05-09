@@ -6,13 +6,14 @@
 
   <ItemGroup>
     <Content Include="wwwroot\css\StyleSheet.css" />
+    <Content Include="wwwroot\js\index.d.js" />
     <Content Include="wwwroot\js\jquery-3.1.0.js" />
     <Content Include="wwwroot\js\jquery.validate.js" />
     <Content Include="wwwroot\js\jquery.validate.unobtrusive.js" />
+    <Content Include="wwwroot\js\WizardScript.js" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\VM\" />
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
   <ItemGroup>
