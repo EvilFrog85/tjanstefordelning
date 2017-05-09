@@ -41,15 +41,25 @@ namespace WebApp.Models.Entities
             return await SaveChangesAsync() == 1;
         }
 
-        internal async Task RemoveProgram(int id)
+        internal async Task<bool> DeleteProgram(int id)
         {
             var programToRemove = await Program.SingleOrDefaultAsync(c => c.Id == id);
             Program.Remove(programToRemove);
+            return await SaveChangesAsync() == 1;
         }
 
         internal async Task<Program[]> GetAllPrograms(string id)
         {
             return await Program.Where(p => p.SchoolId == id).ToArrayAsync();
+        }
+
+        internal async Task<bool> UpdateProgram(int id, ProgramCreateVM updatedProgram)
+        {
+            var oldProgram = Program.SingleOrDefault(c => c.Id == id);
+
+            oldProgram.Name = updatedProgram.Name;
+
+            return await SaveChangesAsync() == 1;
         }
     }
 }
