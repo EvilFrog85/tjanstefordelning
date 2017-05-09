@@ -1,25 +1,45 @@
 ﻿///<reference path="index.d.js"/>
 function SubmitProgram() {
-    console.log($('#programName').val());
+    var newName = $('#programName').val()
+    $('#programName').val('');
     $.ajax({
         type: 'POST',
         url: '/Wizard/NewProgram/',
-        data: { "Name": $('#programName').val() },
+        data: { "Name": newName},
         success: function (result) {
-            alert(result);
+            console.log(result);
         }
     });
 }
 
 function GetPrograms() {
+    $('.programButton').remove();
     $.ajax({
         type: 'GET',
         url: '/Wizard/GetPrograms',
         success: function (data) {
-            console.log(data);
+            data.forEach(function (element) {
+                $('section').append($('<button/>', {
+                    text: element.name,
+                    onclick: 'DeleteProgram(' + element.id + ')',
+                    class: 'programButton',
+                    id: 'programButton' + element.id
+                }));
+            });
         }
     });
 }
+
+function DeleteProgram(id) {
+    $('#programButton' + id).remove();
+    $.ajax({
+        type: 'POST',
+        url: '/Wizard/DeleteProgram/' + id,
+        success: function (data) {
+            console.log(data);
+        }
+    });
+};
 
 $(function () {
     var name = $('<input/>', {

@@ -43,5 +43,15 @@ namespace WebApp.Controllers
         {
             return await _context.GetAllPrograms(_userManager.GetUserId(User));
         }
+        [HttpPost]
+        public async Task<bool> UpdateProgram(int id, ProgramCreateVM updatedProgram)
+        {
+            return await _context.UpdateProgram(id, updatedProgram);
+        }
+        [HttpPost]
+        public async Task<bool> DeleteProgram(int id)
+        {
+            return await _context.DeleteProgram(id);
+        }
     }
 }
