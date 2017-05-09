@@ -23,6 +23,11 @@ namespace WebApp
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
                 options.Password.RequiredLength = 3; //TODO password options
+                options.Password.RequireDigit = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+
                 
             })
                 .AddEntityFrameworkStores<IdentityDbContext>()
@@ -40,9 +45,10 @@ namespace WebApp
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
             else
+            {
                 app.UseExceptionHandler("/Error/ServerError");
-
-            app.UseStatusCodePagesWithRedirects("/Error/HttpError/{0}");
+                app.UseStatusCodePagesWithRedirects("/Error/HttpError/{0}");
+            }
 
             app.UseMvcWithDefaultRoute();
         }

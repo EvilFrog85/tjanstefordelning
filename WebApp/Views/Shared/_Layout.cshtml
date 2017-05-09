@@ -21,11 +21,8 @@
             </div>
         </header>
         <main>
-            @RenderBody()
             <section>
-                <article>Article 1</article>
-                <article>Article 2</article>
-                <article>Article 3</article>
+                @RenderBody()
             </section>
         </main>
         <footer>
@@ -36,6 +33,7 @@
     </div>
 
     <link href="~/css/StyleSheet.css" property="stylesheet" rel="stylesheet" />
+    @RenderSection("styles", false);
     <environment names="Development">
         <script src="~/js/jquery-3.1.0.js"></script>
         <script src="~/js/jquery.validate.js"></script>
@@ -47,5 +45,6 @@
         <script src="http://ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.min.js"></script>
     </environment>
     <script src="~/js/myScripts.js"></script>
+    @RenderSection("scripts", false);
 </body>
 </html>

@@ -179,6 +179,11 @@ namespace WebApp.Models.Entities
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(30);
+
+                entity.Property(e => e.SchoolId)
+                    .IsRequired()
+                    .HasColumnName("School_Id")
+                    .HasMaxLength(450);
             });
 
             modelBuilder.Entity<StudentGroup>(entity =>

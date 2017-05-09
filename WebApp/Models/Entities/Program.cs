@@ -14,6 +14,7 @@ namespace WebApp.Models.Entities
 
         public int Id { get; set; }
         public string Name { get; set; }
+        public string SchoolId { get; set; }
 
         public virtual ICollection<IncludedClass> IncludedClass { get; set; }
         public virtual ICollection<Personnel> Personnel { get; set; }
