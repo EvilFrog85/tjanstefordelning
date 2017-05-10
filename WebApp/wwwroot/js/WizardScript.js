@@ -52,10 +52,12 @@ function DeleteTeam(id) {
 //Team html append
 $(function () {
     var name = $('<input/>', {
+        class: 'inputText',
         id: 'teamName',
         type: 'text',
     });
     var submitBtn = $('<button/>', {
+        class: 'buttonSubmit',
         onclick: 'SubmitTeam()',
         text: 'Submit',
     });
@@ -93,18 +95,21 @@ $(function () {
 //Personnel crud
 $(function () {
     var $firstNameInput = $('<input/>', {
+        class: 'inputText',
         placeholder: 'Förnamn..',
         id: 'firstNameInput'
     });
     var $lastNameInput = $('<input/>', {
+        class: 'inputText',
         placeholder: 'Efternamn..',
         id: 'lastNameInput'
     });
     var $imgUrlInput = $('<input/>', {
+        class: 'inputText',
         placeholder: 'Bild..',
         id: 'imgUrlInput'
     });
-    var $TeamIdInput = $('<select/>', { text: 'Välj Avdelning', id: 'teamIdInput' });
+    var $TeamIdInput = $('<select/>', { class: 'inputSelect', text: 'Välj Avdelning', id: 'teamIdInput' });
     GetTeams($('#teamIdInput'));
     var $AvailablePointsInput = $('<input/>', {
         type: 'range',
@@ -113,6 +118,7 @@ $(function () {
         max: '100'
     });
     var $ContractInput = $('<input/>', {
+        class: 'inputText',
         type: 'number',
         min: '1',
         max: '5'
@@ -128,10 +134,35 @@ $(function () {
         .append($ContractInput);
 });
 
-//Student group ajax
+//Student group html rendering
 $(function () {
     var $target = $('#studentGroupCrud');
-    $.ajax({
-
+    var nameInput = $('<input/>', {
+        id: "studentGroupName",
+        type: "text",
+        placeholder: "Student Group Name..",
     });
+    var thisYear = new Date().getFullYear();
+    var startingYearDropDown = $('<select/>');
+    //Dropdown to select starting year +-2 years from this year
+    var years = [];
+    for (let i = (thisYear + 2); i >= (thisYear - 2); i--) {
+        var opt = document.createElement('option');
+        opt.value = i;
+        opt.text = i;
+        if (i === thisYear)
+            opt.selected = "selected";
+        startingYearDropDown.append(opt);
+    }
+
+    //Dropdown to select team 
+    var teamDropDown = $('<select/>', {
+        id: "teamDropDown",
+    })
+    //TODO : (Future) add pupilCount classroom assignment, prioritizing and if small classes can be grouped together
+    GetTeams(teamDropDown);
+    $target.append(nameInput);
+    $target.append(startingYearDropDown);
+    $target.append(teamDropDown);
+
 });
