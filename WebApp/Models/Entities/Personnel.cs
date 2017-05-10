@@ -13,12 +13,12 @@ namespace WebApp.Models.Entities
         }
 
         public int Id { get; set; }
-        public string SchoolId { get; set; }
+        public int UserId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Signature { get; set; }
         public string ImageUrl { get; set; }
-        public int ProgramId { get; set; }
+        public int TeamId { get; set; }
         public decimal AvailablePoints { get; set; }
         public decimal AssignedPoints { get; set; }
         public int Contract { get; set; }
@@ -26,6 +26,7 @@ namespace WebApp.Models.Entities
         public virtual ICollection<AuxiliaryAssignment> AuxiliaryAssignment { get; set; }
         public virtual ICollection<Competence> Competence { get; set; }
         public virtual ICollection<IncludedClass> IncludedClass { get; set; }
-        public virtual Program Program { get; set; }
+        public virtual Team Team { get; set; }
+        public virtual User User { get; set; }
     }
 }

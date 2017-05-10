@@ -1,12 +1,12 @@
 ﻿///<reference path="index.d.js"/>
 
-//Program Crud functions
-function SubmitProgram() {
-    var newName = $('#programName').val()
-    $('#programName').val('');
+//Team Crud functions
+function SubmitTeam() {
+    var newName = $('#teamName').val()
+    $('#teamName').val('');
     $.ajax({
         type: 'POST',
-        url: '/Wizard/NewProgram/',
+        url: '/Wizard/NewTeam/',
         data: { "Name": newName },
         success: function (result) {
             console.log(result);
@@ -14,20 +14,21 @@ function SubmitProgram() {
     });
 }
 
-function GetPrograms() {
-    $('.programButton').remove();
+function GetTeams(test) {
+    $('.teamButton').remove();
     $.ajax({
         type: 'GET',
-        url: '/Wizard/GetPrograms',
+        url: '/Wizard/GetAllTeams',
         success: function (data) {
+            console.log(data);
             data.forEach(function (element) {
-                $('#programCrud').append($('<button/>', {
+                $('#teamCrud').append($('<button/>', {
                     text: element.name,
-                    onclick: 'DeleteProgram(' + element.id + ')',
-                    class: 'programButton',
-                    id: 'programButton' + element.id
+                    onclick: 'DeleteTeam(' + element.id + ')',
+                    class: 'teamButton',
+                    id: 'teamButton' + element.id
                 }));
-                $('#programIdInput').append($('<option/>', {
+                test.append($('<option/>', {
                     text: element.name,
                     value: element.id
                 }));
@@ -36,35 +37,37 @@ function GetPrograms() {
     });
 }
 
-function DeleteProgram(id) {
-    $('#programButton' + id).remove();
+
+
+function DeleteTeam(id) {
+    $('#teamButton' + id).remove();
     $.ajax({
         type: 'POST',
-        url: '/Wizard/DeleteProgram/' + id,
+        url: '/Wizard/DeleteTeam/' + id,
         success: function (data) {
             console.log(data);
         }
     });
 };
 
-//Program html append
+//Team html append
 $(function () {
     var name = $('<input/>', {
-        id: 'programName',
+        id: 'teamName',
         type: 'text',
     });
     var submitBtn = $('<button/>', {
-        onclick: 'SubmitProgram()',
+        onclick: 'SubmitTeam()',
         text: 'Submit',
     });
-    $('#programCrud').append(name).append(submitBtn);
+    $('#teamCrud').append(name).append(submitBtn);
 
     var getDataBtnTest = $('<button/>', {
-        text: 'Get All Programs',
-        onclick: 'GetPrograms()'
+        text: 'Get All Teams',
+        onclick: 'GetTeams()'
     });
 
-    $('#programCrud').append(getDataBtnTest);
+    $('#teamCrud').append(getDataBtnTest);
 });
 
 //Personnel Crud ajax
@@ -76,14 +79,14 @@ $(function () {
         url: '/Wizard/GetAllSubjects',
         success: function (data) {
             console.log(data);
-            var newDropDown = $('<select/>'); //subjectDropDown som namn kanske?
+            var subjectDropDown = $('<select/>'); //subjectDropDown som namn kanske?
             data.forEach(function (subject) {
-                newDropDown.append($('<option/>', {
+                subjectDropDown.append($('<option/>', {
                     value: subject.id,
                     text: subject.subjectCode
                 }));
             });
-            $target.append(newDropDown);
+            $target.append(subjectDropDown);
         }
     });
 });
@@ -102,7 +105,8 @@ $(function () {
         placeholder: 'Bild..',
         id: 'imgUrlInput'
     });
-    var $ProgramIdInput = $('<select/>', { text: 'Välj Avdelning', id: 'programIdInput' });
+    var $TeamIdInput = $('<select/>', { text: 'Välj Avdelning', id: 'teamIdInput' });
+    GetTeams($('#teamIdInput'));
     var $AvailablePointsInput = $('<input/>', {
         type: 'range',
         name: 'Points',
@@ -120,7 +124,7 @@ $(function () {
         .append($firstNameInput)
         .append($lastNameInput)
         .append($imgUrlInput)
-        .append($ProgramIdInput)
+        .append($TeamIdInput)
         .append($AvailablePointsInput)
         .append($ContractInput);
 });

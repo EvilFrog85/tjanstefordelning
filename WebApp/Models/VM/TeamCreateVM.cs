@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebApp.Models.VM
 {
-    public class ProgramCreateVM
+    public class TeamCreateVM
     {
         [Display(Name = "Avdelning")]
         public string Name { get; set; }
