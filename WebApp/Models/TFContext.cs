@@ -83,5 +83,26 @@ namespace WebApp.Models.Entities
                 Id = s.Id
             }).ToArrayAsync();
         }
+
+        internal async Task<bool> AddNewStudentGroup(StudentGroupCreateVM viewModel, string id)
+        {
+            int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+            var studentGroupToAdd = new StudentGroup
+            {
+                Name = viewModel.Name,
+                UserId = userId,
+                StartingYear = viewModel.Starting_Year,
+                TeamId = viewModel.TeamId,
+
+            };
+            this.StudentGroup.Add(studentGroupToAdd);
+            return await SaveChangesAsync() == 1;
+        }
+        internal async Task<bool> DeleteStudentGroup(int id)
+        {
+            var studentGroupToRemove = StudentGroup.FirstOrDefault(s => s.Id == id);
+            StudentGroup.Remove(studentGroupToRemove);
+            return await SaveChangesAsync() == 1;
+        }
     }
 }
