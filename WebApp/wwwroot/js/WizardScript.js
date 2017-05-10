@@ -1,4 +1,4 @@
-﻿///<reference path="index.d.js"/>
+﻿///<reference path="jquery-2.1.0-vsdoc.js"/>
 
 //Team Crud functions
 function SubmitTeam() {
@@ -9,12 +9,12 @@ function SubmitTeam() {
         url: '/Wizard/NewTeam/',
         data: { "Name": newName },
         success: function (result) {
-            console.log(result);
+            console.log(result);    
         }
     });
 }
 
-function GetTeams(test) {
+function GetTeams() {
     $('.teamButton').remove();
     $.ajax({
         type: 'GET',
@@ -28,7 +28,7 @@ function GetTeams(test) {
                     class: 'teamButton',
                     id: 'teamButton' + element.id
                 }));
-                test.append($('<option/>', {
+                $('#teamIdInput').append($('<option/>', {
                     text: element.name,
                     value: element.id
                 }));
@@ -36,8 +36,6 @@ function GetTeams(test) {
         }
     });
 }
-
-
 
 function DeleteTeam(id) {
     $('#teamButton' + id).remove();
@@ -151,13 +149,12 @@ $(function () {
     }
 
     //Dropdown to select team 
-    var teamDropDown = $('<select/>', {
-        id: "teamDropDown",
-    })
+    //var teamDropDown = $('<select/>', {
+    //    id: "teamDropDown",
+    //})
     //TODO : (Future) add pupilCount classroom assignment, prioritizing and if small classes can be grouped together
-    GetTeams(teamDropDown);
     $target.append(nameInput);
     $target.append(startingYearDropDown);
-    $target.append(teamDropDown);
+    //$target.append(teamDropDown);
 
 });
