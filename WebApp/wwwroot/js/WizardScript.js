@@ -1,5 +1,4 @@
-﻿///<reference path="index.d.js"/>
-
+﻿
 //Team Crud functions
 var ContractsArray = [{ 'value': '1', 'name': 'Timanställd' },
     { 'value': '2', 'name': 'Deltid' },
@@ -81,14 +80,14 @@ $(function () {
 
 //Personnel Crud ajax
 //Get all subjects to be able to choose competences
-$(function () {
+function GetAllSubjects () {
     var $target = $('#personnelCrud');
     $.ajax({
         type: 'GET',
         url: '/Wizard/GetAllSubjects',
         success: function (data) {
             console.log(data);
-            var subjectDropDown = $('<select/>'); //subjectDropDown som namn kanske?
+            var subjectDropDown = $('<select/>', { class: 'inputSelect'}); //subjectDropDown som namn kanske?
             data.forEach(function (subject) {
                 subjectDropDown.append($('<option/>', {
                     value: subject.id,
@@ -98,7 +97,7 @@ $(function () {
             $target.append(subjectDropDown);
         }
     });
-});
+}
 
 function AddNewPersonnel() {
     
