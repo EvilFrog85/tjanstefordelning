@@ -1,4 +1,6 @@
 ﻿///<reference path="index.d.js"/>
+
+//Program Crud functions
 function SubmitProgram() {
     var newName = $('#programName').val()
     $('#programName').val('');
@@ -34,7 +36,6 @@ function GetPrograms() {
     });
 }
 
-
 function DeleteProgram(id) {
     $('#programButton' + id).remove();
     $.ajax({
@@ -46,6 +47,7 @@ function DeleteProgram(id) {
     });
 };
 
+//Program html append
 $(function () {
     var name = $('<input/>', {
         id: 'programName',
@@ -65,6 +67,7 @@ $(function () {
     $('#programCrud').append(getDataBtnTest);
 });
 
+//Personnel Crud ajax
 //Get all subjects to be able to choose competences
 $(function () {
     var $target = $('#personnelCrud');
@@ -73,7 +76,7 @@ $(function () {
         url: '/Wizard/GetAllSubjects',
         success: function (data) {
             console.log(data);
-            var newDropDown = $('<select/>');
+            var newDropDown = $('<select/>'); //subjectDropDown som namn kanske?
             data.forEach(function (subject) {
                 newDropDown.append($('<option/>', {
                     value: subject.id,
@@ -85,6 +88,7 @@ $(function () {
     });
 });
 
+//Personnel crud
 $(function () {
     var $firstNameInput = $('<input/>', {
         placeholder: 'Förnamn..',
@@ -119,4 +123,12 @@ $(function () {
         .append($ProgramIdInput)
         .append($AvailablePointsInput)
         .append($ContractInput);
+});
+
+//Student group ajax
+$(function () {
+    var $target = $('#studentGroupCrud');
+    $.ajax({
+
+    });
 });
