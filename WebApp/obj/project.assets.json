@@ -2,6 +2,15 @@
   "version": 2,
   "targets": {
     ".NETCoreApp,Version=v1.1": {
+      "jQuery/2.1.0": {
+        "type": "package"
+      },
+      "jQuery-vsdoc/2.1.0": {
+        "type": "package",
+        "dependencies": {
+          "jQuery": "2.1.0"
+        }
+      },
       "Libuv/1.9.1": {
         "type": "package",
         "dependencies": {
@@ -3971,6 +3980,33 @@
     }
   },
   "libraries": {
+    "jQuery/2.1.0": {
+      "sha512": "xMauIG19FNgANvxF2jmt+PVOc/nATzqK8FbsDvvsJL1Hp9Mhl1pL80fPGok/Cmz+Mhph7RaH9wXtERjsxGggCQ==",
+      "type": "package",
+      "path": "jquery/2.1.0",
+      "files": [
+        "Content/Scripts/jquery-2.1.0-vsdoc.js",
+        "Content/Scripts/jquery-2.1.0.js",
+        "Content/Scripts/jquery-2.1.0.min.js",
+        "Content/Scripts/jquery-2.1.0.min.map",
+        "Tools/common.ps1",
+        "Tools/install.ps1",
+        "Tools/jquery-2.1.0.intellisense.js",
+        "Tools/uninstall.ps1",
+        "jQuery.2.1.0.nupkg.sha512",
+        "jQuery.nuspec"
+      ]
+    },
+    "jQuery-vsdoc/2.1.0": {
+      "sha512": "DS1WvcxuUq7EX682YOl9Pjw37ItPdGUBfIYZfQo+mjbdYjkLJKV4mAA7HU8siZvhLVZ4F32o4o8l9wbtRlsfsA==",
+      "type": "package",
+      "path": "jquery-vsdoc/2.1.0",
+      "files": [
+        "content/Scripts/jquery-2.1.0-vsdoc.js",
+        "jQuery-vsdoc.2.1.0.nupkg.sha512",
+        "jQuery-vsdoc.nuspec"
+      ]
+    },
     "Libuv/1.9.1": {
       "sha512": "uqX2Frwf9PW8MaY7PRNY6HM5BpW1D8oj1EdqzrmbEFD5nH63Yat3aEjN/tws6Tw6Fk7LwmLBvtUh32tTeTaHiA==",
       "type": "package",
@@ -10452,7 +10488,8 @@
       "Microsoft.EntityFrameworkCore.SqlServer.Design >= 1.1.1",
       "Microsoft.EntityFrameworkCore.Tools >= 1.1.0",
       "Microsoft.Extensions.Logging.Debug >= 1.1.1",
-      "Microsoft.NETCore.App >= 1.1.1"
+      "Microsoft.NETCore.App >= 1.1.1",
+      "jQuery-vsdoc >= 2.1.0"
     ]
   },
   "packageFolders": {
@@ -10522,6 +10559,10 @@
           "Microsoft.AspNetCore.StaticFiles": {
             "target": "Package",
             "version": "1.1.1"
+          },
+          "jQuery-vsdoc": {
+            "target": "Package",
+            "version": "2.1.0"
           }
         }
       }

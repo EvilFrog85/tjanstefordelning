@@ -1,5 +1,5 @@
 ﻿///<reference path="index.d.js"/>
-
+///<reference path="jquery-2.1.0-vsdoc.js" />
 //Program Crud functions
 function SubmitProgram() {
     var newName = $('#programName').val()
@@ -125,10 +125,35 @@ $(function () {
         .append($ContractInput);
 });
 
-//Student group ajax
+//Student group html rendering
 $(function () {
     var $target = $('#studentGroupCrud');
-    $.ajax({
-
+    var nameInput = $('<input/>', {
+        id: "studentGroupName",
+        type: "text",
+        placeholder: "Student Group Name..",
     });
+    var thisYear = new Date().getFullYear();
+    var startingYearDropDown = $('<select/>');
+    //Dropdown to select starting year +-2 years from this year
+    var years = [];
+    for (let i = (thisYear + 2); i >= (thisYear - 2); i--) {
+        var opt = document.createElement('option');
+        opt.value = i;
+        opt.text = i;
+        if (i === thisYear)
+            opt.selected = "selected";
+        startingYearDropDown.append(opt);
+    }
+
+    //Dropdown to select team 
+    var teamDropDown = $('<select/>', {
+        id: "teamDropDown",
+    })
+    //TODO : (Future) add pupilCount classroom assignment, prioritizing and if small classes can be grouped together
+    GetTeams(teamDropDown);
+    $target.append(nameInput);
+    $target.append(startingYearDropDown);
+    $target.append(teamDropDown);
+
 });
