@@ -11,10 +11,11 @@ namespace WebApp.Models.Entities
         public virtual DbSet<Competence> Competence { get; set; }
         public virtual DbSet<IncludedClass> IncludedClass { get; set; }
         public virtual DbSet<Personnel> Personnel { get; set; }
-        public virtual DbSet<Program> Program { get; set; }
         public virtual DbSet<StudentGroup> StudentGroup { get; set; }
         public virtual DbSet<Subject> Subject { get; set; }
-
+        public virtual DbSet<Team> Team { get; set; }
+        public virtual DbSet<User> User { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AuxiliaryAssignment>(entity =>
@@ -33,15 +34,18 @@ namespace WebApp.Models.Entities
 
                 entity.Property(e => e.PersonnelId).HasColumnName("Personnel_Id");
 
-                entity.Property(e => e.SchoolId)
-                    .IsRequired()
-                    .HasColumnName("School_Id")
-                    .HasMaxLength(450);
+                entity.Property(e => e.UserId).HasColumnName("User_Id");
 
                 entity.HasOne(d => d.Personnel)
                     .WithMany(p => p.AuxiliaryAssignment)
                     .HasForeignKey(d => d.PersonnelId)
                     .HasConstraintName("FK_Auxiliary_assignment_ToPersonnel");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.AuxiliaryAssignment)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_Auxiliary_assignment_ToUser");
             });
 
             modelBuilder.Entity<Class>(entity =>
@@ -100,31 +104,34 @@ namespace WebApp.Models.Entities
 
                 entity.Property(e => e.PersonnelId).HasColumnName("Personnel_Id");
 
-                entity.Property(e => e.ProgramId).HasColumnName("Program_Id");
-
-                entity.Property(e => e.SchoolId)
-                    .IsRequired()
-                    .HasColumnName("School_Id")
-                    .HasMaxLength(450);
-
                 entity.Property(e => e.StudentGroupId).HasColumnName("Student_group_Id");
+
+                entity.Property(e => e.TeamId).HasColumnName("Team_Id");
+
+                entity.Property(e => e.UserId).HasColumnName("User_Id");
 
                 entity.HasOne(d => d.Personnel)
                     .WithMany(p => p.IncludedClass)
                     .HasForeignKey(d => d.PersonnelId)
                     .HasConstraintName("FK_Included_class_ToPersonnel");
 
-                entity.HasOne(d => d.Program)
-                    .WithMany(p => p.IncludedClass)
-                    .HasForeignKey(d => d.ProgramId)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("FK_Included_class_ToProgram");
-
                 entity.HasOne(d => d.StudentGroup)
                     .WithMany(p => p.IncludedClass)
                     .HasForeignKey(d => d.StudentGroupId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Included_class_ToStudent_group");
+
+                entity.HasOne(d => d.Team)
+                    .WithMany(p => p.IncludedClass)
+                    .HasForeignKey(d => d.TeamId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_Included_class_ToTeam");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.IncludedClass)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_Included_class_ToUser");
             });
 
             modelBuilder.Entity<Personnel>(entity =>
@@ -152,36 +159,25 @@ namespace WebApp.Models.Entities
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.Property(e => e.ProgramId).HasColumnName("Program_Id");
-
-                entity.Property(e => e.SchoolId)
-                    .IsRequired()
-                    .HasColumnName("School_Id")
-                    .HasMaxLength(450);
-
                 entity.Property(e => e.Signature)
                     .IsRequired()
                     .HasColumnType("varchar(3)");
 
-                entity.HasOne(d => d.Program)
+                entity.Property(e => e.TeamId).HasColumnName("Team_Id");
+
+                entity.Property(e => e.UserId).HasColumnName("User_Id");
+
+                entity.HasOne(d => d.Team)
                     .WithMany(p => p.Personnel)
-                    .HasForeignKey(d => d.ProgramId)
+                    .HasForeignKey(d => d.TeamId)
                     .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("FK_Personnel_ToProgram");
-            });
+                    .HasConstraintName("FK_Personnel_ToTeam");
 
-            modelBuilder.Entity<Program>(entity =>
-            {
-                entity.ToTable("Program", "TF");
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(30);
-
-                entity.Property(e => e.SchoolId)
-                    .IsRequired()
-                    .HasColumnName("School_Id")
-                    .HasMaxLength(450);
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Personnel)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_Personnel_ToUser");
             });
 
             modelBuilder.Entity<StudentGroup>(entity =>
@@ -190,22 +186,25 @@ namespace WebApp.Models.Entities
 
                 entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.ProgramId).HasColumnName("Program_Id");
-
-                entity.Property(e => e.SchoolId)
-                    .IsRequired()
-                    .HasColumnName("School_Id")
-                    .HasMaxLength(450);
+                    .HasMaxLength(30);
 
                 entity.Property(e => e.StartingYear).HasColumnName("Starting_year");
 
-                entity.HasOne(d => d.Program)
+                entity.Property(e => e.TeamId).HasColumnName("Team_Id");
+
+                entity.Property(e => e.UserId).HasColumnName("User_Id");
+
+                entity.HasOne(d => d.Team)
                     .WithMany(p => p.StudentGroup)
-                    .HasForeignKey(d => d.ProgramId)
+                    .HasForeignKey(d => d.TeamId)
                     .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("FK_Student_group_ToProgram");
+                    .HasConstraintName("FK_Student_group_ToTeam");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.StudentGroup)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_Student_group_ToUser");
             });
 
             modelBuilder.Entity<Subject>(entity =>
@@ -220,6 +219,37 @@ namespace WebApp.Models.Entities
                     .IsRequired()
                     .HasColumnName("Subject_code")
                     .HasColumnType("varchar(3)");
+            });
+
+            modelBuilder.Entity<Team>(entity =>
+            {
+                entity.ToTable("Team", "TF");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.UserId).HasColumnName("User_Id");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Team)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_Team_ToUser");
+            });
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.ToTable("User", "TF");
+
+                entity.Property(e => e.SchoolId)
+                    .IsRequired()
+                    .HasColumnName("School_Id")
+                    .HasMaxLength(450);
+
+                entity.Property(e => e.SchoolName)
+                    .IsRequired()
+                    .HasMaxLength(30);
             });
         }
     }

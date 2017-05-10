@@ -13,8 +13,9 @@ namespace WebApp.Models.Entities
         public bool Assigned { get; set; }
         public bool Mandatory { get; set; }
         public int? PersonnelId { get; set; }
-        public string SchoolId { get; set; }
+        public int UserId { get; set; }
 
         public virtual Personnel Personnel { get; set; }
+        public virtual User User { get; set; }
     }
 }
