@@ -53,10 +53,12 @@ function DeleteTeam(id) {
 //Team html append
 $(function () {
     var name = $('<input/>', {
+        class: 'inputText',
         id: 'teamName',
         type: 'text',
     });
     var submitBtn = $('<button/>', {
+        class: 'buttonSubmit',
         onclick: 'SubmitTeam()',
         text: 'Submit',
     });
@@ -94,18 +96,21 @@ $(function () {
 //Personnel crud
 $(function () {
     var $firstNameInput = $('<input/>', {
+        class: 'inputText',
         placeholder: 'Förnamn..',
         id: 'firstNameInput'
     });
     var $lastNameInput = $('<input/>', {
+        class: 'inputText',
         placeholder: 'Efternamn..',
         id: 'lastNameInput'
     });
     var $imgUrlInput = $('<input/>', {
+        class: 'inputText',
         placeholder: 'Bild..',
         id: 'imgUrlInput'
     });
-    var $TeamIdInput = $('<select/>', { text: 'Välj Avdelning', id: 'teamIdInput' });
+    var $TeamIdInput = $('<select/>', { class: 'inputSelect', text: 'Välj Avdelning', id: 'teamIdInput' });
     GetTeams($('#teamIdInput'));
     var $AvailablePointsInput = $('<input/>', {
         type: 'range',
@@ -114,6 +119,7 @@ $(function () {
         max: '100'
     });
     var $ContractInput = $('<input/>', {
+        class: 'inputText',
         type: 'number',
         min: '1',
         max: '5'
