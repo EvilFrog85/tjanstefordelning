@@ -1,11 +1,16 @@
 ﻿//Team Crud functions
+var ContractsArray = [{ 'value': '1', 'name': 'Timanställd' },
+    { 'value': '2', 'name': 'Deltid' },
+    { 'value': '3', 'name': 'Heltid' }];
+
+
 function SubmitTeam() {
-    var newName = $('#teamName').val()
+    var $newName = $('#teamName').val()
     $('#teamName').val('');
     $.ajax({
         type: 'POST',
         url: '/Wizard/NewTeam/',
-        data: { "Name": newName },
+        data: { "Name": $newName },
         success: function (result) {
             console.log(result);
         }
@@ -36,8 +41,6 @@ function GetTeams() {
     });
 }
 
-
-
 function DeleteTeam(id) {
     $('#teamButton' + id).remove();
     $.ajax({
@@ -49,26 +52,27 @@ function DeleteTeam(id) {
     });
 };
 
+
 //Team html append
 $(function () {
-    var name = $('<input/>', {
+    var $name = $('<input/>', {
         class: 'inputText',
         id: 'teamName',
         type: 'text',
     });
-    var submitBtn = $('<button/>', {
+    var $submitBtn = $('<button/>', {
         class: 'buttonSubmit',
         onclick: 'SubmitTeam()',
         text: 'Submit',
     });
-    $('#teamCrud').append(name).append(submitBtn);
+    $('#teamCrud').append($name).append($submitBtn);
 
-    var getDataBtnTest = $('<button/>', {
+    var $getDataBtnTest = $('<button/>', {
         text: 'Get All Teams',
         onclick: 'GetTeams()'
     });
 
-    $('#teamCrud').append(getDataBtnTest);
+    $('#teamCrud').append($getDataBtnTest);
 });
 
 //Personnel Crud ajax
@@ -84,7 +88,7 @@ $(function () {
             data.forEach(function (subject) {
                 subjectDropDown.append($('<option/>', {
                     value: subject.id,
-                    text: subject.subjectCode + ' - ' + subject.name
+                    text: subject.name + ' (' +subject.subjectCode + ')'
                 }));
             });
             $target.append(subjectDropDown);
@@ -92,6 +96,34 @@ $(function () {
     });
 });
 
+function AddNewPersonnel() {
+    
+    var firstName = $('#firstNameInput').val();
+    var lastName = $('#lastNameInput').val();
+    var imageUrl = $('#imgUrlInput').val();
+    var teamId = $('#teamIdInput').val();
+    var availablePoints = $('#availablePointsInput').val();
+    var contract = $('#contractSelect').val();
+    
+    var dataToInsert = {
+        FirstName: firstName,
+        LastName: lastName,
+        ImageUrl: imageUrl,
+        TeamId: teamId,
+        AvailablePoints: availablePoints,
+        Contract: contract
+    };
+    console.log(dataToInsert);
+
+    $.ajax({
+        type: 'POST',
+        url: '/Wizard/AddNewPersonnel',
+        data: dataToInsert,
+        success: function (data) {
+            console.log(data)
+        }
+    });
+}
 //Personnel crud
 $(function () {
     var $firstNameInput = $('<input/>', {
@@ -109,29 +141,39 @@ $(function () {
         placeholder: 'Bild..',
         id: 'imgUrlInput'
     });
-    var $TeamIdInput = $('<select/>', { class: 'inputSelect', text: 'Välj Avdelning', id: 'teamIdInput' });
-    GetTeams($('#teamIdInput'));
-    var $AvailablePointsInput = $('<input/>', {
-        type: 'range',
-        name: 'Points',
+    var $teamIdInput = $('<select/>', { class: 'inputSelect', text: 'Välj Avdelning', id: 'teamIdInput' });
+    var $availablePointsInput = $('<input/>', {
+        type: 'number',
+        class: 'inputText',
+        placeholder: 'Anställning i procent',
+        id: 'availablePointsInput',
+        step: '0.5',
         min: '0',
         max: '100'
     });
-    var $ContractInput = $('<input/>', {
-        class: 'inputText',
-        type: 'number',
-        min: '1',
-        max: '5'
+    var $contractSelect = $('<select/>', { class: 'inputSelect', id: 'contractSelect' });
+
+    ContractsArray.forEach(function (contract) {
+        $contractSelect.append($('<option/>', {
+            text: contract.name,
+            value: contract.value
+        }));
     });
 
+    var $submitNewPersonnel = $('<button/>', {
+        text: 'Lägg till',
+        onclick: 'AddNewPersonnel()',
+        class: 'buttonSubmit'
+    });
 
     $('#personnelCrud')
         .append($firstNameInput)
         .append($lastNameInput)
         .append($imgUrlInput)
-        .append($TeamIdInput)
-        .append($AvailablePointsInput)
-        .append($ContractInput);
+        .append($teamIdInput)
+        .append($availablePointsInput)
+        .append($contractSelect)
+        .append($submitNewPersonnel);
 });
 
 //Student group html rendering

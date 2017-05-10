@@ -16,6 +16,7 @@ namespace WebApp.Models.Entities
         }
         internal async Task<bool> AddNewPersonnel(PersonnelCreateVM viewModel, string id)
         {
+            var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
             var newPersonnel = new Personnel
             {
                 FirstName = viewModel.FirstName,
@@ -24,6 +25,7 @@ namespace WebApp.Models.Entities
                 TeamId = viewModel.TeamId,
                 AvailablePoints = viewModel.AvailablePoints,
                 Contract = viewModel.Contract,
+                UserId = userId
             };
             await Personnel.AddAsync(newPersonnel);
             return await SaveChangesAsync() == 1;
