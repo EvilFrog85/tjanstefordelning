@@ -1,8 +1,11 @@
 ﻿
 //Team Crud functions
-var ContractsArray = [{ 'value': '1', 'name': 'Timanställd' },
-    { 'value': '2', 'name': 'Deltid' },
-    { 'value': '3', 'name': 'Heltid' }];
+var ContractsArray = [{ 'value': '0', 'name': 'Tillsvidare' },
+    { 'value': '1', 'name': 'Tidsbegränsad' },
+    { 'value': '2', 'name': 'Projektanställning' },
+    { 'value': '3', 'name': 'Fast anställning' },
+    { 'value': '4', 'name': 'Övrig' },
+];
 
 
 function SubmitTeam() {
