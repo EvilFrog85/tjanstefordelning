@@ -25,20 +25,20 @@ INSERT INTO [TF].[User] VALUES
 GO
 
 
--- Team --
-DROP TABLE [TF].[Team]
+-- PROGRAM --
+DROP TABLE [TF].[Program]
 GO
-CREATE TABLE [TF].[Team] (
+CREATE TABLE [TF].[Program] (
     [Id]        INT            IDENTITY (1, 1) NOT NULL,
     [Name]      NVARCHAR (30)  NOT NULL,
     [User_Id] INT NOT NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [FK_Team_ToUser] FOREIGN KEY ([User_Id]) REFERENCES [TF].[User] ([Id])
+    CONSTRAINT [FK_Program_ToUser] FOREIGN KEY ([User_Id]) REFERENCES [TF].[User] ([Id])
 );
 GO
-DBCC CHECKIDENT ('[TF].[Team]', RESEED, 1)
+DBCC CHECKIDENT ('[TF].[Program]', RESEED, 1)
 GO
-INSERT INTO [TF].[Team] VALUES
+INSERT INTO [TF].[Program] VALUES
 ('Teknik', 1),
 ('Yrkeslaget', 1),
 ('Media', 1),
@@ -57,12 +57,12 @@ CREATE TABLE [TF].[Personnel] (
     [LastName]         NVARCHAR (50)  NOT NULL,
     [Signature]        VARCHAR (3)    NOT NULL,
     [Image_url]        VARCHAR (100)  NULL,
-    [Team_Id]       INT            NOT NULL,
+    [Program_Id]       INT            NOT NULL,
     [Available_Points] DECIMAL (18)   NOT NULL,
     [Assigned_Points]  DECIMAL (18)   DEFAULT ((0)) NOT NULL,
     [Contract]         INT            NOT NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [FK_Personnel_ToTeam] FOREIGN KEY ([Team_Id]) REFERENCES [TF].[Team] ([Id]),
+    CONSTRAINT [FK_Personnel_ToProgram] FOREIGN KEY ([Program_Id]) REFERENCES [TF].[Program] ([Id]),
     CONSTRAINT [FK_Personnel_ToUser] FOREIGN KEY ([User_Id]) REFERENCES [TF].[User] ([Id])
 );
 GO
@@ -117,10 +117,10 @@ CREATE TABLE [TF].[Student_group] (
     [Id]               INT            IDENTITY (1, 1) NOT NULL,
 	[Name] NVARCHAR(30) NOT NULL,
 	[Starting_year] INT NOT NULL,
-	[Team_Id] INT NOT NULL,
+	[Program_Id] INT NOT NULL,
     [User_Id]        INT NOT NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [FK_Student_group_ToTeam] FOREIGN KEY ([Team_Id]) REFERENCES [TF].[Team] ([Id]),
+    CONSTRAINT [FK_Student_group_ToProgram] FOREIGN KEY ([Program_Id]) REFERENCES [TF].[Program] ([Id]),
     CONSTRAINT [FK_Student_group_ToUser] FOREIGN KEY ([User_Id]) REFERENCES [TF].[User] ([Id])
 );
 GO
@@ -1588,7 +1588,6 @@ CREATE TABLE [TF].[Competence] (
     CONSTRAINT [FK_Competence_ToSubject] FOREIGN KEY ([Subject_Id]) REFERENCES [TF].[Subject] ([Id]),
 	CONSTRAINT [FK_Competence_ToPersonnel] FOREIGN KEY ([Personnel_Id]) REFERENCES [TF].[Personnel] ([Id])
 );
-GO
 DBCC CHECKIDENT ('[TF].[Competence]', RESEED, 1)
 GO
 INSERT INTO [TF].[Competence] VALUES
@@ -1614,7 +1613,6 @@ CREATE TABLE [TF].[Auxiliary_assignment] (
     CONSTRAINT [FK_Auxiliary_assignment_ToUser] FOREIGN KEY ([User_Id]) REFERENCES [TF].[User] ([Id]),
 	CONSTRAINT [FK_Auxiliary_assignment_ToPersonnel] FOREIGN KEY ([Personnel_Id]) REFERENCES [TF].[Personnel] ([Id])
 );
-GO
 DBCC CHECKIDENT ('[TF].[Auxiliary_assignment]', RESEED, 1)
 GO
 INSERT INTO [TF].[Auxiliary_assignment] VALUES
@@ -1631,17 +1629,16 @@ CREATE TABLE [TF].[Included_class] (
     [Assigned]         BIT            DEFAULT ((0)) NOT NULL,
     [Duration]         INT            NOT NULL,
     [User_Id]        INT NOT NULL,
-    [Team_Id]       INT            NOT NULL,
+    [Program_Id]       INT            NOT NULL,
     [Class_Id]         INT            NOT NULL,
     [Personnel_Id]     INT            NULL,
     [Student_group_Id] INT            NOT NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_Included_class_ToUser] FOREIGN KEY ([User_Id]) REFERENCES [TF].[User] ([Id]),
-    CONSTRAINT [FK_Included_class_ToTeam] FOREIGN KEY ([Team_Id]) REFERENCES [TF].[Team] ([Id]),
+    CONSTRAINT [FK_Included_class_ToProgram] FOREIGN KEY ([Program_Id]) REFERENCES [TF].[Program] ([Id]),
     CONSTRAINT [FK_Included_class_ToStudent_group] FOREIGN KEY ([Student_group_Id]) REFERENCES [TF].[Student_group] ([Id]),
 	CONSTRAINT [FK_Included_class_ToPersonnel] FOREIGN KEY ([Personnel_Id]) REFERENCES [TF].[Personnel] ([Id])
 );
-GO
 DBCC CHECKIDENT ('[TF].[Included_class]', RESEED, 1)
 GO
 INSERT INTO [TF].[Included_class] VALUES
