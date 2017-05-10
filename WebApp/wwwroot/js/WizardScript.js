@@ -1,4 +1,4 @@
-﻿///<reference path="jquery-2.1.0-vsdoc.js"/>
+﻿///<reference path="index.d.js"/>
 
 //Team Crud functions
 function SubmitTeam() {
@@ -16,6 +16,7 @@ function SubmitTeam() {
 
 function GetTeams() {
     $('.teamButton').remove();
+    $('#teamIdInput').empty();
     $.ajax({
         type: 'GET',
         url: '/Wizard/GetAllTeams',
@@ -51,10 +52,12 @@ function DeleteTeam(id) {
 //Team html append
 $(function () {
     var name = $('<input/>', {
+        class: 'inputText',
         id: 'teamName',
         type: 'text',
     });
     var submitBtn = $('<button/>', {
+        class: 'buttonSubmit',
         onclick: 'SubmitTeam()',
         text: 'Submit',
     });
@@ -81,7 +84,7 @@ $(function () {
             data.forEach(function (subject) {
                 subjectDropDown.append($('<option/>', {
                     value: subject.id,
-                    text: subject.subjectCode
+                    text: subject.subjectCode + ' - ' + subject.name
                 }));
             });
             $target.append(subjectDropDown);
@@ -92,18 +95,21 @@ $(function () {
 //Personnel crud
 $(function () {
     var $firstNameInput = $('<input/>', {
+        class: 'inputText',
         placeholder: 'Förnamn..',
         id: 'firstNameInput'
     });
     var $lastNameInput = $('<input/>', {
+        class: 'inputText',
         placeholder: 'Efternamn..',
         id: 'lastNameInput'
     });
     var $imgUrlInput = $('<input/>', {
+        class: 'inputText',
         placeholder: 'Bild..',
         id: 'imgUrlInput'
     });
-    var $TeamIdInput = $('<select/>', { text: 'Välj Avdelning', id: 'teamIdInput' });
+    var $TeamIdInput = $('<select/>', { class: 'inputSelect', text: 'Välj Avdelning', id: 'teamIdInput' });
     GetTeams($('#teamIdInput'));
     var $AvailablePointsInput = $('<input/>', {
         type: 'range',
@@ -112,6 +118,7 @@ $(function () {
         max: '100'
     });
     var $ContractInput = $('<input/>', {
+        class: 'inputText',
         type: 'number',
         min: '1',
         max: '5'

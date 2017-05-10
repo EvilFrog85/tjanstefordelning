@@ -6,15 +6,15 @@
 
   <ItemGroup>
     <Content Include="wwwroot\css\StyleSheet.css" />
-    <Content Include="wwwroot\js\index.d.js" />
+    <Content Include="wwwroot\css\temp_style.css" />
+    <Content Include="wwwroot\img\icons\add.svg" />
+    <Content Include="wwwroot\img\icons\delete.svg" />
+    <Content Include="wwwroot\img\icons\done.svg" />
+    <Content Include="wwwroot\img\icons\edit.svg" />
     <Content Include="wwwroot\js\jquery-3.1.0.js" />
     <Content Include="wwwroot\js\jquery.validate.js" />
     <Content Include="wwwroot\js\jquery.validate.unobtrusive.js" />
     <Content Include="wwwroot\js\WizardScript.js" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\img\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="jQuery-vsdoc" Version="2.1.0" />
