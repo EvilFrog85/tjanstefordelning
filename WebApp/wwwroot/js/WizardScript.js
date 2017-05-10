@@ -1,33 +1,40 @@
 ﻿///<reference path="index.d.js"/>
 
-//Program Crud functions
-function SubmitProgram() {
-    var newName = $('#programName').val()
-    $('#programName').val('');
+//Team Crud functions
+var ContractsArray = [{ 'value': '1', 'name': 'Timanställd' },
+    { 'value': '2', 'name': 'Deltid' },
+    { 'value': '3', 'name': 'Heltid' }];
+
+
+function SubmitTeam() {
+    var $newName = $('#teamName').val()
+    $('#teamName').val('');
     $.ajax({
         type: 'POST',
-        url: '/Wizard/NewProgram/',
-        data: { "Name": newName },
+        url: '/Wizard/NewTeam/',
+        data: { "Name": $newName },
         success: function (result) {
-            console.log(result);
+            console.log(result);    
         }
     });
 }
 
-function GetPrograms() {
-    $('.programButton').remove();
+function GetTeams() {
+    $('.teamButton').remove();
+    $('#teamIdInput').empty();
     $.ajax({
         type: 'GET',
-        url: '/Wizard/GetPrograms',
+        url: '/Wizard/GetAllTeams',
         success: function (data) {
+            console.log(data);
             data.forEach(function (element) {
-                $('#programCrud').append($('<button/>', {
+                $('#teamCrud').append($('<button/>', {
                     text: element.name,
-                    onclick: 'DeleteProgram(' + element.id + ')',
-                    class: 'programButton',
-                    id: 'programButton' + element.id
+                    onclick: 'DeleteTeam(' + element.id + ')',
+                    class: 'teamButton',
+                    id: 'teamButton' + element.id
                 }));
-                $('#programIdInput').append($('<option/>', {
+                $('#teamIdInput').append($('<option/>', {
                     text: element.name,
                     value: element.id
                 }));
@@ -36,35 +43,40 @@ function GetPrograms() {
     });
 }
 
-function DeleteProgram(id) {
-    $('#programButton' + id).remove();
+
+
+function DeleteTeam(id) {
+    $('#teamButton' + id).remove();
     $.ajax({
         type: 'POST',
-        url: '/Wizard/DeleteProgram/' + id,
+        url: '/Wizard/DeleteTeam/' + id,
         success: function (data) {
             console.log(data);
         }
     });
 };
 
-//Program html append
+
+//Team html append
 $(function () {
-    var name = $('<input/>', {
-        id: 'programName',
+    var $name = $('<input/>', {
+        class: 'inputText',
+        id: 'teamName',
         type: 'text',
     });
-    var submitBtn = $('<button/>', {
-        onclick: 'SubmitProgram()',
+    var $submitBtn = $('<button/>', {
+        class: 'buttonSubmit',
+        onclick: 'SubmitTeam()',
         text: 'Submit',
     });
-    $('#programCrud').append(name).append(submitBtn);
+    $('#teamCrud').append($name).append($submitBtn);
 
-    var getDataBtnTest = $('<button/>', {
-        text: 'Get All Programs',
-        onclick: 'GetPrograms()'
+    var $getDataBtnTest = $('<button/>', {
+        text: 'Get All Teams',
+        onclick: 'GetTeams()'
     });
 
-    $('#programCrud').append(getDataBtnTest);
+    $('#teamCrud').append($getDataBtnTest);
 });
 
 //Personnel Crud ajax
@@ -76,53 +88,96 @@ $(function () {
         url: '/Wizard/GetAllSubjects',
         success: function (data) {
             console.log(data);
-            var newDropDown = $('<select/>'); //subjectDropDown som namn kanske?
+            var subjectDropDown = $('<select/>'); //subjectDropDown som namn kanske?
             data.forEach(function (subject) {
-                newDropDown.append($('<option/>', {
+                subjectDropDown.append($('<option/>', {
                     value: subject.id,
-                    text: subject.subjectCode
+                    text: subject.name + ' (' +subject.subjectCode + ')'
                 }));
             });
-            $target.append(newDropDown);
+            $target.append(subjectDropDown);
         }
     });
 });
 
+function AddNewPersonnel() {
+    
+    var firstName = $('#firstNameInput').val();
+    var lastName = $('#lastNameInput').val();
+    var imageUrl = $('#imgUrlInput').val();
+    var teamId = $('#teamIdInput').val();
+    var availablePoints = $('#availablePointsInput').val();
+    var contract = $('#contractSelect').val();
+    
+    var dataToInsert = {
+        FirstName: firstName,
+        LastName: lastName,
+        ImageUrl: imageUrl,
+        TeamId: teamId,
+        AvailablePoints: availablePoints,
+        Contract: contract
+    };
+    console.log(dataToInsert);
+
+    $.ajax({
+        type: 'POST',
+        url: '/Wizard/AddNewPersonnel',
+        data: dataToInsert,
+        success: function (data) {
+            console.log(data)
+        }
+    });
+}
 //Personnel crud
 $(function () {
     var $firstNameInput = $('<input/>', {
+        class: 'inputText',
         placeholder: 'Förnamn..',
         id: 'firstNameInput'
     });
     var $lastNameInput = $('<input/>', {
+        class: 'inputText',
         placeholder: 'Efternamn..',
         id: 'lastNameInput'
     });
     var $imgUrlInput = $('<input/>', {
+        class: 'inputText',
         placeholder: 'Bild..',
         id: 'imgUrlInput'
     });
-    var $ProgramIdInput = $('<select/>', { text: 'Välj Avdelning', id: 'programIdInput' });
-    var $AvailablePointsInput = $('<input/>', {
-        type: 'range',
-        name: 'Points',
+    var $teamIdInput = $('<select/>', { class: 'inputSelect', text: 'Välj Avdelning', id: 'teamIdInput' });
+    var $availablePointsInput = $('<input/>', {
+        type: 'number',
+        class: 'inputText',
+        placeholder: 'Anställning i procent',
+        id: 'availablePointsInput',
+        step: '0.5',
         min: '0',
         max: '100'
     });
-    var $ContractInput = $('<input/>', {
-        type: 'number',
-        min: '1',
-        max: '5'
+    var $contractSelect = $('<select/>', { class: 'inputSelect', id: 'contractSelect' });
+
+    ContractsArray.forEach(function (contract) {
+        $contractSelect.append($('<option/>', {
+            text: contract.name,
+            value: contract.value
+        }));
     });
 
+    var $submitNewPersonnel = $('<button/>', {
+        text: 'Lägg till',
+        onclick: 'AddNewPersonnel()',
+        class: 'buttonSubmit'
+    });
 
     $('#personnelCrud')
         .append($firstNameInput)
         .append($lastNameInput)
         .append($imgUrlInput)
-        .append($ProgramIdInput)
-        .append($AvailablePointsInput)
-        .append($ContractInput);
+        .append($teamIdInput)
+        .append($availablePointsInput)
+        .append($contractSelect)
+        .append($submitNewPersonnel);
 });
 
 //Competence crud
@@ -169,7 +224,31 @@ $(function () {
 //Student group ajax
 $(function () {
     var $target = $('#studentGroupCrud');
-    $.ajax({
-
+    var nameInput = $('<input/>', {
+        id: "studentGroupName",
+        type: "text",
+        placeholder: "Student Group Name..",
     });
+    var thisYear = new Date().getFullYear();
+    var startingYearDropDown = $('<select/>');
+    //Dropdown to select starting year +-2 years from this year
+    var years = [];
+    for (let i = (thisYear + 2); i >= (thisYear - 2); i--) {
+        var opt = document.createElement('option');
+        opt.value = i;
+        opt.text = i;
+        if (i === thisYear)
+            opt.selected = "selected";
+        startingYearDropDown.append(opt);
+    }
+
+    //Dropdown to select team 
+    //var teamDropDown = $('<select/>', {
+    //    id: "teamDropDown",
+    //})
+    //TODO : (Future) add pupilCount classroom assignment, prioritizing and if small classes can be grouped together
+    $target.append(nameInput);
+    $target.append(startingYearDropDown);
+    //$target.append(teamDropDown);
+
 });

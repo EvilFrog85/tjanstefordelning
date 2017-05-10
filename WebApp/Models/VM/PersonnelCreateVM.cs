@@ -13,7 +13,7 @@ namespace WebApp.Models.VM
         public string LastName { get; set; }
         public string ImageUrl { get; set; }
         //Searchable Drop down with autocompletion
-        public int ProgramId { get; set; }
+        public int TeamId { get; set; }
         //Percentage, from which we calculate available points
         public decimal AvailablePoints { get; set; }
         //Name of the contract, e.g. Full time, part time...

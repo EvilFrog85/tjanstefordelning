@@ -16,58 +16,74 @@ namespace WebApp.Models.Entities
         }
         internal async Task<bool> AddNewPersonnel(PersonnelCreateVM viewModel, string id)
         {
+            var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
             var newPersonnel = new Personnel
             {
                 FirstName = viewModel.FirstName,
                 LastName = viewModel.LastName,
                 ImageUrl = viewModel.ImageUrl,
-                ProgramId = viewModel.ProgramId,
+                TeamId = viewModel.TeamId,
                 AvailablePoints = viewModel.AvailablePoints,
                 Contract = viewModel.Contract,
-                SchoolId = id
+                UserId = userId
             };
             await Personnel.AddAsync(newPersonnel);
             return await SaveChangesAsync() == 1;
         }
 
-        internal async Task<bool> AddNewProgram(ProgramCreateVM viewModel, string id)
+        internal async Task<bool> AddNewTeam(TeamCreateVM viewModel, string id)
         {
+            var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
 
-            var programToAdd = new Program
+            var teamToAdd = new Team
             {
                 Name = viewModel.Name,
-                SchoolId = id,
+                UserId = userId,
             };
 
-            this.Program.Add(programToAdd);
+            this.Team.Add(teamToAdd);
 
             return await SaveChangesAsync() == 1;
         }
 
-        internal async Task<bool> DeleteProgram(int id)
+        internal async Task<bool> DeleteTeam(int id)
         {
-            var programToRemove = await Program.SingleOrDefaultAsync(c => c.Id == id);
-            Program.Remove(programToRemove);
+            var teamToRemove = await Team.SingleOrDefaultAsync(c => c.Id == id);
+            Team.Remove(teamToRemove);
             return await SaveChangesAsync() == 1;
         }
 
-        internal async Task<Program[]> GetAllPrograms(string id)
+        internal async Task<TeamVM[]> GetAllTeams(string id)
         {
-            return await Program.Where(p => p.SchoolId == id).ToArrayAsync();
+            var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+            var teamArray = await Team.Where(p => p.UserId == userId)
+                .Select(p => new TeamVM
+                {
+                    Name = p.Name,
+                    Id = p.Id
+                })
+                .ToArrayAsync();
+            return teamArray;
         }
 
-        internal async Task<bool> UpdateProgram(int id, ProgramCreateVM updatedProgram)
+        internal async Task<bool> UpdateTeam(int id, TeamCreateVM updatedTeam)
         {
-            var oldProgram = Program.SingleOrDefault(c => c.Id == id);
+            var oldTeam = Team.SingleOrDefault(c => c.Id == id);
 
-            oldProgram.Name = updatedProgram.Name;
+            oldTeam.Name = updatedTeam.Name;
 
             return await SaveChangesAsync() == 1;
         }
 
-        internal async Task<Subject[]> GetAllSubjects()
+        internal async Task<SubjectVM[]> GetAllSubjects()
         {
-            return await Subject.ToArrayAsync();
+            return await Subject.Select(s => 
+            new SubjectVM
+            {
+                Name = s.Name,
+                SubjectCode = s.SubjectCode,
+                Id = s.Id
+            }).ToArrayAsync();
         }
 
         internal async Task<bool> NewCompetence(CompetenceCreateVM viewModel, string id)

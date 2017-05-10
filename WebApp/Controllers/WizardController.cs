@@ -18,7 +18,6 @@ namespace WebApp.Controllers
     [Authorize]
     public class WizardController : Controller
     {
-        string userId;
         TFContext _context;
         UserManager<IdentityUser> _userManager;
         public WizardController(UserManager<IdentityUser> userManager, TFContext context)
@@ -30,35 +29,34 @@ namespace WebApp.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
-            userId = _userManager.GetUserId(User);
             return View();
         }
 
         [HttpPost]
-        public async Task<bool> NewProgram(ProgramCreateVM viewModel)
+        public async Task<bool> NewTeam(TeamCreateVM viewModel)
         {
             //TODO : Validation
-            
-            return await _context.AddNewProgram(viewModel, userId);
+            var userId = _userManager.GetUserId(User);
+            return await _context.AddNewTeam(viewModel, userId);
         }
         [HttpGet]
-        public async Task<Models.Entities.Program[]> GetPrograms()
+        public async Task<TeamVM[]> GetAllTeams()
         {
-            return await _context.GetAllPrograms(_userManager.GetUserId(User));
+            return await _context.GetAllTeams(_userManager.GetUserId(User));
         }
         [HttpPost]
-        public async Task<bool> UpdateProgram(int id, ProgramCreateVM updatedProgram)
+        public async Task<bool> UpdateTeam(int id, TeamCreateVM updatedTeam)
         {
-            return await _context.UpdateProgram(id, updatedProgram);
+            return await _context.UpdateTeam(id, updatedTeam);
         }
         [HttpPost]
-        public async Task<bool> DeleteProgram(int id)
+        public async Task<bool> DeleteTeam(int id)
         {
-            return await _context.DeleteProgram(id);
+            return await _context.DeleteTeam(id);
         }
 
         [HttpGet]
-        public async Task<Subject[]> GetAllSubjects()
+        public async Task<SubjectVM[]> GetAllSubjects()
         {
             return await _context.GetAllSubjects();
         }
@@ -66,6 +64,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<bool> AddNewPersonnel(PersonnelCreateVM viewModel)
         {
+            var userId = _userManager.GetUserId(User);
             return await _context.AddNewPersonnel(viewModel, userId);
         }
         public async Task<bool> NewCompetence(CompetenceCreateVM viewModel)

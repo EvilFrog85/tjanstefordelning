@@ -10,4 +10,3 @@ $(window).resize(function () {
     }
     stickyFooter();
 });
-//# sourceMappingURL=myScripts.js.map
