@@ -1,9 +1,48 @@
-USE Gyllensvard
+USE master
+GO
+DROP DATABASE Gyllensvard
+GO
+CREATE DATABASE Gyllensvard
 
---INSERT INTO [dbo].[AspNetUsers] VALUES
---('172d69e5-8094-44cf-8199-d2b9428bab86', 0, 'b8cc3dec-6f1b-4c86-bee7-650fce7a8c34', False, True, 'DEMO', 'AQAAAAEAACcQAAAAEJtjjwfUQgzr7yiAt45c7PglkV93X3tNmXoSaIEc09mRaeSFUREPNHFOxH1bs1TUBA==', False, 'd5336560-1d65-41ca-b1e6-1221ccf92cc0', False, 'demo'),
---('7421cd57-974d-43a8-bd89-ad7da3739076', 0, '14b3441d-2e34-47ef-aa06-58f8f8c64a40', False, True, 'ADMIN', 'AQAAAAEAACcQAAAAEJxfLFfKXzyexTLKlz4c32QN3tI87LqO1/0HPgc/QVhCadGQKS4iaxS2PhdEODvlfg==', False, '968abdbf-0799-4fc8-9d7e-1b7fa25fae83', False, 'admin');
---GO
+GO
+USE Gyllensvard
+GO
+CREATE SCHEMA TF
+GO
+CREATE TABLE [dbo].[AspNetUsers] (
+    [Id]                   NVARCHAR (450)     NOT NULL,
+    [AccessFailedCount]    INT                NOT NULL,
+    [ConcurrencyStamp]     NVARCHAR (MAX)     NULL,
+    [Email]                NVARCHAR (256)     NULL,
+    [EmailConfirmed]       BIT                NOT NULL,
+    [LockoutEnabled]       BIT                NOT NULL,
+    [LockoutEnd]           DATETIMEOFFSET (7) NULL,
+    [NormalizedEmail]      NVARCHAR (256)     NULL,
+    [NormalizedUserName]   NVARCHAR (256)     NULL,
+    [PasswordHash]         NVARCHAR (MAX)     NULL,
+    [PhoneNumber]          NVARCHAR (MAX)     NULL,
+    [PhoneNumberConfirmed] BIT                NOT NULL,
+    [SecurityStamp]        NVARCHAR (MAX)     NULL,
+    [TwoFactorEnabled]     BIT                NOT NULL,
+    [UserName]             NVARCHAR (256)     NULL,
+    CONSTRAINT [PK_AspNetUsers] PRIMARY KEY CLUSTERED ([Id] ASC)
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [EmailIndex]
+    ON [dbo].[AspNetUsers]([NormalizedEmail] ASC);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [UserNameIndex]
+    ON [dbo].[AspNetUsers]([NormalizedUserName] ASC) WHERE ([NormalizedUserName] IS NOT NULL);
+GO
+
+INSERT INTO [dbo].[AspNetUsers] VALUES
+('172d69e5-8094-44cf-8199-d2b9428bab86', 0, 'b8cc3dec-6f1b-4c86-bee7-650fce7a8c34',null, 0, 1, null, null, 'DEMO', 'AQAAAAEAACcQAAAAEJtjjwfUQgzr7yiAt45c7PglkV93X3tNmXoSaIEc09mRaeSFUREPNHFOxH1bs1TUBA==', null, 0, 'd5336560-1d65-41ca-b1e6-1221ccf92cc0', 0, 'demo'),
+('7421cd57-974d-43a8-bd89-ad7da3739076', 0, '14b3441d-2e34-47ef-aa06-58f8f8c64a40', null, 0, 1, null, null, 'ADMIN', 'AQAAAAEAACcQAAAAEJxfLFfKXzyexTLKlz4c32QN3tI87LqO1/0HPgc/QVhCadGQKS4iaxS2PhdEODvlfg==', null, 0, '968abdbf-0799-4fc8-9d7e-1b7fa25fae83', 0, 'admin');
+GO
 
 
 -- User --

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using WebApp.Models.Entities;
+using System.Globalization;
 
 namespace WebApp
 {
@@ -17,6 +18,12 @@ namespace WebApp
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            var cultureInfo = new CultureInfo("en-US");
+            //cultureInfo.NumberFormat.CurrencySymbol = "€";
+
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
             string connStr = @"Data Source=lagombra.database.windows.net;Initial Catalog=Gyllensvard;Persist Security Info=True;User ID=lagombra;Password=BananKakaCitron123";
             services.AddDbContext<TFContext>(options => options.UseSqlServer(connStr));
             services.AddDbContext<IdentityDbContext>(OptionsConfigurationServiceCollectionExtensions => OptionsConfigurationServiceCollectionExtensions.UseSqlServer(connStr));
