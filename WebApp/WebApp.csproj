@@ -11,7 +11,6 @@
     <Content Include="wwwroot\img\icons\delete.svg" />
     <Content Include="wwwroot\img\icons\done.svg" />
     <Content Include="wwwroot\img\icons\edit.svg" />
-    <Content Include="wwwroot\js\index.d.js" />
     <Content Include="wwwroot\js\jquery-3.1.0.js" />
     <Content Include="wwwroot\js\jquery.validate.js" />
     <Content Include="wwwroot\js\jquery.validate.unobtrusive.js" />
