@@ -125,6 +125,47 @@ $(function () {
         .append($ContractInput);
 });
 
+//Competence crud
+
+function SubmitCompetence() {
+    var isQualified = $('#IsCompetenceQualified').val()
+    $.ajax({
+        type: 'POST',
+        url: '/Wizard/NewCompetence/',
+        data: { "Name": newName },
+        success: function (result) {
+            console.log(result);
+        }
+    });
+}
+
+$(function () {
+    var $CompetenceQualified = $('<input/>', {
+        type: 'checkbox',
+        id: 'IsCompetenceQualified'
+    });
+
+    var $submitBtn = $('<button/>', {
+        onclick: 'SubmitCompetence()',
+        text: 'Lägg till',
+    });
+
+    //    .on('click', function IsCompetenceQualified() {
+    //    if ($(this).is(':checked')) {
+    //        console.log("checked");
+    //        var dropDownValue = $('#personnelCrud').val();
+    //        console.log(dropDownValue.subjectCode);
+    //    }
+    //    else {
+    //        console.log("not checked");
+    //    }
+    //});
+
+    $('#competenceCrud')
+        .append($CompetenceQualified)
+        .append($submitBtn);
+});
+
 //Student group ajax
 $(function () {
     var $target = $('#studentGroupCrud');

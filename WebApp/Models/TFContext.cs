@@ -69,5 +69,11 @@ namespace WebApp.Models.Entities
         {
             return await Subject.ToArrayAsync();
         }
+
+        internal async Task<bool> NewCompetence(CompetenceCreateVM viewModel, string id)
+        {
+            //int id = User
+            return await SaveChangesAsync() == 1;
+        }
     }
 }

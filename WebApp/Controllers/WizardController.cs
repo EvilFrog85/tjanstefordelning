@@ -68,5 +68,11 @@ namespace WebApp.Controllers
         {
             return await _context.AddNewPersonnel(viewModel, userId);
         }
+        public async Task<bool> NewCompetence(CompetenceCreateVM viewModel)
+        {
+            userId = _userManager.GetUserId(User);
+            return await _context.NewCompetence(viewModel, userId);
+        }
+
     }
 }
