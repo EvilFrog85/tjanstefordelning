@@ -1,4 +1,6 @@
-﻿//Team Crud functions
+﻿///<reference path="index.d.js"/>
+
+//Team Crud functions
 var ContractsArray = [{ 'value': '1', 'name': 'Timanställd' },
     { 'value': '2', 'name': 'Deltid' },
     { 'value': '3', 'name': 'Heltid' }];
@@ -12,7 +14,7 @@ function SubmitTeam() {
         url: '/Wizard/NewTeam/',
         data: { "Name": $newName },
         success: function (result) {
-            console.log(result);
+            console.log(result);    
         }
     });
 }
@@ -40,6 +42,8 @@ function GetTeams() {
         }
     });
 }
+
+
 
 function DeleteTeam(id) {
     $('#teamButton' + id).remove();
@@ -198,13 +202,12 @@ $(function () {
     }
 
     //Dropdown to select team 
-    var teamDropDown = $('<select/>', {
-        id: "teamDropDown",
-    })
+    //var teamDropDown = $('<select/>', {
+    //    id: "teamDropDown",
+    //})
     //TODO : (Future) add pupilCount classroom assignment, prioritizing and if small classes can be grouped together
-    GetTeams(teamDropDown);
     $target.append(nameInput);
     $target.append(startingYearDropDown);
-    $target.append(teamDropDown);
+    //$target.append(teamDropDown);
 
 });
