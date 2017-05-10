@@ -40,10 +40,9 @@ namespace WebApp.Controllers
             return await _context.AddNewTeam(viewModel, userId);
         }
         [HttpGet]
-        public async Task<Team[]> GetAllTeams()
+        public async Task<TeamVM[]> GetAllTeams()
         {
-            var teamArray = await _context.GetAllTeams(_userManager.GetUserId(User));
-            return teamArray;
+            return await _context.GetAllTeams(_userManager.GetUserId(User));
         }
         [HttpPost]
         public async Task<bool> UpdateTeam(int id, TeamCreateVM updatedTeam)
@@ -57,7 +56,7 @@ namespace WebApp.Controllers
         }
 
         [HttpGet]
-        public async Task<Subject[]> GetAllSubjects()
+        public async Task<SubjectVM[]> GetAllSubjects()
         {
             return await _context.GetAllSubjects();
         }

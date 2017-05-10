@@ -51,10 +51,16 @@ namespace WebApp.Models.Entities
             return await SaveChangesAsync() == 1;
         }
 
-        internal async Task<Team[]> GetAllTeams(string id)
+        internal async Task<TeamVM[]> GetAllTeams(string id)
         {
             var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
-            var teamArray = await Team.Where(p => p.UserId == userId).ToArrayAsync();
+            var teamArray = await Team.Where(p => p.UserId == userId)
+                .Select(p => new TeamVM
+                {
+                    Name = p.Name,
+                    Id = p.Id
+                })
+                .ToArrayAsync();
             return teamArray;
         }
 
@@ -67,9 +73,15 @@ namespace WebApp.Models.Entities
             return await SaveChangesAsync() == 1;
         }
 
-        internal async Task<Subject[]> GetAllSubjects()
+        internal async Task<SubjectVM[]> GetAllSubjects()
         {
-            return await Subject.ToArrayAsync();
+            return await Subject.Select(s => 
+            new SubjectVM
+            {
+                Name = s.Name,
+                SubjectCode = s.SubjectCode,
+                Id = s.Id
+            }).ToArrayAsync();
         }
     }
 }

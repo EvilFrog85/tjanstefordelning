@@ -1,6 +1,4 @@
-﻿///<reference path="index.d.js"/>
-
-//Team Crud functions
+﻿//Team Crud functions
 function SubmitTeam() {
     var newName = $('#teamName').val()
     $('#teamName').val('');
@@ -14,8 +12,9 @@ function SubmitTeam() {
     });
 }
 
-function GetTeams(test) {
+function GetTeams() {
     $('.teamButton').remove();
+    $('#teamIdInput').empty();
     $.ajax({
         type: 'GET',
         url: '/Wizard/GetAllTeams',
@@ -28,7 +27,7 @@ function GetTeams(test) {
                     class: 'teamButton',
                     id: 'teamButton' + element.id
                 }));
-                test.append($('<option/>', {
+                $('#teamIdInput').append($('<option/>', {
                     text: element.name,
                     value: element.id
                 }));
@@ -83,7 +82,7 @@ $(function () {
             data.forEach(function (subject) {
                 subjectDropDown.append($('<option/>', {
                     value: subject.id,
-                    text: subject.subjectCode
+                    text: subject.subjectCode + ' - ' + subject.name
                 }));
             });
             $target.append(subjectDropDown);
