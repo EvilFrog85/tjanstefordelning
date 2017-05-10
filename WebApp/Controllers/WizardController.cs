@@ -18,16 +18,19 @@ namespace WebApp.Controllers
     [Authorize]
     public class WizardController : Controller
     {
+        string userId;
         TFContext _context;
         UserManager<IdentityUser> _userManager;
         public WizardController(UserManager<IdentityUser> userManager, TFContext context)
         {
             _userManager = userManager;
             _context = context;
+            
         }
         // GET: /<controller>/
         public IActionResult Index()
         {
+            userId = _userManager.GetUserId(User);
             return View();
         }
 
@@ -35,7 +38,7 @@ namespace WebApp.Controllers
         public async Task<bool> NewProgram(ProgramCreateVM viewModel)
         {
             //TODO : Validation
-            var userId = _userManager.GetUserId(User);
+            
             return await _context.AddNewProgram(viewModel, userId);
         }
         [HttpGet]
@@ -52,6 +55,18 @@ namespace WebApp.Controllers
         public async Task<bool> DeleteProgram(int id)
         {
             return await _context.DeleteProgram(id);
+        }
+
+        [HttpGet]
+        public async Task<Subject[]> GetAllSubjects()
+        {
+            return await _context.GetAllSubjects();
+        }
+
+        [HttpPost]
+        public async Task<bool> AddNewPersonnel(PersonnelCreateVM viewModel)
+        {
+            return await _context.AddNewPersonnel(viewModel, userId);
         }
     }
 }

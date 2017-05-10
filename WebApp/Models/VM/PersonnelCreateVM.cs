@@ -17,7 +17,6 @@ namespace WebApp.Models.VM
         //Percentage, from which we calculate available points
         public decimal AvailablePoints { get; set; }
         //Name of the contract, e.g. Full time, part time...
-        public string Contract { get; set; }
-        public Competence[] Competences { get; set; }
+        public int Contract { get; set; }
     }
 }

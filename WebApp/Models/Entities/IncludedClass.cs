@@ -12,9 +12,10 @@ namespace WebApp.Models.Entities
         public int ProgramId { get; set; }
         public int ClassId { get; set; }
         public int? PersonnelId { get; set; }
+        public int StudentGroupId { get; set; }
 
-        public virtual Class Class { get; set; }
         public virtual Personnel Personnel { get; set; }
         public virtual Program Program { get; set; }
+        public virtual StudentGroup StudentGroup { get; set; }
     }
 }

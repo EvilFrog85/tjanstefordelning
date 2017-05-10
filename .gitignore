@@ -261,7 +261,8 @@ __pycache__/
 *.pyc
 
 #Custom ignoring
-Debug/
 obj/
 WebApp/bin/Debug
 WebApp/obj/Debug
+bin/
+

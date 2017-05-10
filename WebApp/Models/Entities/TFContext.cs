@@ -56,7 +56,7 @@ namespace WebApp.Models.Entities
                 entity.Property(e => e.ClassName)
                     .IsRequired()
                     .HasColumnName("Class_name")
-                    .HasMaxLength(40);
+                    .HasMaxLength(60);
 
                 entity.Property(e => e.SubjectId).HasColumnName("Subject_Id");
 
@@ -107,11 +107,7 @@ namespace WebApp.Models.Entities
                     .HasColumnName("School_Id")
                     .HasMaxLength(450);
 
-                entity.HasOne(d => d.Class)
-                    .WithMany(p => p.IncludedClass)
-                    .HasForeignKey(d => d.ClassId)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("FK_Included_class_ToClass");
+                entity.Property(e => e.StudentGroupId).HasColumnName("Student_group_Id");
 
                 entity.HasOne(d => d.Personnel)
                     .WithMany(p => p.IncludedClass)
@@ -123,6 +119,12 @@ namespace WebApp.Models.Entities
                     .HasForeignKey(d => d.ProgramId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Included_class_ToProgram");
+
+                entity.HasOne(d => d.StudentGroup)
+                    .WithMany(p => p.IncludedClass)
+                    .HasForeignKey(d => d.StudentGroupId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_Included_class_ToStudent_group");
             });
 
             modelBuilder.Entity<Personnel>(entity =>
@@ -137,10 +139,6 @@ namespace WebApp.Models.Entities
                 entity.Property(e => e.AvailablePoints)
                     .HasColumnName("Available_Points")
                     .HasColumnType("decimal");
-
-                entity.Property(e => e.Contract)
-                    .IsRequired()
-                    .HasColumnType("varchar(50)");
 
                 entity.Property(e => e.FirstName)
                     .IsRequired()
@@ -214,9 +212,8 @@ namespace WebApp.Models.Entities
             {
                 entity.ToTable("Subject", "TF");
 
-                entity.Property(e => e.Subject1)
+                entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasColumnName("Subject")
                     .HasMaxLength(60);
 
                 entity.Property(e => e.SubjectCode)

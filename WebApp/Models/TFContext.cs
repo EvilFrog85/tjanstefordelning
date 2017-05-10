@@ -14,17 +14,20 @@ namespace WebApp.Models.Entities
         public TFContext(DbContextOptions<TFContext> options) : base(options)
         {
         }
-        internal void AddNewPersonnel(PersonnelCreateVM viewModel)
+        internal async Task<bool> AddNewPersonnel(PersonnelCreateVM viewModel, string id)
         {
             var newPersonnel = new Personnel
             {
                 FirstName = viewModel.FirstName,
                 LastName = viewModel.LastName,
-                Contract = viewModel.Contract,
                 ImageUrl = viewModel.ImageUrl,
                 ProgramId = viewModel.ProgramId,
-                AvailablePoints = viewModel.AvailablePoints
+                AvailablePoints = viewModel.AvailablePoints,
+                Contract = viewModel.Contract,
+                SchoolId = id
             };
+            await Personnel.AddAsync(newPersonnel);
+            return await SaveChangesAsync() == 1;
         }
 
         internal async Task<bool> AddNewProgram(ProgramCreateVM viewModel, string id)
@@ -60,6 +63,11 @@ namespace WebApp.Models.Entities
             oldProgram.Name = updatedProgram.Name;
 
             return await SaveChangesAsync() == 1;
+        }
+
+        internal async Task<Subject[]> GetAllSubjects()
+        {
+            return await Subject.ToArrayAsync();
         }
     }
 }

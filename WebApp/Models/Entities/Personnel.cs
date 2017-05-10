@@ -21,7 +21,7 @@ namespace WebApp.Models.Entities
         public int ProgramId { get; set; }
         public decimal AvailablePoints { get; set; }
         public decimal AssignedPoints { get; set; }
-        public string Contract { get; set; }
+        public int Contract { get; set; }
 
         public virtual ICollection<AuxiliaryAssignment> AuxiliaryAssignment { get; set; }
         public virtual ICollection<Competence> Competence { get; set; }

@@ -12,7 +12,7 @@ namespace WebApp.Models.Entities
         }
 
         public int Id { get; set; }
-        public string Subject1 { get; set; }
+        public string Name { get; set; }
         public string SubjectCode { get; set; }
 
         public virtual ICollection<Class> Class { get; set; }
