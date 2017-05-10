@@ -263,3 +263,5 @@ __pycache__/
 #Custom ignoring
 Debug/
 obj/
+WebApp/bin/Debug
+WebApp/obj/Debug
