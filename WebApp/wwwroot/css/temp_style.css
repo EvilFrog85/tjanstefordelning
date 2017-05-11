@@ -62,21 +62,39 @@
 .competenceList {
     display: flex;
     width: 50%;
+    margin: auto;
+    flex-wrap: wrap;
 }
 
 .competence {
     height: 30px;
     position: relative;
-    background-color: tomato;
+    background-color: yellow;
     min-width: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
 }
-    .competence p {
-        width: 90%;
+.qualifiedCompetence {
+    height: 30px;
+    position: relative;
+    background-color: green;
+    min-width: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+    .competence p, .qualifiedCompetence p {
+        padding: 7px 16px 7px 7px;
     }
-    .competence button {
+
+    .competence button, .qualifiedCompetence button {
         position: absolute;
             top: 0;
             right: 0;
-        width: 5px;
-        height: 5px;
+        width: 16px;
+        height: 16px;
+        background-color: transparent;
+        border: none;
+    }
+    .competence button:hover, .qualifiedCompetence button:hover {
+        background-color: darkseagreen;
     }

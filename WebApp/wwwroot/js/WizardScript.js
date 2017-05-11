@@ -3,7 +3,7 @@
 //Team Crud functions
 
 function SubmitTeam() {
-    var $newName = $('#teamName').val()
+    var $newName = $('#teamName').val();
     $('#teamName').val('');
     $.ajax({
         type: 'POST',
@@ -102,7 +102,7 @@ function GetAllSubjects() {
     });
     console.log(allSubjects);
 }
-GetAllSubjects();
+
 function AddNewPersonnel() {
 
     var firstName = $('#firstNameInput').val();
@@ -118,16 +118,16 @@ function AddNewPersonnel() {
         ImageUrl: imageUrl,
         TeamId: teamId,
         AvailablePoints: availablePoints,
-        Contract: contract
+        Contract: contract,
+        Competences: allChosenCompetences
     };
-    console.log(dataToInsert);
 
     $.ajax({
         type: 'POST',
         url: '/Wizard/AddNewPersonnel',
         data: dataToInsert,
         success: function (data) {
-            console.log(data)
+            console.log(data);
         }
     });
 }
@@ -167,11 +167,7 @@ $(function () {
         }));
     });
 
-    var $submitNewPersonnel = $('<button/>', {
-        text: 'Lägg till',
-        onclick: 'AddNewPersonnel()',
-        class: 'buttonSubmit'
-    });
+    
 
     $('#personnelCrud')
         .append($firstNameInput)
@@ -179,8 +175,7 @@ $(function () {
         .append($imgUrlInput)
         .append($teamIdInput)
         .append($availablePointsInput)
-        .append($contractSelect)
-        .append($submitNewPersonnel);
+        .append($contractSelect);
 });
 
 //Student Group
@@ -238,14 +233,21 @@ function AddCompetence() {
     var competence = $('#competenceInput').val();
     var subjectId = subjectsArray.indexOf(competence) + 1;
     var $competenceDiv = $('<div/>', {
-        class: 'competence',
-        text: competence
+        class: qualified ? 'qualifiedCompetence' : 'competence'
     });
+    var $competenceButton = $('<button/>', {
+        text: 'X'
+    });
+    var $competenceText = $('<p/>', { text: competence });
 
-    allChosenCompetences.push({ "IsQualified": qualified, "SubjectId": subjectId });
+    allChosenCompetences.push({ "Qualified": qualified, "SubjectId": subjectId });
+
+    $competenceDiv.append($competenceText);
+    $competenceDiv.append($competenceButton);
 
     $('#competenceList')
-        .append($competenceDiv)
+        .append($competenceDiv);
+        
 
     $('#competenceInput').val('');
     console.log(allChosenCompetences);
@@ -260,12 +262,6 @@ $(function () {
     var $CompetenceQualified = $('<input/>', {
         type: 'checkbox',
         id: 'IsCompetenceQualified'
-    });
-
-    var $submitBtn = $('<button/>', {
-        onclick: 'SubmitCompetence()',
-        text: 'Lägg till',
-        class: 'buttonSubmit'
     });
 
     var $competenceInput = $('<input/>', {
@@ -283,13 +279,18 @@ $(function () {
         class: 'add',
         onclick: 'AddCompetence()'
     });
+    var $submitNewPersonnel = $('<button/>', {
+        text: 'Lägg till',
+        onclick: 'AddNewPersonnel()',
+        class: 'buttonSubmit'
+    });
 
     $('#competenceCrud')
-        .append($submitBtn)
         .append($competenceInput)
         .append($CompetenceQualified)
         .append($addCompetenceButton)
-        .append($competenceList);
+        .append($competenceList)
+        .append($submitNewPersonnel);
 
     //    .on('click', function IsCompetenceQualified() {
     //    if ($(this).is(':checked')) {

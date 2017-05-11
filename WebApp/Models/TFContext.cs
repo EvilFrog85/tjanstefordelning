@@ -21,11 +21,18 @@ namespace WebApp.Models.Entities
             {
                 FirstName = viewModel.FirstName,
                 LastName = viewModel.LastName,
+                Signature = String.Join("", viewModel.FirstName[0], viewModel.LastName[0]),
                 ImageUrl = viewModel.ImageUrl,
                 TeamId = viewModel.TeamId,
                 AvailablePoints = viewModel.AvailablePoints,
                 Contract = viewModel.Contract,
-                UserId = userId
+                UserId = userId,
+                Competence = viewModel.Competences
+                .Select(c => new Competence
+                {
+                    Qualified = c.Qualified,
+                    SubjectId = c.SubjectId
+                }).ToArray()
             };
             await Personnel.AddAsync(newPersonnel);
             return await SaveChangesAsync() == 1;
@@ -77,7 +84,7 @@ namespace WebApp.Models.Entities
 
         internal async Task<SubjectVM[]> GetAllSubjects()
         {
-            return await Subject.Select(s => 
+            return await Subject.Select(s =>
             new SubjectVM
             {
                 Name = s.Name,
@@ -114,7 +121,6 @@ namespace WebApp.Models.Entities
             var newCompetence = new Competence
             {
                 Qualified = viewModel.Qualified,
-                PersonnelId = viewModel.PersonnelId,
                 SubjectId = viewModel.SubjectId
             };
             return await SaveChangesAsync() == 1;
