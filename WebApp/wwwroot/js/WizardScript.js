@@ -1,5 +1,6 @@
 ﻿///<reference path="jquery-2.1.0-vsdoc.js"/>
 
+//ALEXANDERS OMRÅDE
 //Team Crud functions
 var ContractsArray = [{ 'value': '0', 'name': 'Tillsvidare' },
     { 'value': '1', 'name': 'Tidsbegränsad' },
@@ -188,53 +189,6 @@ $(function () {
         .append($contractSelect);
 });
 
-//Student Group
-//Student Group ajax
-function SubmitStudentGroup() {
-    console.log("SubmitStudentGroup");
-    var name = $('#studentGroupName').val();
-    var year = $('#studentGroupStartingYearDropDown').val();
-    var team = $('#teamIdInputForStudentGroup').val();
-    console.log(name);
-    console.log(year);
-    console.log(team);
-    $.ajax({
-        type: 'POST',
-        url: '/Wizard/NewStudentGroup/',
-        data: { Name: name, Starting_Year: year, TeamId: team },
-        success: function (result) {
-            console.log(result);
-        }
-    });
-}
-//TODO: Create form for update information and decide where to do the update from (clicking SG etc..)
-function UpdateStudentGroup(id) {
-    console.log("UpdateStudentGroup");
-    var name = $('#studentGroupName').val();
-    var year = $('#studentGroupStartingYearDropDown').val();
-    var team = $('#teamIdInputForStudentGroup').val();
-    console.log(name);
-    console.log(year);
-    console.log(team);
-    $.ajax({
-        type: 'POST',
-        url: '/Wizard/UpdateStudentGroup/' + id,
-        data: { Name: name, Starting_Year: year, TeamId: team },
-        success: function (result) {
-            console.log(result);
-        }
-    });
-}
-
-function DeleteStudentGroup(id) { 
-    $.ajax({
-        type: 'POST',
-        url: '/Wizard/DeleteStudentGroup/' + id,
-        success: function (data) {
-            console.log(data);
-        }
-    });
-}
 
 //Competence crud
 
@@ -254,7 +208,7 @@ function SubmitCompetence() {
 //Snälla lös hela findIndex 
 function RemoveCompetence(subjectId) {
     $('#' + subjectId).remove();
-    var index = allChosenCompetences.findIndex(function (element) { console.log(element); element.SubjectId == subjectId });
+    var index = allChosenCompetences.findIndex(function (element) { console.log(element); element.SubjectId === subjectId; });
     console.log(index);
     allChosenCompetences.splice(index);
 }
@@ -336,6 +290,58 @@ $(function () {
     //    }
     //});
 });
+
+//SLUT ALEXANDERS OMRÅDE
+
+
+//BJÖRNS OMRÅDE
+//Student Group
+//Student Group ajax
+function SubmitStudentGroup() {
+    console.log("SubmitStudentGroup");
+    var name = $('#studentGroupName').val();
+    var year = $('#studentGroupStartingYearDropDown').val();
+    var team = $('#teamIdInputForStudentGroup').val();
+    console.log(name);
+    console.log(year);
+    console.log(team);
+    $.ajax({
+        type: 'POST',
+        url: '/Wizard/NewStudentGroup/',
+        data: { Name: name, Starting_Year: year, TeamId: team },
+        success: function (result) {
+            console.log(result);
+        }
+    });
+}
+//TODO: Create form for update information and decide where to do the update from (clicking SG etc..)
+function UpdateStudentGroup(id) {
+    console.log("UpdateStudentGroup");
+    var name = $('#studentGroupName').val();
+    var year = $('#studentGroupStartingYearDropDown').val();
+    var team = $('#teamIdInputForStudentGroup').val();
+    console.log(name);
+    console.log(year);
+    console.log(team);
+    $.ajax({
+        type: 'POST',
+        url: '/Wizard/UpdateStudentGroup/' + id,
+        data: { Name: name, Starting_Year: year, TeamId: team },
+        success: function (result) {
+            console.log(result);
+        }
+    });
+}
+
+function DeleteStudentGroup(id) {
+    $.ajax({
+        type: 'POST',
+        url: '/Wizard/DeleteStudentGroup/' + id,
+        success: function (data) {
+            console.log(data);
+        }
+    });
+}
 
 //Student group html injection
 $(function () {
@@ -456,4 +462,13 @@ $(function () {
     $target.append($submitBtn);
 
 });
+//SLUT BJÖRNS OMRÅDE
 
+
+//JONAS OMRÅDE
+
+//SLUT JONAS OMRÅDE
+
+//SOFIAS OMRÅDE
+
+//SLUT SOFIAS OMRÅDE
