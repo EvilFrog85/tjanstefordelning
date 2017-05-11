@@ -5,6 +5,7 @@ using WebApp.Models.VM;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Models.Entities
 {
@@ -17,11 +18,13 @@ namespace WebApp.Models.Entities
         internal async Task<bool> AddNewPersonnel(PersonnelCreateVM viewModel, string id)
         {
             var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+            var userSignature = CreateSignature(viewModel.FirstName, viewModel.LastName).Result;
+
             var newPersonnel = new Personnel
             {
                 FirstName = viewModel.FirstName,
                 LastName = viewModel.LastName,
-                Signature = CreateSignature(viewModel.FirstName, viewModel.LastName),
+                Signature = userSignature,
                 //Signature = String.Join("", viewModel.FirstName[0], viewModel.LastName[0]),
                 ImageUrl = viewModel.ImageUrl,
                 //TODO : Lägg till signatur samt kontrollera så den är unik, typ en metod sign = CreateSignature(firstname, lastname)
@@ -47,7 +50,7 @@ namespace WebApp.Models.Entities
             return await SaveChangesAsync() == 1;
         }
 
-        private string CreateSignature(string firstName, string lastName)
+        internal async Task<string> CreateSignature(string firstName, string lastName)
         {
             bool generatingSignature = true;
             string signature = "";
@@ -58,11 +61,11 @@ namespace WebApp.Models.Entities
 
                 if (signature == Personnel.Where(p => p.Signature == signature).ToString())
                 {
-                    //FINNS!
+                    //Signaturen fanns i databasen
                 }
                 else
                 {
-                    //Fanns inte
+                    //Signaturen fanns inte i databasen
                     return signature;
                 }
             }
@@ -173,6 +176,7 @@ namespace WebApp.Models.Entities
             int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
             var studentGroups = StudentGroup.Where(s => s.UserId == userId).Select(s => new StudentGroupVM
             {
+                Id = s.Id,
                 Name = s.Name,
                 TeamId = s.TeamId,
                 StartingYear = s.StartingYear,
