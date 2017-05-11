@@ -89,12 +89,15 @@ namespace WebApp.Controllers
 
         [HttpGet]
         public async Task<StudentGroupVM[]> GetAllStudentGroups()
-        //public async Task<IActionResult> GetAllStudentGroups() //Works with json
         {
             return await _context.GetAllStudentGroups(_userManager.GetUserId(User));
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllStudentGroupsJson() //Works with json
+        {
 
-            //var res = await _context.GetAllStudentGroups(_userManager.GetUserId(User));
-            //return Json(res);
+            var res = await _context.GetAllStudentGroupsJson(_userManager.GetUserId(User));
+            return Json(res);
         }
 
         public async Task<bool> NewCompetence(CompetenceCreateVM viewModel)

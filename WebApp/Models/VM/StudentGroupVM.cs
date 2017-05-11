@@ -8,6 +8,7 @@ namespace WebApp.Models.VM
 {
     public class StudentGroupVM
     {
+        public int Id { get; set; }
         [Display(Name = "Klassnamn")]
         public string Name { get; set; }
         [Display(Name = "Arbetslag")]

@@ -3,10 +3,10 @@
 //ALEXANDERS OMRÅDE
 //Team Crud functions
 var ContractsArray = [{ 'value': '0', 'name': 'Tillsvidare' },
-    { 'value': '1', 'name': 'Tidsbegränsad' },
-    { 'value': '2', 'name': 'Projektanställning' },
-    { 'value': '3', 'name': 'Fast anställning' },
-    { 'value': '4', 'name': 'Övrig' }
+{ 'value': '1', 'name': 'Tidsbegränsad' },
+{ 'value': '2', 'name': 'Projektanställning' },
+{ 'value': '3', 'name': 'Fast anställning' },
+{ 'value': '4', 'name': 'Övrig' }
 ];
 
 function SubmitTeam() {
@@ -178,7 +178,7 @@ $(function () {
         }));
     });
 
-    
+
 
     $('#personnelCrud')
         .append($firstNameInput)
@@ -188,7 +188,6 @@ $(function () {
         .append($availablePointsInput)
         .append($contractSelect);
 });
-
 
 //Competence crud
 
@@ -379,6 +378,10 @@ $(function () {
     $target.append($submitBtn);
 
 });
+
+//Included Class CRUD
+var allChosenStudentGroups = [];
+studentGroupsObject = {};
 //Included class functions
 function SubmitIncludedClass() {
     console.log("SubmitIncludedClass");
@@ -391,7 +394,7 @@ function SubmitIncludedClass() {
     console.log(classBelonging);
     console.log(duration);
     console.log(assignedTeacher);
-    
+
     $.ajax({
         type: 'POST',
         url: '/Wizard/NewIncludedClass/',
@@ -405,6 +408,11 @@ function SubmitIncludedClass() {
 //Included classes html injection
 $(function () {
     $target = $('#includedClassCrud');
+
+    var $studentGroupList = $('<div/>', {
+        class: 'studentGroupList',
+        id: 'studentGroupList'
+    });
 
     var $assigned = $('<input/>', {
         id: 'includedClassAssignedTeacher',
@@ -441,6 +449,28 @@ $(function () {
     //PersonnelId should not be set in the wizard 
 
     //TODO : StudentGroup - should be able to select several, which method? Compare competence
+    var $studentGroupInput = $('<input/>', {
+        id: 'studentGroupInput',
+        type: 'text',
+        placeholder: 'Klassnamn',
+        class: 'inputTextAuto'
+    });
+
+    $studentGroupInput.autocomplete({
+        source: function (request, response) {
+            $.getJSON("/Wizard/GetAllStudentGroupsJson", function (data) {
+                console.log("Data");
+                console.log(data);
+                response($.map(data, function (value, key) {
+                    return {
+                        label: value.name,
+                        value: key
+                    };
+                }));
+            });
+        },
+        appendTo: '#studentGroupInput'
+    });
 
     var $submitBtn = $('<button/>', {
         class: 'buttonSubmit',
@@ -454,6 +484,7 @@ $(function () {
 
     $target.append($teamBelonging);
     $target.append($classBelonging);
+    $target.append($studentGroupInput);
     $target.append($duration);
     $target.append($assignedLabel).append($assigned);
     $target.append($submitBtn);
@@ -471,13 +502,14 @@ function SubmitAuxiliaryAssignment() {
     var description = $('#auxiliaryAssignmentDesc').val();
     var points = $('#auxiliaryAssignmentPoints').val();
     var duration = $('#auxiliaryAssignmentDurationDropDown').val();
+    var mandatory;
     if ($('#auxiliaryAssignmentMandatory').prop('checked'))
-        var mandatory = true;
+        mandatory = true;
     else
-        var mandatory = false;
+        mandatory = false;
     var personnel = $('#auxiliaryAssignmentPersonnel').val();
     var assigned = false;
-    if (personnel != "") {
+    if (personnel !== "") {
         assigned = true;
     }
 
@@ -497,7 +529,7 @@ function SubmitAuxiliaryAssignment() {
         url: '/Wizard/NewAuxiliaryAssignment',
         data: dataToInsert,
         success: function (data) {
-            console.log(data)
+            console.log(data);
         }
     });
 }
@@ -534,6 +566,7 @@ $(function () {
         class: 'inputSelect'
     });
     // Options added further down
+
 
     var $mandatoryInput = $('<input />', {
         name: 'auxiliaryAssignmentMandatory',
