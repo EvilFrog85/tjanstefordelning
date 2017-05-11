@@ -9,7 +9,6 @@ namespace WebApp.Models.VM
     public class StudentGroupCreateVM
     {
         public string Name { get; set; }
-
         public int TeamId { get; set; }
         public int UserId { get; set; }
         public int Starting_Year { get; set; }

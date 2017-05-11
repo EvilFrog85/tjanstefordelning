@@ -7,8 +7,9 @@
     padding: 6px 12px;
 	border: 1px solid #000;
 }
-.inputText{
-	
+.inputText, .inputTextAuto{
+    width: calc(50% - 24px);
+    /* input type="text" deals with padding in a diffrent way from other inputs --> adding the padding (as it should be for ex. a div) on top of the width */
 }
 	.inputText:focus{
 		border: 1px solid #0F0;
