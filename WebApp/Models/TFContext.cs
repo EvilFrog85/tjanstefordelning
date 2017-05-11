@@ -22,7 +22,8 @@ namespace WebApp.Models.Entities
             {
                 FirstName = viewModel.FirstName,
                 LastName = viewModel.LastName,
-                Signature = String.Join("", viewModel.FirstName[0], viewModel.LastName[0]),
+                Signature = CreateSignature(viewModel.FirstName, viewModel.LastName),
+                //Signature = String.Join("", viewModel.FirstName[0], viewModel.LastName[0]),
                 ImageUrl = viewModel.ImageUrl,
                 //TODO : Lägg till signatur samt kontrollera så den är unik, typ en metod sign = CreateSignature(firstname, lastname)
                 TeamId = viewModel.TeamId,
@@ -45,6 +46,40 @@ namespace WebApp.Models.Entities
 
             await Personnel.AddAsync(newPersonnel);
             return await SaveChangesAsync() == 1;
+        }
+
+        private string CreateSignature(string firstName, string lastName)
+        {
+            bool generatingSignature = true;
+            string signature = "";
+
+            while (generatingSignature)
+            {
+                signature = firstName.Substring(0, 2) + lastName.Substring(0, 2);
+
+                if (signature == Personnel.Where(p => p.Signature == signature).ToString())
+                {
+                    //FINNS!
+                }
+                else
+                {
+                    //Fanns inte
+                    return signature;
+                }
+            }
+
+
+            //string signature = "";
+            //for (int i = 0; i < 2; i++)
+            //{
+            //    signature += firstName[i];
+            //}
+            //for (int j = 0; j < 2; j++)
+            //{
+            //    signature += lastName[j];
+            //}
+
+            return signature;
         }
 
         internal async Task<bool> AddNewTeam(TeamCreateVM viewModel, string id)

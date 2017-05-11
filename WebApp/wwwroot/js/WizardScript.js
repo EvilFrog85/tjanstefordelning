@@ -488,8 +488,12 @@ $(function () {
     $target.append($duration);
     $target.append($assignedLabel).append($assigned);
     $target.append($submitBtn);
-
 });
+
+
+
+
+// JONAS area
 
 /* Auxiliary_assignments */
 function SubmitAuxiliaryAssignment() {
@@ -585,13 +589,6 @@ $(function () {
         placeholder: 'Tillsätt personal..'
     });
 
-
-    //JONAS OMRÅDE
-
-
-
-    //SOFIAS OMRÅDE
-
     var $submitBtn = $('<button/>', {
         class: 'buttonSubmit',
         onclick: 'SubmitAuxiliaryAssignment()',
@@ -612,3 +609,7 @@ $(function () {
 
 });
 /* END Auxiliary_assignments */
+
+
+
+// SOFIAS area
