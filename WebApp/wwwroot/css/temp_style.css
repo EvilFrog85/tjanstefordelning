@@ -58,3 +58,19 @@
 	background-image: url(../img/icons/done.svg);
 }
 /* END Button style */
+
+.competence {
+    height: 30px;
+    position: relative;
+    background-color: tomato;
+}
+    .competence p {
+        width: 90%;
+    }
+    .competence button {
+        position: absolute;
+            top: 0;
+            right: 0;
+        width: 5px;
+        height: 5px;
+    }
