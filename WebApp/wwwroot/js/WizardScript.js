@@ -237,21 +237,25 @@ function AddCompetence() {
     var qualified = $('#IsCompetenceQualified').prop('checked');
     var competence = $('#competenceInput').val();
     var subjectId = subjectsArray.indexOf(competence) + 1;
-    var $competenceBtn = $('<div/>', {
-        text: competence,
-        class: 'competence'
+    var $competenceDiv = $('<div/>', {
+        class: 'competence',
+        text: competence
     });
 
     allChosenCompetences.push({ "IsQualified": qualified, "SubjectId": subjectId });
 
-    $('#competenceCrud')
-        .append($competenceBtn)
+    $('#competenceList')
+        .append($competenceDiv)
 
     $('#competenceInput').val('');
     console.log(allChosenCompetences);
 }
 
 $(function () {
+    var $competenceList = $('<div/>', {
+        class: 'competenceList',
+        id: 'competenceList'
+    });
 
     var $CompetenceQualified = $('<input/>', {
         type: 'checkbox',
@@ -284,7 +288,9 @@ $(function () {
         .append($submitBtn)
         .append($competenceInput)
         .append($CompetenceQualified)
-        .append($addCompetenceButton);
+        .append($addCompetenceButton)
+        .append($competenceList);
+
     //    .on('click', function IsCompetenceQualified() {
     //    if ($(this).is(':checked')) {
     //        console.log("checked");
