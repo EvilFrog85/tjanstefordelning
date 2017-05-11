@@ -291,12 +291,9 @@ $(function () {
     //});
 });
 
-//SLUT ALEXANDERS OMRÅDE
 
 
 //BJÖRNS OMRÅDE
-//Student Group
-//Student Group ajax
 function SubmitStudentGroup() {
     console.log("SubmitStudentGroup");
     var name = $('#studentGroupName').val();
@@ -462,13 +459,12 @@ $(function () {
     $target.append($submitBtn);
 
 });
-//SLUT BJÖRNS OMRÅDE
+
 
 
 //JONAS OMRÅDE
 
-//SLUT JONAS OMRÅDE
+
 
 //SOFIAS OMRÅDE
 
-//SLUT SOFIAS OMRÅDE
