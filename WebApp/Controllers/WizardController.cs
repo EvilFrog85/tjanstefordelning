@@ -67,6 +67,17 @@ namespace WebApp.Controllers
             var userId = _userManager.GetUserId(User);
             return await _context.AddNewPersonnel(viewModel, userId);
         }
+
+        public async Task<bool> NewStudentGroup(StudentGroupCreateVM viewModel)
+        {
+            var userId = _userManager.GetUserId(User);
+            return await _context.AddNewStudentGroup(viewModel, userId);
+        }
+
+        public async Task<bool> DeleteStudentGroup(int id)
+        {
+            return await _context.DeleteStudentGroup(id);
+        }
         public async Task<bool> NewCompetence(CompetenceCreateVM viewModel)
         {
             //Save competence as array
