@@ -59,6 +59,11 @@
 }
 /* END Button style */
 
+.competenceList {
+    display: flex;
+    width: 50%;
+}
+
 .competence {
     height: 30px;
     position: relative;
