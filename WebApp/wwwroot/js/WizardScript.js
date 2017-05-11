@@ -457,8 +457,6 @@ $(function () {
     $target.append($duration);
     $target.append($assignedLabel).append($assigned);
     $target.append($submitBtn);
-
-});
 });
 
 
@@ -557,13 +555,6 @@ $(function () {
         type: 'text',
         placeholder: 'Tillsätt personal..'
     });
-
-
-//JONAS OMRÅDE
-
-
-
-//SOFIAS OMRÅDE
 
     var $submitBtn = $('<button/>', {
         class: 'buttonSubmit',
