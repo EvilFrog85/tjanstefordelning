@@ -21,12 +21,19 @@ namespace WebApp.Models.Entities
             {
                 FirstName = viewModel.FirstName,
                 LastName = viewModel.LastName,
+                Signature = String.Join("", viewModel.FirstName[0], viewModel.LastName[0]),
                 ImageUrl = viewModel.ImageUrl,
                 //TODO : Lägg till signatur samt kontrollera så den är unik, typ en metod sign = CreateSignature(firstname, lastname)
                 TeamId = viewModel.TeamId,
                 AvailablePoints = viewModel.AvailablePoints,
                 Contract = viewModel.Contract,
-                UserId = userId
+                UserId = userId,
+                Competence = viewModel.Competences
+                .Select(c => new Competence
+                {
+                    Qualified = c.Qualified,
+                    SubjectId = c.SubjectId
+                }).ToArray()
             };
             await Personnel.AddAsync(newPersonnel);
             return await SaveChangesAsync() == 1;
@@ -78,7 +85,7 @@ namespace WebApp.Models.Entities
 
         internal async Task<SubjectVM[]> GetAllSubjects()
         {
-            return await Subject.Select(s => 
+            return await Subject.Select(s =>
             new SubjectVM
             {
                 Name = s.Name,
@@ -101,6 +108,7 @@ namespace WebApp.Models.Entities
             this.StudentGroup.Add(studentGroupToAdd);
             return await SaveChangesAsync() == 1;
         }
+
         internal async Task<bool> DeleteStudentGroup(int id)
         {
             var studentGroupToRemove = StudentGroup.FirstOrDefault(s => s.Id == id);
@@ -128,6 +136,19 @@ namespace WebApp.Models.Entities
                 StartingYear = s.StartingYear,
             });
             return await studentGroups.ToArrayAsync();
+        }
+
+        internal async Task<bool> NewCompetence(CompetenceCreateVM viewModel, string id)
+        {
+            int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+
+            var newCompetence = new Competence
+            {
+                Qualified = viewModel.Qualified,
+                SubjectId = viewModel.SubjectId
+            };
+            return await SaveChangesAsync() == 1;
+
         }
     }
 }

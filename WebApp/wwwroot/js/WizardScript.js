@@ -16,7 +16,7 @@ function SubmitTeam() {
         url: '/Wizard/NewTeam/',
         data: { "Name": $newName },
         success: function (result) {
-            console.log(result);    
+            console.log(result);
         }
     });
 }
@@ -91,43 +91,45 @@ $(function () {
 //Personnel Crud ajax 
 //TODO : CHange it to be general and not only for Personnel crud
 //Get all subjects to be able to choose competences
-function GetAllSubjects () {
+function GetAllSubjects() {
+    var allSubjects = [];
     var $target = $('#personnelCrud');
     $.ajax({
         type: 'GET',
         url: '/Wizard/GetAllSubjects',
         success: function (data) {
-            console.log(data);
-            var subjectDropDown = $('<select/>', { class: 'inputSelect'}); //subjectDropDown som namn kanske?
+            var subjectDropDown = $('<select/>', { class: 'inputSelect' }); //subjectDropDown som namn kanske?
             data.forEach(function (subject) {
                 subjectDropDown.append($('<option/>', {
                     value: subject.id,
-                    text: subject.name + ' (' +subject.subjectCode + ')'
+                    text: subject.name + ' (' + subject.subjectCode + ')'
                 }));
+                allSubjects.push({ 'id': subject.id, 'name': subject.name });
             });
             $target.append(subjectDropDown);
         }
     });
+    console.log(allSubjects);
 }
 
 function AddNewPersonnel() {
-    
+
     var firstName = $('#firstNameInput').val();
     var lastName = $('#lastNameInput').val();
     var imageUrl = $('#imgUrlInput').val();
     var teamId = $('#teamIdInput').val();
     var availablePoints = $('#availablePointsInput').val();
     var contract = $('#contractSelect').val();
-    
+
     var dataToInsert = {
         FirstName: firstName,
         LastName: lastName,
         ImageUrl: imageUrl,
         TeamId: teamId,
         AvailablePoints: availablePoints,
-        Contract: contract
+        Contract: contract,
+        Competences: allChosenCompetences
     };
-    console.log(dataToInsert);
 
     $.ajax({
         type: 'POST',
@@ -175,11 +177,7 @@ $(function () {
         }));
     });
 
-    var $submitNewPersonnel = $('<button/>', {
-        text: 'Lägg till',
-        onclick: 'AddNewPersonnel()',
-        class: 'buttonSubmit'
-    });
+    
 
     $('#personnelCrud')
         .append($firstNameInput)
@@ -187,11 +185,11 @@ $(function () {
         .append($imgUrlInput)
         .append($teamIdInput)
         .append($availablePointsInput)
-        .append($contractSelect)
-        .append($submitNewPersonnel);
+        .append($contractSelect);
 });
 
 //Student Group
+//Student Group ajax
 function SubmitStudentGroup() {
     console.log("SubmitStudentGroup");
     var name = $('#studentGroupName').val();
@@ -203,7 +201,7 @@ function SubmitStudentGroup() {
     $.ajax({
         type: 'POST',
         url: '/Wizard/NewStudentGroup/',
-        data: { Name : name, Starting_Year: year, TeamId: team },
+        data: { Name: name, Starting_Year: year, TeamId: team },
         success: function (result) {
             console.log(result);
         }
@@ -237,6 +235,99 @@ function DeleteStudentGroup(id) {
         }
     });
 }
+
+//Competence crud
+
+var allChosenCompetences = [];
+
+function SubmitCompetence() {
+    $.ajax({
+        type: 'POST',
+        url: '/Wizard/NewCompetence/',
+        data: allChosenCompetences,
+        success: function (result) {
+            console.log(result);
+            allChosenCompetences.empty();
+        }
+    });
+}
+
+function AddCompetence() {
+    
+    var qualified = $('#IsCompetenceQualified').prop('checked');
+    var competence = $('#competenceInput').val();
+    var subjectId = subjectsArray.indexOf(competence) + 1;
+    var $competenceDiv = $('<div/>', {
+        class: qualified ? 'qualifiedCompetence' : 'competence'
+    });
+    var $competenceButton = $('<button/>', {
+        text: 'X'
+    });
+    var $competenceText = $('<p/>', { text: competence });
+
+    allChosenCompetences.push({ "Qualified": qualified, "SubjectId": subjectId });
+
+    $competenceDiv.append($competenceText);
+    $competenceDiv.append($competenceButton);
+
+    $('#competenceList')
+        .append($competenceDiv);
+        
+
+    $('#competenceInput').val('');
+    console.log(allChosenCompetences);
+}
+
+$(function () {
+    var $competenceList = $('<div/>', {
+        class: 'competenceList',
+        id: 'competenceList'
+    });
+
+    var $CompetenceQualified = $('<input/>', {
+        type: 'checkbox',
+        id: 'IsCompetenceQualified'
+    });
+
+    var $competenceInput = $('<input/>', {
+        id: 'competenceInput',
+        class: 'inputTextAuto'
+    });
+
+    $competenceInput.autocomplete({
+        source: subjectsArray,
+        appendTo: '#competenceInput'
+    });
+
+    var $addCompetenceButton = $('<button/>', {
+        id: 'addCompetenceButton',
+        class: 'add',
+        onclick: 'AddCompetence()'
+    });
+    var $submitNewPersonnel = $('<button/>', {
+        text: 'Lägg till',
+        onclick: 'AddNewPersonnel()',
+        class: 'buttonSubmit'
+    });
+
+    $('#competenceCrud')
+        .append($competenceInput)
+        .append($CompetenceQualified)
+        .append($addCompetenceButton)
+        .append($competenceList)
+        .append($submitNewPersonnel);
+
+    //    .on('click', function IsCompetenceQualified() {
+    //    if ($(this).is(':checked')) {
+    //        console.log("checked");
+    //        var dropDownValue = $('#personnelCrud').val();
+    //        console.log(dropDownValue.subjectCode);
+    //    }
+    //    else {
+    //        console.log("not checked");
+    //    }
+    //});
+});
 
 //Student group html injection
 $(function () {
@@ -289,9 +380,7 @@ function SubmitIncludedClass() {
     console.log(classBelonging);
     console.log(duration);
     console.log(assignedTeacher);
-    data = {
-        
-    }
+    
     $.ajax({
         type: 'POST',
         url: '/Wizard/NewIncludedClass/',
@@ -303,7 +392,6 @@ function SubmitIncludedClass() {
 }
 
 //Included classes html injection
-
 $(function () {
     $target = $('#includedClassCrud');
 

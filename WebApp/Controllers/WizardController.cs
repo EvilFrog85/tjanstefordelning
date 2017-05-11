@@ -96,5 +96,13 @@ namespace WebApp.Controllers
             //var res = await _context.GetAllStudentGroups(_userManager.GetUserId(User));
             //return Json(res);
         }
+
+        public async Task<bool> NewCompetence(CompetenceCreateVM viewModel)
+        {
+            //Save competence as array
+            var userId = _userManager.GetUserId(User);
+            return await _context.NewCompetence(viewModel, userId);
+        }
+
     }
 }
