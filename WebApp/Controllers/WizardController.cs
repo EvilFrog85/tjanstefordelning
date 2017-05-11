@@ -69,7 +69,8 @@ namespace WebApp.Controllers
         }
         public async Task<bool> NewCompetence(CompetenceCreateVM viewModel)
         {
-            userId = _userManager.GetUserId(User);
+            //Save competence as array
+            var userId = _userManager.GetUserId(User);
             return await _context.NewCompetence(viewModel, userId);
         }
 

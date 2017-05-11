@@ -88,7 +88,14 @@ namespace WebApp.Models.Entities
 
         internal async Task<bool> NewCompetence(CompetenceCreateVM viewModel, string id)
         {
-            //int id = User
+            int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+
+            var newCompetence = new Competence
+            {
+                Qualified = viewModel.Qualified,
+                PersonnelId = viewModel.PersonnelId,
+                SubjectId = viewModel.SubjectId
+            };
             return await SaveChangesAsync() == 1;
         }
     }

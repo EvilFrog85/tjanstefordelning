@@ -181,7 +181,6 @@ $(function () {
 });
 
 //Competence crud
-
 function SubmitCompetence() {
     var isQualified = $('#IsCompetenceQualified').val()
     $.ajax({
