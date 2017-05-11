@@ -2,10 +2,10 @@
 
 //Team Crud functions
 var ContractsArray = [{ 'value': '0', 'name': 'Tillsvidare' },
-    { 'value': '1', 'name': 'Tidsbegränsad' },
-    { 'value': '2', 'name': 'Projektanställning' },
-    { 'value': '3', 'name': 'Fast anställning' },
-    { 'value': '4', 'name': 'Övrig' },
+{ 'value': '1', 'name': 'Tidsbegränsad' },
+{ 'value': '2', 'name': 'Projektanställning' },
+{ 'value': '3', 'name': 'Fast anställning' },
+{ 'value': '4', 'name': 'Övrig' },
 ];
 
 
@@ -17,7 +17,7 @@ function SubmitTeam() {
         url: '/Wizard/NewTeam/',
         data: { "Name": $newName },
         success: function (result) {
-            console.log(result);    
+            console.log(result);
         }
     });
 }
@@ -89,34 +89,37 @@ $(function () {
 //Personnel Crud ajax 
 //TODO : CHange it to be general and not only for Personnel crud
 //Get all subjects to be able to choose competences
-function GetAllSubjects () {
+function GetAllSubjects() {
+    var allSubjects = [];
     var $target = $('#personnelCrud');
     $.ajax({
         type: 'GET',
         url: '/Wizard/GetAllSubjects',
         success: function (data) {
             console.log(data);
-            var subjectDropDown = $('<select/>', { class: 'inputSelect'}); //subjectDropDown som namn kanske?
+            var subjectDropDown = $('<select/>', { class: 'inputSelect' }); //subjectDropDown som namn kanske?
             data.forEach(function (subject) {
                 subjectDropDown.append($('<option/>', {
                     value: subject.id,
-                    text: subject.name + ' (' +subject.subjectCode + ')'
+                    text: subject.name + ' (' + subject.subjectCode + ')'
                 }));
+                allSubjects.push(subject.name);
             });
             $target.append(subjectDropDown);
         }
     });
+    console.log(allSubjects);
 }
 
 function AddNewPersonnel() {
-    
+
     var firstName = $('#firstNameInput').val();
     var lastName = $('#lastNameInput').val();
     var imageUrl = $('#imgUrlInput').val();
     var teamId = $('#teamIdInput').val();
     var availablePoints = $('#availablePointsInput').val();
     var contract = $('#contractSelect').val();
-    
+
     var dataToInsert = {
         FirstName: firstName,
         LastName: lastName,
@@ -201,7 +204,7 @@ function SubmitStudentGroup() {
     $.ajax({
         type: 'POST',
         url: '/Wizard/NewStudentGroup/',
-        data: { Name : name, Starting_Year: year, TeamId: team },
+        data: { Name: name, Starting_Year: year, TeamId: team },
         success: function (result) {
             console.log(result);
         }
@@ -210,7 +213,7 @@ function SubmitStudentGroup() {
 
 function DeleteStudentGroup(id) {
     //$('#teamButton' + id).remove();
-    
+
     //$.ajax({
     //    type: 'POST',
     //    url: '/Wizard/DeleteStudentGroup/' + id,
@@ -241,10 +244,20 @@ $(function () {
     });
 
     var $submitBtn = $('<button/>', {
-        onclick: 'SubmitCompetence()',
+        //onclick: 'SubmitCompetence()',
+        onclick: 'GetAllSubjects()',
         text: 'Lägg till',
+        class: 'buttonSubmit'
     });
 
+    var $competenceInput = $('<input/>', {
+        id: 'competenceInput',
+        class: 'inputTextAuto'
+    });
+
+    $competenceInput.autocomplete({
+        source: testData
+    });
     //    .on('click', function IsCompetenceQualified() {
     //    if ($(this).is(':checked')) {
     //        console.log("checked");
@@ -257,9 +270,12 @@ $(function () {
     //});
 
     $('#competenceCrud')
-        .append($CompetenceQualified)
-        .append($submitBtn);
+        .append($submitBtn)
+        .append($competenceInput)
+        .append($CompetenceQualified);
 });
+
+
 
 //Student group ajax
 $(function () {
