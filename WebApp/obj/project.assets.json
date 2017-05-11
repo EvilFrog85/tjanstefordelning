@@ -10498,10 +10498,10 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Projects\\slutprojekt\\tjanstefordelning\\WebApp\\WebApp.csproj",
+      "projectUniqueName": "C:\\Projects\\SlutProjekt\\WebApp\\WebApp.csproj",
       "projectName": "WebApp",
-      "projectPath": "C:\\Projects\\slutprojekt\\tjanstefordelning\\WebApp\\WebApp.csproj",
-      "outputPath": "C:\\Projects\\slutprojekt\\tjanstefordelning\\WebApp\\obj\\",
+      "projectPath": "C:\\Projects\\SlutProjekt\\WebApp\\WebApp.csproj",
+      "outputPath": "C:\\Projects\\SlutProjekt\\WebApp\\obj\\",
       "projectStyle": "PackageReference",
       "originalTargetFrameworks": [
         "netcoreapp1.1"

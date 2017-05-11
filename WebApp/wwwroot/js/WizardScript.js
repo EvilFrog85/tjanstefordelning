@@ -1,13 +1,6 @@
 ﻿///<reference path="jquery-2.1.0-vsdoc.js"/>
 
 //Team Crud functions
-var ContractsArray = [{ 'value': '0', 'name': 'Tillsvidare' },
-{ 'value': '1', 'name': 'Tidsbegränsad' },
-{ 'value': '2', 'name': 'Projektanställning' },
-{ 'value': '3', 'name': 'Fast anställning' },
-{ 'value': '4', 'name': 'Övrig' },
-];
-
 
 function SubmitTeam() {
     var $newName = $('#teamName').val()
@@ -96,21 +89,20 @@ function GetAllSubjects() {
         type: 'GET',
         url: '/Wizard/GetAllSubjects',
         success: function (data) {
-            console.log(data);
             var subjectDropDown = $('<select/>', { class: 'inputSelect' }); //subjectDropDown som namn kanske?
             data.forEach(function (subject) {
                 subjectDropDown.append($('<option/>', {
                     value: subject.id,
                     text: subject.name + ' (' + subject.subjectCode + ')'
                 }));
-                allSubjects.push(subject.name);
+                allSubjects.push({ 'id': subject.id, 'name': subject.name });
             });
             $target.append(subjectDropDown);
         }
     });
     console.log(allSubjects);
 }
-
+GetAllSubjects();
 function AddNewPersonnel() {
 
     var firstName = $('#firstNameInput').val();
@@ -225,27 +217,49 @@ function DeleteStudentGroup(id) {
 
 //Student group html rendering
 //Competence crud
+
+var allChosenCompetences = [];
+
 function SubmitCompetence() {
-    var isQualified = $('#IsCompetenceQualified').val()
     $.ajax({
         type: 'POST',
         url: '/Wizard/NewCompetence/',
-        data: { "Name": newName },
+        data: allChosenCompetences,
         success: function (result) {
             console.log(result);
+            allChosenCompetences.empty();
         }
     });
 }
 
+function AddCompetence() {
+    
+    var qualified = $('#IsCompetenceQualified').prop('checked');
+    var competence = $('#competenceInput').val();
+    var subjectId = subjectsArray.indexOf(competence) + 1;
+    var $competenceBtn = $('<div/>', {
+        text: competence,
+        class: 'competence'
+    });
+
+    allChosenCompetences.push({ "IsQualified": qualified, "SubjectId": subjectId });
+
+    $('#competenceCrud')
+        .append($competenceBtn)
+
+    $('#competenceInput').val('');
+    console.log(allChosenCompetences);
+}
+
 $(function () {
+
     var $CompetenceQualified = $('<input/>', {
         type: 'checkbox',
         id: 'IsCompetenceQualified'
     });
 
     var $submitBtn = $('<button/>', {
-        //onclick: 'SubmitCompetence()',
-        onclick: 'GetAllSubjects()',
+        onclick: 'SubmitCompetence()',
         text: 'Lägg till',
         class: 'buttonSubmit'
     });
@@ -256,8 +270,21 @@ $(function () {
     });
 
     $competenceInput.autocomplete({
-        source: subjectsArray
+        source: subjectsArray,
+        appendTo: '#competenceInput'
     });
+
+    var $addCompetenceButton = $('<button/>', {
+        id: 'addCompetenceButton',
+        class: 'add',
+        onclick: 'AddCompetence()'
+    });
+
+    $('#competenceCrud')
+        .append($submitBtn)
+        .append($competenceInput)
+        .append($CompetenceQualified)
+        .append($addCompetenceButton);
     //    .on('click', function IsCompetenceQualified() {
     //    if ($(this).is(':checked')) {
     //        console.log("checked");
@@ -268,11 +295,6 @@ $(function () {
     //        console.log("not checked");
     //    }
     //});
-
-    $('#competenceCrud')
-        .append($submitBtn)
-        .append($competenceInput)
-        .append($CompetenceQualified);
 });
 
 
