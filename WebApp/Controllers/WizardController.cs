@@ -78,5 +78,12 @@ namespace WebApp.Controllers
         {
             return await _context.DeleteStudentGroup(id);
         }
+
+        [HttpPost]
+        public async Task<bool> NewAuxiliaryAssignment(AuxiliaryAssignmentCreateVM viewModel)
+        {
+            var userId = _userManager.GetUserId(User);
+            return await _context.AddNewAuxiliaryAssignment(viewModel, userId);
+        }
     }
 }

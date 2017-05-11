@@ -2,10 +2,10 @@
 
 //Team Crud functions
 var ContractsArray = [{ 'value': '0', 'name': 'Tillsvidare' },
-    { 'value': '1', 'name': 'Tidsbegränsad' },
-    { 'value': '2', 'name': 'Projektanställning' },
-    { 'value': '3', 'name': 'Fast anställning' },
-    { 'value': '4', 'name': 'Övrig' },
+{ 'value': '1', 'name': 'Tidsbegränsad' },
+{ 'value': '2', 'name': 'Projektanställning' },
+{ 'value': '3', 'name': 'Fast anställning' },
+{ 'value': '4', 'name': 'Övrig' },
 ];
 
 
@@ -17,7 +17,7 @@ function SubmitTeam() {
         url: '/Wizard/NewTeam/',
         data: { "Name": $newName },
         success: function (result) {
-            console.log(result);    
+            console.log(result);
         }
     });
 }
@@ -89,18 +89,18 @@ $(function () {
 //Personnel Crud ajax 
 //TODO : CHange it to be general and not only for Personnel crud
 //Get all subjects to be able to choose competences
-function GetAllSubjects () {
+function GetAllSubjects() {
     var $target = $('#personnelCrud');
     $.ajax({
         type: 'GET',
         url: '/Wizard/GetAllSubjects',
         success: function (data) {
             console.log(data);
-            var subjectDropDown = $('<select/>', { class: 'inputSelect'}); //subjectDropDown som namn kanske?
+            var subjectDropDown = $('<select/>', { class: 'inputSelect' }); //subjectDropDown som namn kanske?
             data.forEach(function (subject) {
                 subjectDropDown.append($('<option/>', {
                     value: subject.id,
-                    text: subject.name + ' (' +subject.subjectCode + ')'
+                    text: subject.name + ' (' + subject.subjectCode + ')'
                 }));
             });
             $target.append(subjectDropDown);
@@ -109,14 +109,14 @@ function GetAllSubjects () {
 }
 
 function AddNewPersonnel() {
-    
+
     var firstName = $('#firstNameInput').val();
     var lastName = $('#lastNameInput').val();
     var imageUrl = $('#imgUrlInput').val();
     var teamId = $('#teamIdInput').val();
     var availablePoints = $('#availablePointsInput').val();
     var contract = $('#contractSelect').val();
-    
+
     var dataToInsert = {
         FirstName: firstName,
         LastName: lastName,
@@ -201,7 +201,7 @@ function SubmitStudentGroup() {
     $.ajax({
         type: 'POST',
         url: '/Wizard/NewStudentGroup/',
-        data: { Name : name, Starting_Year: year, TeamId: team },
+        data: { Name: name, Starting_Year: year, TeamId: team },
         success: function (result) {
             console.log(result);
         }
@@ -210,7 +210,7 @@ function SubmitStudentGroup() {
 
 function DeleteStudentGroup(id) {
     //$('#teamButton' + id).remove();
-    
+
     //$.ajax({
     //    type: 'POST',
     //    url: '/Wizard/DeleteStudentGroup/' + id,
@@ -262,3 +262,119 @@ $(function () {
 });
 
 
+
+
+
+
+/* Auxiliary_assignments */
+function SubmitAuxiliaryAssignment() {
+
+    var name = $('#auxiliaryAssignmentName').val();
+    var description = $('#auxiliaryAssignmentDesc').val();
+    var points = $('#auxiliaryAssignmentPoints').val();
+    var duration = $('#auxiliaryAssignmentDurationDropDown').val();
+    if ($('#auxiliaryAssignmentMandatory').prop('checked'))
+        var mandatory = true;
+    else
+        var mandatory = false;
+    var personnel = $('#auxiliaryAssignmentPersonnel').val();
+    var assigned = false;
+    if (personnel != "") {
+        assigned = true;
+    }
+
+    var dataToInsert = {
+        Name: name,
+        Description: description,
+        Points: points,
+        Duration: duration,
+        Mandatory: mandatory,
+        PersonnelSignature: personnel,
+        Assigned: assigned
+    };
+    console.log(dataToInsert);
+
+    $.ajax({
+        type: 'POST',
+        url: '/Wizard/NewAuxiliaryAssignment',
+        data: dataToInsert,
+        success: function (data) {
+            console.log(data)
+        }
+    });
+}
+
+$(function () {
+    var $target = $('#auxiliaryAssignmentCrud');
+
+    var $nameInput = $('<input/>', {
+        class: 'inputText',
+        id: "auxiliaryAssignmentName",
+        type: "text",
+        placeholder: "Namn på uppdraget.."
+    });
+
+    var $descInput = $('<input />', {
+        class: 'inputText',
+        id: 'auxiliaryAssignmentDesc',
+        type: 'text',
+        placeholder: 'Beskrivning av uppdraget..'
+    });
+
+    var $pointsInput = $('<input/>', {
+        type: 'number',
+        class: 'inputText',
+        placeholder: 'Poäng (uppdragets omfattning)..',
+        id: 'auxiliaryAssignmentPoints',
+        step: '1',
+        min: '1',
+        max: '1000'
+    });
+
+    var $durationInput = $('<select/>', {
+        id: 'auxiliaryAssignmentDurationDropDown',
+        class: 'inputSelect'
+    });
+    // Options added further down
+
+    var $mandatoryInput = $('<input />', {
+        name: 'auxiliaryAssignmentMandatory',
+        type: 'checkbox',
+        class: 'checkbox',
+        value: '1',
+        id: 'auxiliaryAssignmentMandatory'
+    });
+
+    var $mandatoryLabel = $('<label />', {
+        for: 'auxiliaryAssignmentMandatory',
+        text: 'Uppdraget måste tillsättas: '
+    });
+
+    //TODO - Make autocomplete!
+    var $personnelInput = $('<input />', {
+        class: 'inputTextAuto',
+        id: 'auxiliaryAssignmentPersonnel',
+        type: 'text',
+        placeholder: 'Tillsätt personal..'
+    });
+
+    var $submitBtn = $('<button/>', {
+        class: 'buttonSubmit',
+        onclick: 'SubmitAuxiliaryAssignment()',
+        text: 'Spara uppdrag'
+    });
+
+    $target.append($nameInput);
+    $target.append($descInput);
+    $target.append($pointsInput);
+    $target.append($durationInput);
+    $($durationInput).append('<option value="0" selected="selected">Läsår</option>');
+    $($durationInput).append('<option value="1">HT</option>');
+    $($durationInput).append('<option value="2">VT</option>');
+    $target.append($mandatoryLabel);
+    $target.append($mandatoryInput);
+    $target.append($personnelInput);
+    $target.append($submitBtn);
+
+});
+/* END Auxiliary_assignments */
