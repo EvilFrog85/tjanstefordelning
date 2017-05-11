@@ -251,20 +251,29 @@ function SubmitCompetence() {
         }
     });
 }
+//Snälla lös hela findIndex 
+function RemoveCompetence(subjectId) {
+    $('#' + subjectId).remove();
+    var index = allChosenCompetences.findIndex(function (element) { console.log(element); element.SubjectId == subjectId });
+    console.log(index);
+    allChosenCompetences.splice(index);
+}
 
 function AddCompetence() {
-    
     var qualified = $('#IsCompetenceQualified').prop('checked');
     var competence = $('#competenceInput').val();
     var subjectId = subjectsArray.indexOf(competence) + 1;
     var $competenceDiv = $('<div/>', {
-        class: qualified ? 'qualifiedCompetence' : 'competence'
+        class: qualified ? 'qualifiedCompetence' : 'competence',
+        id: subjectId
     });
     var $competenceButton = $('<button/>', {
-        text: 'X'
+        text: 'X',
+        onclick: 'RemoveCompetence("' + subjectId + '")'
     });
     var $competenceText = $('<p/>', { text: competence });
 
+    //if(not already in the list)
     allChosenCompetences.push({ "Qualified": qualified, "SubjectId": subjectId });
 
     $competenceDiv.append($competenceText);
@@ -272,7 +281,6 @@ function AddCompetence() {
 
     $('#competenceList')
         .append($competenceDiv);
-        
 
     $('#competenceInput').val('');
     console.log(allChosenCompetences);

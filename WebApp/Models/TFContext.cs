@@ -28,13 +28,20 @@ namespace WebApp.Models.Entities
                 AvailablePoints = viewModel.AvailablePoints,
                 Contract = viewModel.Contract,
                 UserId = userId,
-                Competence = viewModel.Competences
+                
+            };
+            var competences = viewModel.Competences
                 .Select(c => new Competence
                 {
                     Qualified = c.Qualified,
                     SubjectId = c.SubjectId
-                }).ToArray()
-            };
+                }).ToArray();
+
+            foreach(var competence in competences)
+            {
+                newPersonnel.Competence.Add(competence);
+            }
+
             await Personnel.AddAsync(newPersonnel);
             return await SaveChangesAsync() == 1;
         }
