@@ -256,7 +256,7 @@ $(function () {
     });
 
     $competenceInput.autocomplete({
-        source: testData
+        source: subjectsArray
     });
     //    .on('click', function IsCompetenceQualified() {
     //    if ($(this).is(':checked')) {
