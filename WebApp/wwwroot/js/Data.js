@@ -1,4 +1,4 @@
-﻿///<reference path="jquery- .1. -vsdoc.js"/>
+﻿///<reference path="jquery-2.1.0-vsdoc.js"/>
 
 var ContractsArray = [
     { 'value': '0', 'name': 'Tillsvidare' },
