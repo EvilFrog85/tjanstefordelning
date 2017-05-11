@@ -68,6 +68,7 @@
     height: 30px;
     position: relative;
     background-color: tomato;
+    min-width: 5px;
 }
     .competence p {
         width: 90%;
