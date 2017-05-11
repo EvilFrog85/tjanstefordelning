@@ -18,11 +18,13 @@ namespace WebApp.Models.Entities
         internal async Task<bool> AddNewPersonnel(PersonnelCreateVM viewModel, string id)
         {
             var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+            var userSignature = CreateSignature(viewModel.FirstName, viewModel.LastName).Result;
+
             var newPersonnel = new Personnel
             {
                 FirstName = viewModel.FirstName,
                 LastName = viewModel.LastName,
-                Signature = CreateSignature(viewModel.FirstName, viewModel.LastName),
+                Signature = userSignature,
                 //Signature = String.Join("", viewModel.FirstName[0], viewModel.LastName[0]),
                 ImageUrl = viewModel.ImageUrl,
                 //TODO : Lägg till signatur samt kontrollera så den är unik, typ en metod sign = CreateSignature(firstname, lastname)
@@ -48,7 +50,7 @@ namespace WebApp.Models.Entities
             return await SaveChangesAsync() == 1;
         }
 
-        private string CreateSignature(string firstName, string lastName)
+        internal async Task<string> CreateSignature(string firstName, string lastName)
         {
             bool generatingSignature = true;
             string signature = "";
@@ -59,11 +61,11 @@ namespace WebApp.Models.Entities
 
                 if (signature == Personnel.Where(p => p.Signature == signature).ToString())
                 {
-                    //FINNS!
+                    //Signaturen fanns i databasen
                 }
                 else
                 {
-                    //Fanns inte
+                    //Signaturen fanns inte i databasen
                     return signature;
                 }
             }
