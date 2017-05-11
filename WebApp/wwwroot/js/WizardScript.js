@@ -8,7 +8,6 @@ var ContractsArray = [{ 'value': '0', 'name': 'Tillsvidare' },
     { 'value': '4', 'name': 'Övrig' }
 ];
 
-
 function SubmitTeam() {
     var $newName = $('#teamName').val();
     $('#teamName').val('');
@@ -26,6 +25,7 @@ function GetTeams() {
     $('.teamButton').remove();
     $('#teamIdInput').empty();
     $('#teamIdInputForStudentGroup').empty();
+    $('#includedClassTeamBelongingDropDown').empty();
     $.ajax({
         type: 'GET',
         url: '/Wizard/GetAllTeams',
@@ -46,12 +46,14 @@ function GetTeams() {
                     text: element.name,
                     value: element.id
                 }));
+                $('#includedClassTeamBelongingDropDown').append($('<option/>', {
+                    text: element.name,
+                    value: element.id
+                }));
             });
         }
     });
 }
-
-
 
 function DeleteTeam(id) {
     $('#teamButton' + id).remove();
@@ -136,7 +138,8 @@ function AddNewPersonnel() {
         }
     });
 }
-//Personnel crud
+
+//Personnel crud html injection
 $(function () {
     var $firstNameInput = $('<input/>', {
         class: 'inputText',
@@ -225,19 +228,17 @@ function UpdateStudentGroup(id) {
     });
 }
 
-function DeleteStudentGroup(id) {
-    //$('#teamButton' + id).remove();
-    
-    //$.ajax({
-    //    type: 'POST',
-    //    url: '/Wizard/DeleteStudentGroup/' + id,
-    //    success: function (data) {
-    //        console.log(data);
-    //    }
-    //});
+function DeleteStudentGroup(id) { 
+    $.ajax({
+        type: 'POST',
+        url: '/Wizard/DeleteStudentGroup/' + id,
+        success: function (data) {
+            console.log(data);
+        }
+    });
 }
 
-//Student group html rendering
+//Student group html injection
 $(function () {
     var $target = $('#studentGroupCrud');
     var $nameInput = $('<input/>', {
@@ -269,7 +270,6 @@ $(function () {
 
     //TODO : (Future) add pupilCount classroom assignment, prioritizing and if small classes can be grouped together
 
-
     var $teamDropDown = $('<select/>', { class: 'inputSelect', text: 'Välj Avdelning', id: 'teamIdInputForStudentGroup' });
     $target.append($nameInput);
     $target.append($startingYearDropDown);
@@ -277,5 +277,87 @@ $(function () {
     $target.append($submitBtn);
 
 });
+//Included class functions
+function SubmitIncludedClass() {
+    console.log("SubmitIncludedClass");
+    var teamId = $('#includedClassTeamBelongingDropDown').val();
+    var classId = $('#includedClassClassBelongingInputText').val();
+    var duration = $('#includedClassDurationDropDown').val();
+    var assignedTeacher = $('#includedClassAssignedTeacher').prop('checked');
+    //var studentGroupId = $('#');
+    console.log(team);
+    console.log(classBelonging);
+    console.log(duration);
+    console.log(assignedTeacher);
+    data = {
+        
+    }
+    $.ajax({
+        type: 'POST',
+        url: '/Wizard/NewIncludedClass/',
+        data: { Duration: duration, Assigned: assignedTeacher, TeamId: teamId, ClassId: classIds }, //StudentGroupId: studentGroupId },
+        success: function (result) {
+            console.log(result);
+        }
+    });
+}
 
+//Included classes html injection
+
+$(function () {
+    $target = $('#includedClassCrud');
+
+    var $assigned = $('<input/>', {
+        id: 'includedClassAssignedTeacher',
+        name: 'isTeacherAssigned',
+        type: 'checkbox'
+    });
+
+    var $assignedLabel = $('<label/>', {
+        for: 'isTeacherAssigned',
+        text: 'Kursen har en tilldelad lärare '
+    });
+
+    //Kopiera jonas lösning :)
+    var $duration = $('<select/>', {
+        id: 'includedClassDurationDropDown',
+        class: 'inputSelect'
+    });
+
+    //User id is automatically set
+
+    var $teamBelonging = $('<select/>', {
+        id: 'includedClassTeamBelongingDropDown',
+        class: 'inputSelect'
+    });
+
+    //Choose class from Class table (autocomplete)
+    var $classBelonging = $('<input/>', {
+        id: 'includedClassClassBelongingInputText',
+        type: 'text',
+        class: 'inputTextAuto',
+        placeholder: 'Kurs'
+    });
+
+    //PersonnelId should not be set in the wizard 
+
+    //TODO : StudentGroup - should be able to select several, which method? Compare competence
+
+    var $submitBtn = $('<button/>', {
+        class: 'buttonSubmit',
+        onclick: 'SubmitIncludedClass()',
+        text: 'Lägg till kurs'
+    });
+
+    $($duration).append('<option value="0" selected="selected">Hela läsåret<option/>');
+    $($duration).append('<option value="1">HT<option/>');
+    $($duration).append('<option value="2">VT<option/>');
+
+    $target.append($teamBelonging);
+    $target.append($classBelonging);
+    $target.append($duration);
+    $target.append($assignedLabel).append($assigned);
+    $target.append($submitBtn);
+
+});
 
