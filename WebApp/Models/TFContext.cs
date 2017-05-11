@@ -106,5 +106,27 @@ namespace WebApp.Models.Entities
             StudentGroup.Remove(studentGroupToRemove);
             return await SaveChangesAsync() == 1;
         }
+
+        internal async Task<bool> UpdateStudentGroup(StudentGroupCreateVM viewModel, int studentGroupId)
+        {
+            var studentGroupToUpdate = StudentGroup.FirstOrDefault(s => s.Id == studentGroupId);
+            studentGroupToUpdate.Name = viewModel.Name;
+            studentGroupToUpdate.StartingYear = viewModel.Starting_Year;
+            studentGroupToUpdate.TeamId = viewModel.TeamId ;
+
+            return await SaveChangesAsync() == 1;
+        }
+
+        internal async Task<StudentGroupVM[]> GetAllStudentGroups(string id)
+        {
+            int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+            var studentGroups = StudentGroup.Where(s => s.UserId == userId).Select(s => new StudentGroupVM
+            {
+                Name = s.Name,
+                TeamId = s.TeamId,
+                StartingYear = s.StartingYear,
+            });
+            return await studentGroups.ToArrayAsync();
+        }
     }
 }

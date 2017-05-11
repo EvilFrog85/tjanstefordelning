@@ -5,12 +5,12 @@ var ContractsArray = [{ 'value': '0', 'name': 'Tillsvidare' },
     { 'value': '1', 'name': 'Tidsbegränsad' },
     { 'value': '2', 'name': 'Projektanställning' },
     { 'value': '3', 'name': 'Fast anställning' },
-    { 'value': '4', 'name': 'Övrig' },
+    { 'value': '4', 'name': 'Övrig' }
 ];
 
 
 function SubmitTeam() {
-    var $newName = $('#teamName').val()
+    var $newName = $('#teamName').val();
     $('#teamName').val('');
     $.ajax({
         type: 'POST',
@@ -132,7 +132,7 @@ function AddNewPersonnel() {
         url: '/Wizard/AddNewPersonnel',
         data: dataToInsert,
         success: function (data) {
-            console.log(data)
+            console.log(data);
         }
     });
 }
@@ -197,11 +197,28 @@ function SubmitStudentGroup() {
     console.log(name);
     console.log(year);
     console.log(team);
-
     $.ajax({
         type: 'POST',
         url: '/Wizard/NewStudentGroup/',
         data: { Name : name, Starting_Year: year, TeamId: team },
+        success: function (result) {
+            console.log(result);
+        }
+    });
+}
+//TODO: Create form for update information and decide where to do the update from (clicking SG etc..)
+function UpdateStudentGroup(id) {
+    console.log("UpdateStudentGroup");
+    var name = $('#studentGroupName').val();
+    var year = $('#studentGroupStartingYearDropDown').val();
+    var team = $('#teamIdInputForStudentGroup').val();
+    console.log(name);
+    console.log(year);
+    console.log(team);
+    $.ajax({
+        type: 'POST',
+        url: '/Wizard/UpdateStudentGroup/' + id,
+        data: { Name: name, Starting_Year: year, TeamId: team },
         success: function (result) {
             console.log(result);
         }
@@ -227,7 +244,7 @@ $(function () {
         class: 'inputText',
         id: "studentGroupName",
         type: "text",
-        placeholder: "Student Group Name.."
+        placeholder: "Klassbeteckning"
     });
     var thisYear = new Date().getFullYear();
     var $startingYearDropDown = $('<select/>', {
@@ -247,7 +264,7 @@ $(function () {
     var $submitBtn = $('<button/>', {
         class: 'buttonSubmit',
         onclick: 'SubmitStudentGroup()',
-        text: 'Submit'
+        text: 'Lägg till klass'
     });
 
     //TODO : (Future) add pupilCount classroom assignment, prioritizing and if small classes can be grouped together
