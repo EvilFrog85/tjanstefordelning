@@ -462,7 +462,7 @@ $(function () {
 
 
 
-
+// JONAS area
 
 /* Auxiliary_assignments */
 function SubmitAuxiliaryAssignment() {
@@ -576,3 +576,7 @@ $(function () {
 
 });
 /* END Auxiliary_assignments */
+
+
+
+// SOFIAS area
