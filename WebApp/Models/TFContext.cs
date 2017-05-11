@@ -157,5 +157,38 @@ namespace WebApp.Models.Entities
             return await SaveChangesAsync() == 1;
 
         }
+        
+        internal async Task<bool> AddNewAuxiliaryAssignment(AuxiliaryAssignmentCreateVM viewModel, string id)
+        {
+            int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+
+            int? Personnel_id;
+
+            //TODO - Remove comments when Signature is sent/fixed
+            //if (viewModel.PersonnelSignature == "")
+            //{
+                Personnel_id = null;
+                viewModel.Assigned = false;
+            //}
+            /*  
+            else
+                Personnel_id = Personnel.FirstOrDefault(p => p.Signature == viewModel.PersonnelSignature).Id;
+            */
+
+
+            var AuxiliaryAssignmentToAdd = new AuxiliaryAssignment
+            {
+                Name = viewModel.Name,
+                Description = viewModel.Description,
+                Points = viewModel.Points,
+                Duration = viewModel.Duration,
+                Assigned = viewModel.Assigned,
+                Mandatory = viewModel.Mandatory,
+                PersonnelId = Personnel_id,
+                UserId = userId
+            };
+            this.AuxiliaryAssignment.Add(AuxiliaryAssignmentToAdd);
+            return await SaveChangesAsync() == 1;
+        }
     }
 }
