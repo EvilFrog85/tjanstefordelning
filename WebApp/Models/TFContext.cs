@@ -21,12 +21,27 @@ namespace WebApp.Models.Entities
             {
                 FirstName = viewModel.FirstName,
                 LastName = viewModel.LastName,
+                Signature = String.Join("", viewModel.FirstName[0], viewModel.LastName[0]),
                 ImageUrl = viewModel.ImageUrl,
+                //TODO : Lägg till signatur samt kontrollera så den är unik, typ en metod sign = CreateSignature(firstname, lastname)
                 TeamId = viewModel.TeamId,
                 AvailablePoints = viewModel.AvailablePoints,
                 Contract = viewModel.Contract,
-                UserId = userId
+                UserId = userId,
+                
             };
+            var competences = viewModel.Competences
+                .Select(c => new Competence
+                {
+                    Qualified = c.Qualified,
+                    SubjectId = c.SubjectId
+                }).ToArray();
+
+            foreach(var competence in competences)
+            {
+                newPersonnel.Competence.Add(competence);
+            }
+
             await Personnel.AddAsync(newPersonnel);
             return await SaveChangesAsync() == 1;
         }
@@ -77,7 +92,7 @@ namespace WebApp.Models.Entities
 
         internal async Task<SubjectVM[]> GetAllSubjects()
         {
-            return await Subject.Select(s => 
+            return await Subject.Select(s =>
             new SubjectVM
             {
                 Name = s.Name,
@@ -100,11 +115,47 @@ namespace WebApp.Models.Entities
             this.StudentGroup.Add(studentGroupToAdd);
             return await SaveChangesAsync() == 1;
         }
+
         internal async Task<bool> DeleteStudentGroup(int id)
         {
             var studentGroupToRemove = StudentGroup.FirstOrDefault(s => s.Id == id);
             StudentGroup.Remove(studentGroupToRemove);
             return await SaveChangesAsync() == 1;
+        }
+
+        internal async Task<bool> UpdateStudentGroup(StudentGroupCreateVM viewModel, int studentGroupId)
+        {
+            var studentGroupToUpdate = StudentGroup.FirstOrDefault(s => s.Id == studentGroupId);
+            studentGroupToUpdate.Name = viewModel.Name;
+            studentGroupToUpdate.StartingYear = viewModel.Starting_Year;
+            studentGroupToUpdate.TeamId = viewModel.TeamId ;
+
+            return await SaveChangesAsync() == 1;
+        }
+
+        internal async Task<StudentGroupVM[]> GetAllStudentGroups(string id)
+        {
+            int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+            var studentGroups = StudentGroup.Where(s => s.UserId == userId).Select(s => new StudentGroupVM
+            {
+                Name = s.Name,
+                TeamId = s.TeamId,
+                StartingYear = s.StartingYear,
+            });
+            return await studentGroups.ToArrayAsync();
+        }
+
+        internal async Task<bool> NewCompetence(CompetenceCreateVM viewModel, string id)
+        {
+            int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+
+            var newCompetence = new Competence
+            {
+                Qualified = viewModel.Qualified,
+                SubjectId = viewModel.SubjectId
+            };
+            return await SaveChangesAsync() == 1;
+
         }
         
         internal async Task<bool> AddNewAuxiliaryAssignment(AuxiliaryAssignmentCreateVM viewModel, string id)

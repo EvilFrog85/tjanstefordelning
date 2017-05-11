@@ -18,5 +18,6 @@ namespace WebApp.Models.VM
         public decimal AvailablePoints { get; set; }
         //Name of the contract, e.g. Full time, part time...
         public int Contract { get; set; }
+        public CompetenceCreateVM[] Competences { get; set; }
     }
 }

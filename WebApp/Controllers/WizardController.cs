@@ -68,22 +68,41 @@ namespace WebApp.Controllers
             return await _context.AddNewPersonnel(viewModel, userId);
         }
 
+        [HttpPost]
         public async Task<bool> NewStudentGroup(StudentGroupCreateVM viewModel)
         {
-            var userId = _userManager.GetUserId(User);
+            string userId = _userManager.GetUserId(User);
             return await _context.AddNewStudentGroup(viewModel, userId);
         }
 
+        [HttpPost]
+        public async Task<bool> UpdateStudentGroup(StudentGroupCreateVM viewModel, int id)
+        {
+            //id is the StudentGroup's id
+            return await _context.UpdateStudentGroup(viewModel, id);
+        }
+        [HttpPost]
         public async Task<bool> DeleteStudentGroup(int id)
         {
             return await _context.DeleteStudentGroup(id);
         }
 
-        [HttpPost]
-        public async Task<bool> NewAuxiliaryAssignment(AuxiliaryAssignmentCreateVM viewModel)
+        [HttpGet]
+        public async Task<StudentGroupVM[]> GetAllStudentGroups()
+        //public async Task<IActionResult> GetAllStudentGroups() //Works with json
         {
-            var userId = _userManager.GetUserId(User);
-            return await _context.AddNewAuxiliaryAssignment(viewModel, userId);
+            return await _context.GetAllStudentGroups(_userManager.GetUserId(User));
+
+            //var res = await _context.GetAllStudentGroups(_userManager.GetUserId(User));
+            //return Json(res);
         }
+
+        public async Task<bool> NewCompetence(CompetenceCreateVM viewModel)
+        {
+            //Save competence as array
+            var userId = _userManager.GetUserId(User);
+            return await _context.NewCompetence(viewModel, userId);
+        }
+
     }
 }
