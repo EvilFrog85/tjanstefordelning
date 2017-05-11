@@ -381,7 +381,7 @@ $(function () {
 
 //Included Class CRUD
 var allChosenStudentGroups = [];
-studentGroupsObject = {};
+
 //Included class functions
 function SubmitIncludedClass() {
     console.log("SubmitIncludedClass");
@@ -406,13 +406,36 @@ function SubmitIncludedClass() {
 }
 
 //Included classes html injection
+var studentGroupsArray = [];
 $(function () {
     $target = $('#includedClassCrud');
+    studentGroupsArray = [];
+    function PopulateStudentGroupArray() {
+        $.ajax({
+            type: 'GET',
+            url: '/Wizard/GetAllStudentGroups/',
+            success: function (studentGroups) {
+                console.log("GetAllStudentGroups");
+                console.log(studentGroups);
+                studentGroups.forEach(function (studentGroup) {
+                    var newStudentGroup = { label: studentGroup.name, key: studentGroup.value };
+                    studentGroupsArray.push(newStudentGroup);
+                });
+                $studentGroupInput.autocomplete({
+                    source: studentGroupsArray
+                });
+            }
+        });
+    }
+
+   
 
     var $studentGroupList = $('<div/>', {
         class: 'studentGroupList',
         id: 'studentGroupList'
     });
+
+    PopulateStudentGroupArray();
 
     var $assigned = $('<input/>', {
         id: 'includedClassAssignedTeacher',
@@ -456,21 +479,7 @@ $(function () {
         class: 'inputTextAuto'
     });
 
-    $studentGroupInput.autocomplete({
-        source: function (request, response) {
-            $.getJSON("/Wizard/GetAllStudentGroupsJson", function (data) {
-                console.log("Data");
-                console.log(data);
-                response($.map(data, function (value, key) {
-                    return {
-                        label: value.name,
-                        value: key
-                    };
-                }));
-            });
-        },
-        appendTo: '#studentGroupInput'
-    });
+    
 
     var $submitBtn = $('<button/>', {
         class: 'buttonSubmit',

@@ -174,17 +174,6 @@ namespace WebApp.Models.Entities
             int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
             var studentGroups = StudentGroup.Where(s => s.UserId == userId).Select(s => new StudentGroupVM
             {
-                Name = s.Name,
-                TeamId = s.TeamId,
-                StartingYear = s.StartingYear,
-            });
-            return await studentGroups.ToArrayAsync();
-        }
-        internal async Task<StudentGroupVM[]> GetAllStudentGroupsJson(string id)
-        {
-            int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
-            var studentGroups = StudentGroup.Where(s => s.UserId == userId).Select(s => new StudentGroupVM
-            {
                 Id = s.Id,
                 Name = s.Name,
                 TeamId = s.TeamId,
