@@ -9,5 +9,6 @@ namespace WebApp.Models.VM
     {
         public bool Qualified { get; set; }
         public int SubjectId { get; set; }
+        public string Name { get; set; }
     }
 }

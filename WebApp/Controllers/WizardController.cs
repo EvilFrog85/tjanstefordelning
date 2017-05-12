@@ -69,7 +69,7 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<bool> AddNewPersonnel(PersonnelCreateVM viewModel)
+        public async Task<int> AddNewPersonnel(PersonnelCreateVM viewModel)
         {
             var userId = _userManager.GetUserId(User);
             return await _context.AddNewPersonnel(viewModel, userId);
@@ -82,9 +82,13 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<bool> UpdatePersonnel(PersonnelVM viewModel)
+        public async Task<bool> UpdatePersonnel(PersonnelCreateVM viewModel, int id)
         {
-            return await _context.UpdatePersonnel(viewModel);
+            return await _context.UpdatePersonnel(viewModel, id);
+        }
+        public PersonnelCreateVM GetPersonnelById(int id)
+        {
+            return _context.GetPersonnelById(id);
         }
 
         [HttpGet]
@@ -124,6 +128,21 @@ namespace WebApp.Controllers
             //Save competence as array
             var userId = _userManager.GetUserId(User);
             return await _context.NewCompetence(viewModel, userId);
+        }
+
+        public async Task<bool> NewAuxiliaryAssignment(AuxiliaryAssignmentCreateVM viewModel)
+        {
+            var userId = _userManager.GetUserId(User);
+            return await _context.AddNewAuxiliaryAssignment(viewModel, userId);
+        }
+        
+        public async Task<bool> DeleteAuxiliaryAssignment(int id)
+        {
+            return await _context.DeleteAuxiliaryAssignment(id);
+        }
+        public async Task<bool> UpdateAuxiliaryAssignment(AuxiliaryAssignmentCreateVM viewModel, int id)
+        {
+            return await _context.UpdateAuxiliaryAssignment(viewModel, id);
         }
 
     }

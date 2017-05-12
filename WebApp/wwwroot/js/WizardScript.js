@@ -3,8 +3,6 @@
 //ALEXANDERS OMRÅDE
 //Team Crud functions
 
-
-
 function GetCounts() {
     var countLabels = ["Avdelningar", "Personal", "Tillgänglig personal", "Inkluderade kurser", "Kurser kvar att tilldela"];
     $.ajax({
@@ -101,6 +99,8 @@ $(function () {
 //Personnel Crud ajax 
 //TODO : CHange it to be general and not only for Personnel crud
 //Get all subjects to be able to choose competences
+
+var allChosenCompetences = [];
 function GetAllSubjects() {
     var allSubjects = [];
     var $target = $('#personnelCrud');
@@ -121,6 +121,8 @@ function GetAllSubjects() {
     });
     console.log(allSubjects);
 }
+
+
 
 function AddNewPersonnel() {
 
@@ -145,14 +147,65 @@ function AddNewPersonnel() {
         type: 'POST',
         url: '/Wizard/AddNewPersonnel',
         data: personnelData,
-        success: function (succeeded) {
-            console.log(succeeded);
+        success: function (id) {
+            $('#personnelList').append($('<p/>', {
+                text: firstName + ' ' + lastName
+            })).append($('<button/>', {
+                class: 'edit',
+                onclick: 'GetPersonToEdit(' + id + ')'
+            }))
+            $('#firstNameInput').val('');
+            $('#lastNameInput').val('');
+            $('#imgUrlInput').val('');
+            $('#teamIdInput').val('');
+            $('#availablePointsInput').val('');
+            $('#contractSelect').val('');
+            allChosenCompetences = [];
+            $('#competenceList').empty();
+
         }
     });
 }
 
+function GetPersonToEdit(id) {
+    $.ajax({
+        type: 'GET',
+        url: '/Wizard/GetPersonnelById/' + id,
+        success: function (person) {
+            $('#firstNameInput').val(person.firstName);
+            $('#lastNameInput').val(person.lastName);
+            $('#imgUrlInput').val(person.imageUrl);
+            $('#teamIdInput').val(person.teamId);
+            $('#availablePointsInput').val(person.availablePoints);
+            $('#contractSelect').val(person.contract);
+            console.log(person.competences);
+            person.competences.forEach(function (competence) {
+                var $competenceDiv = $('<div/>', {
+                    class: competence.qualified ? 'qualifiedCompetence' : 'competence',
+                    id: competence.subjectId
+                });
+                var $competenceButton = $('<button/>', {
+                    text: 'X',
+                    onclick: 'RemoveCompetence("' + competence.subjectId + '")'
+                });
+                var $competenceText = $('<p/>', { text: competence.name });
+
+                //if(not already in the list)
+                allChosenCompetences.push({ "Qualified": competence.qualified, "SubjectId": competence.subjectId });
+
+                $competenceDiv.append($competenceText);
+                $competenceDiv.append($competenceButton);
+
+                $('#competenceList')
+                    .append($competenceDiv);
+            });
+        }
+    })
+}
+
 //Personnel crud html injection
 $(function () {
+    var $personnelList = $('<ul/>', { id: 'personnelList' });
     var $firstNameInput = $('<input/>', {
         class: 'inputText',
         placeholder: 'Förnamn..',
@@ -192,12 +245,19 @@ $(function () {
         .append($imgUrlInput)
         .append($teamIdInput)
         .append($availablePointsInput)
-        .append($contractSelect);
+        .append($contractSelect)
+        .append($personnelList);
+
+    $('#personnelList').append($('<p/>', {
+        text: 'Björn'
+    })).append($('<button/>', {
+        class: 'edit',
+        onclick: 'GetPersonToEdit(67)'
+    }))
 });
 
 //Competence crud
 
-var allChosenCompetences = [];
 
 function SubmitCompetence() {
     $.ajax({
@@ -432,7 +492,7 @@ $(function () {
         });
     }
 
-   
+
 
     var $studentGroupList = $('<div/>', {
         class: 'studentGroupList',
@@ -483,7 +543,7 @@ $(function () {
         class: 'inputTextAuto'
     });
 
-    
+
 
     var $submitBtn = $('<button/>', {
         class: 'buttonSubmit',

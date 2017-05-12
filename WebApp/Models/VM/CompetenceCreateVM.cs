@@ -10,5 +10,6 @@ namespace WebApp.Models.VM
         public bool Qualified { get; set; }
         //To select/get all subjects
         public int SubjectId { get; set; }
+        public string Name { get; set; }
     }
 }

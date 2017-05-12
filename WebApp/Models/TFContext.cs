@@ -16,7 +16,7 @@ namespace WebApp.Models.Entities
         public TFContext(DbContextOptions<TFContext> options) : base(options)
         {
         }
-        internal async Task<bool> AddNewPersonnel(PersonnelCreateVM viewModel, string id)
+        internal async Task<int> AddNewPersonnel(PersonnelCreateVM viewModel, string id)
         {
             var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
             var userSignature = CreateSignature(viewModel.FirstName, viewModel.LastName, userId);
@@ -52,8 +52,8 @@ namespace WebApp.Models.Entities
             }
 
             await Personnel.AddAsync(newPersonnel);
-
-            return await SaveChangesAsync() == 1;
+            await SaveChangesAsync();
+            return newPersonnel.Id;
         }
 
         internal string CreateSignature(string firstName, string lastName, int id)
@@ -87,9 +87,9 @@ namespace WebApp.Models.Entities
             return await SaveChangesAsync() == 1;
         }
 
-        internal async Task<bool> UpdatePersonnel(PersonnelVM viewModel)
+        internal async Task<bool> UpdatePersonnel(PersonnelCreateVM viewModel, int id)
         {
-            var personToUpdate = await Personnel.SingleOrDefaultAsync(p => p.Id == viewModel.Id);
+            var personToUpdate = await Personnel.SingleOrDefaultAsync(p => p.Id == id);
 
             personToUpdate.FirstName = viewModel.FirstName;
             personToUpdate.LastName = viewModel.LastName;
@@ -101,7 +101,7 @@ namespace WebApp.Models.Entities
 
             return await SaveChangesAsync() == 1;
         }
-
+        //Metod som inte hör till Wizarden Nedanför!
         internal async Task<PersonnelVM[]> GetAllPersonnel(string id)
         {
             var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
@@ -117,6 +117,26 @@ namespace WebApp.Models.Entities
                 IncludedClasses = p.IncludedClass.Select(i => new IncludedClassVM { ClassName = Class.SingleOrDefault(c => c.Id == i.ClassId).ToString(), Duration = i.Duration }).ToArray()
             }).ToArrayAsync();
         }
+        internal PersonnelCreateVM GetPersonnelById(int id)
+        {
+            var person = Personnel.SingleOrDefault(p => p.Id == id);
+            var editableperson = new PersonnelCreateVM
+            {
+                FirstName = person.FirstName,
+                LastName = person.LastName,
+                AvailablePoints = person.AvailablePoints,
+                Competences = Competence.Where(c => c.PersonnelId == person.Id).Select(c => 
+                new CompetenceCreateVM {
+                    Qualified = c.Qualified,
+                    SubjectId = c.SubjectId,
+                    Name = Subject.SingleOrDefault(s => s.Id == c.SubjectId).Name
+                }).ToArray(),
+                Contract = person.Contract,
+                ImageUrl = person.ImageUrl,
+                TeamId = person.TeamId
+            };
+            return editableperson;
+        } 
 
         internal int[] GetAllCounts(string id)
         {
@@ -256,16 +276,13 @@ namespace WebApp.Models.Entities
 
             int? Personnel_id;
 
-            //TODO - Remove comments when Signature is sent/fixed
-            //if (viewModel.PersonnelSignature == "")
-            //{
-            Personnel_id = null;
-            viewModel.Assigned = false;
-            //}
-            /*  
+             if (viewModel.PersonnelSignature == "")
+                {
+                    Personnel_id = null;
+                    viewModel.Assigned = false;
+                }
             else
                 Personnel_id = Personnel.FirstOrDefault(p => p.Signature == viewModel.PersonnelSignature).Id;
-            */
 
 
             var AuxiliaryAssignmentToAdd = new AuxiliaryAssignment
@@ -280,6 +297,37 @@ namespace WebApp.Models.Entities
                 UserId = userId
             };
             this.AuxiliaryAssignment.Add(AuxiliaryAssignmentToAdd);
+            return await SaveChangesAsync() == 1;
+        }
+
+        internal async Task<bool> DeleteAuxiliaryAssignment(int id)
+        {
+            var assignmentToRemove = AuxiliaryAssignment.SingleOrDefault(a => a.Id == id);
+            AuxiliaryAssignment.Remove(assignmentToRemove);
+            return await SaveChangesAsync() == 1;
+        }
+        internal async Task<bool> UpdateAuxiliaryAssignment(AuxiliaryAssignmentCreateVM viewModel, int id)
+        {
+            var assignmentToUpdate = AuxiliaryAssignment.SingleOrDefault(a => a.Id == id);
+
+            int? Personnel_id;
+
+            if (viewModel.PersonnelSignature == "")
+            {
+                Personnel_id = null;
+                viewModel.Assigned = false;
+            }
+            else
+                Personnel_id = Personnel.FirstOrDefault(p => p.Signature == viewModel.PersonnelSignature).Id;
+
+            assignmentToUpdate.Name = viewModel.Name;
+            assignmentToUpdate.Description = viewModel.Description;
+            assignmentToUpdate.Points = viewModel.Points;
+            assignmentToUpdate.Duration = viewModel.Duration;
+            assignmentToUpdate.Assigned = viewModel.Assigned;
+            assignmentToUpdate.Mandatory = viewModel.Mandatory;
+            assignmentToUpdate.PersonnelId = Personnel_id;
+
             return await SaveChangesAsync() == 1;
         }
     }
