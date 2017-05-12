@@ -3,6 +3,19 @@
 //ALEXANDERS OMRÅDE
 //Team Crud functions
 
+function GetCounts() {
+    var countLabels = ["Avdelningar", "Personal", "Tillgänglig personal", "Inkluderade kurser", "Kurser kvar att tilldela"];
+    $.ajax({
+        type: 'GET',
+        url: '/Wizard/GetAllCounts',
+        success: function (counts) {
+            for (var i = 0; i < counts.length; i++) {
+                $('#teamCrud').append($('<p/>', { text: countLabels[i] + ': ' + counts[i] }))
+            }
+        }
+    })
+}
+
 function SubmitTeam() {
     var $newName = $('#teamName').val();
     $('#teamName').val('');
@@ -611,3 +624,5 @@ $(function () {
 
 
 // SOFIAS area
+
+GetCounts();
