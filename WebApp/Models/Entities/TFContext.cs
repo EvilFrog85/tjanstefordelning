@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using WebApp.Models.VM;
 
 namespace WebApp.Models.Entities
 {
@@ -17,7 +15,7 @@ namespace WebApp.Models.Entities
         public virtual DbSet<Subject> Subject { get; set; }
         public virtual DbSet<Team> Team { get; set; }
         public virtual DbSet<User> User { get; set; }
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AuxiliaryAssignment>(entity =>
@@ -112,6 +110,12 @@ namespace WebApp.Models.Entities
 
                 entity.Property(e => e.UserId).HasColumnName("User_Id");
 
+                entity.HasOne(d => d.Class)
+                    .WithMany(p => p.IncludedClass)
+                    .HasForeignKey(d => d.ClassId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_Included_class_ToClass");
+
                 entity.HasOne(d => d.Personnel)
                     .WithMany(p => p.IncludedClass)
                     .HasForeignKey(d => d.PersonnelId)
@@ -163,7 +167,7 @@ namespace WebApp.Models.Entities
 
                 entity.Property(e => e.Signature)
                     .IsRequired()
-                    .HasColumnType("varchar(3)");
+                    .HasColumnType("varchar(5)");
 
                 entity.Property(e => e.TeamId).HasColumnName("Team_Id");
 

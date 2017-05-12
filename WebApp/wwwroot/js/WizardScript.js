@@ -2,12 +2,21 @@
 
 //ALEXANDERS OMRÅDE
 //Team Crud functions
-var ContractsArray = [{ 'value': '0', 'name': 'Tillsvidare' },
-{ 'value': '1', 'name': 'Tidsbegränsad' },
-{ 'value': '2', 'name': 'Projektanställning' },
-{ 'value': '3', 'name': 'Fast anställning' },
-{ 'value': '4', 'name': 'Övrig' }
-];
+
+
+
+function GetCounts() {
+    var countLabels = ["Avdelningar", "Personal", "Tillgänglig personal", "Inkluderade kurser", "Kurser kvar att tilldela"];
+    $.ajax({
+        type: 'GET',
+        url: '/Wizard/GetAllCounts',
+        success: function (counts) {
+            for (var i = 0; i < counts.length; i++) {
+                $('#teamCrud').append($('<p/>', { text: countLabels[i] + ': ' + counts[i] }))
+            }
+        }
+    })
+}
 
 function SubmitTeam() {
     var $newName = $('#teamName').val();
@@ -122,7 +131,7 @@ function AddNewPersonnel() {
     var availablePoints = $('#availablePointsInput').val();
     var contract = $('#contractSelect').val();
 
-    var dataToInsert = {
+    var personnelData = {
         FirstName: firstName,
         LastName: lastName,
         ImageUrl: imageUrl,
@@ -135,9 +144,9 @@ function AddNewPersonnel() {
     $.ajax({
         type: 'POST',
         url: '/Wizard/AddNewPersonnel',
-        data: dataToInsert,
-        success: function (data) {
-            console.log(data);
+        data: personnelData,
+        success: function (succeeded) {
+            console.log(succeeded);
         }
     });
 }
@@ -177,9 +186,6 @@ $(function () {
             value: contract.value
         }));
     });
-
-
-
     $('#personnelCrud')
         .append($firstNameInput)
         .append($lastNameInput)
@@ -198,18 +204,17 @@ function SubmitCompetence() {
         type: 'POST',
         url: '/Wizard/NewCompetence/',
         data: allChosenCompetences,
-        success: function (result) {
-            console.log(result);
+        success: function (succeeded) {
+            console.log(succeeded);
             allChosenCompetences.empty();
         }
     });
 }
-//Snälla lös hela findIndex 
+
 function RemoveCompetence(subjectId) {
     $('#' + subjectId).remove();
-    var index = allChosenCompetences.findIndex(function (element) { console.log(element); element.SubjectId === subjectId; });
-    console.log(index);
-    allChosenCompetences.splice(index);
+    var index = allChosenCompetences.findIndex(function (element) { return element.SubjectId == subjectId; });
+    allChosenCompetences.splice(index, 1);
 }
 
 function AddCompetence() {
@@ -256,8 +261,7 @@ $(function () {
     });
 
     $competenceInput.autocomplete({
-        source: subjectsArray,
-        appendTo: '#competenceInput'
+        source: subjectsArray
     });
 
     var $addCompetenceButton = $('<button/>', {
@@ -499,3 +503,5 @@ $(function () {
 
 
 // SOFIAS area
+
+GetCounts();

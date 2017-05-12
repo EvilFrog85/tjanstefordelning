@@ -61,6 +61,13 @@ namespace WebApp.Controllers
             return await _context.GetAllSubjects();
         }
 
+        [HttpGet]
+        public async Task<PersonnelVM[]> GetAllPersonnel()
+        {
+            var userId = _userManager.GetUserId(User);
+            return await _context.GetAllPersonnel(userId);
+        }
+
         [HttpPost]
         public async Task<bool> AddNewPersonnel(PersonnelCreateVM viewModel)
         {
@@ -69,6 +76,26 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
+        public async Task<bool> DeletePersonnel(int id)
+        {
+            return await _context.DeletePersonnel(id);
+        }
+
+        [HttpPost]
+        public async Task<bool> UpdatePersonnel(PersonnelVM viewModel)
+        {
+            return await _context.UpdatePersonnel(viewModel);
+        }
+
+        [HttpGet]
+        public int[] GetAllCounts()
+        {
+            var userId = _userManager.GetUserId(User);
+            return _context.GetAllCounts(userId);
+        }
+
+        [HttpPost]
+        public async Task<bool> NewStudentGroup(StudentGroupCreateVM viewModel)
         public async Task<int> NewStudentGroup(StudentGroupCreateVM viewModel)
         {
             string userId = _userManager.GetUserId(User);
