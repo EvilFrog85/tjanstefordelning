@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace WebApp.Models.Entities
 {
@@ -18,7 +19,7 @@ namespace WebApp.Models.Entities
         internal async Task<bool> AddNewPersonnel(PersonnelCreateVM viewModel, string id)
         {
             var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
-            var userSignature = CreateSignature(viewModel.FirstName, viewModel.LastName).Result;
+            var userSignature = await CreateSignature(viewModel.FirstName, viewModel.LastName, userId);
 
             var newPersonnel = new Personnel
             {
@@ -32,56 +33,63 @@ namespace WebApp.Models.Entities
                 AvailablePoints = viewModel.AvailablePoints,
                 Contract = viewModel.Contract,
                 UserId = userId,
-                
-            };
-            var competences = viewModel.Competences
-                .Select(c => new Competence
-                {
-                    Qualified = c.Qualified,
-                    SubjectId = c.SubjectId
-                }).ToArray();
 
-            foreach(var competence in competences)
+            };
+
+            if (viewModel.Competences != null)
             {
-                newPersonnel.Competence.Add(competence);
+                var competences = viewModel.Competences
+                    .Select(c => new Competence
+                    {
+                        Qualified = c.Qualified,
+                        SubjectId = c.SubjectId
+                    }).ToArray();
+
+                foreach (var competence in competences)
+                {
+                    newPersonnel.Competence.Add(competence);
+                }
             }
 
             await Personnel.AddAsync(newPersonnel);
+
             return await SaveChangesAsync() == 1;
         }
 
-        internal async Task<string> CreateSignature(string firstName, string lastName)
+        internal async Task<string> CreateSignature(string firstName, string lastName, int id)
         {
-            bool generatingSignature = true;
+            //bool generatingSignature = true;
             string signature = "";
 
-            while (generatingSignature)
-            {
-                signature = firstName.Substring(0, 2) + lastName.Substring(0, 2);
+            //await Task.Run(() =>
+            //{
+            signature = firstName.Substring(0, 2) + lastName.Substring(0, 2);
 
-                if (signature == Personnel.Where(p => p.Signature == signature).ToString())
-                {
-                    //Signaturen fanns i databasen
-                }
-                else
-                {
-                    //Signaturen fanns inte i databasen
-                    return signature;
-                }
+            int dataBaseSignature = Personnel
+                .Where(p => p.UserId == id && p.Signature == signature).Count();
+                //.Select(p => p.Signature == signature).Count();
+            //.Select(p => p.Signature)
+
+            if (dataBaseSignature == 0)
+            {
+                //Signaturen fanns i databasen
+                return signature;
+            }
+            else
+            {
+                return String.Join("", signature, dataBaseSignature + 1);
             }
 
-
-            //string signature = "";
-            //for (int i = 0; i < 2; i++)
+            //});
+            //while (generatingSignature)
             //{
-            //    signature += firstName[i];
-            //}
-            //for (int j = 0; j < 2; j++)
-            //{
-            //    signature += lastName[j];
-            //}
 
-            return signature;
+            //    
+            //    else
+            //    {
+            //        //Signaturen fanns inte i databasen
+            //    }
+            //}
         }
 
         internal async Task<bool> AddNewTeam(TeamCreateVM viewModel, string id)
@@ -166,7 +174,7 @@ namespace WebApp.Models.Entities
             var studentGroupToUpdate = StudentGroup.FirstOrDefault(s => s.Id == studentGroupId);
             studentGroupToUpdate.Name = viewModel.Name;
             studentGroupToUpdate.StartingYear = viewModel.Starting_Year;
-            studentGroupToUpdate.TeamId = viewModel.TeamId ;
+            studentGroupToUpdate.TeamId = viewModel.TeamId;
 
             return await SaveChangesAsync() == 1;
         }
@@ -207,7 +215,7 @@ namespace WebApp.Models.Entities
             return await SaveChangesAsync() == 1;
 
         }
-        
+
         internal async Task<bool> AddNewAuxiliaryAssignment(AuxiliaryAssignmentCreateVM viewModel, string id)
         {
             int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
@@ -217,8 +225,8 @@ namespace WebApp.Models.Entities
             //TODO - Remove comments when Signature is sent/fixed
             //if (viewModel.PersonnelSignature == "")
             //{
-                Personnel_id = null;
-                viewModel.Assigned = false;
+            Personnel_id = null;
+            viewModel.Assigned = false;
             //}
             /*  
             else
