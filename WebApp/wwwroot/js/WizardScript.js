@@ -3,6 +3,8 @@
 //ALEXANDERS OMRÅDE
 //Team Crud functions
 
+
+
 function GetCounts() {
     var countLabels = ["Avdelningar", "Personal", "Tillgänglig personal", "Inkluderade kurser", "Kurser kvar att tilldela"];
     $.ajax({

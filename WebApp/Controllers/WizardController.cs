@@ -93,7 +93,7 @@ namespace WebApp.Controllers
             var userId = _userManager.GetUserId(User);
             return _context.GetAllCounts(userId);
         }
-        
+
         [HttpPost]
         public async Task<bool> NewStudentGroup(StudentGroupCreateVM viewModel)
         {
