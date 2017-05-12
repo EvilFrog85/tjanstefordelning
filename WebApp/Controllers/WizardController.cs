@@ -95,7 +95,6 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<bool> NewStudentGroup(StudentGroupCreateVM viewModel)
         public async Task<int> NewStudentGroup(StudentGroupCreateVM viewModel)
         {
             string userId = _userManager.GetUserId(User);
