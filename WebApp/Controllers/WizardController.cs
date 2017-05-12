@@ -32,6 +32,11 @@ namespace WebApp.Controllers
             return View();
         }
 
+        public IActionResult IndexPlayground()
+        {
+            return View();
+        }
+
         [HttpPost]
         public async Task<int> NewTeam(TeamCreateVM viewModel)
         {

@@ -55,6 +55,9 @@
     <Content Include="wwwroot\js\jquery-3.1.0.js" />
     <Content Include="wwwroot\js\jquery.validate.js" />
     <Content Include="wwwroot\js\jquery.validate.unobtrusive.js" />
+    <Content Include="wwwroot\js\WizardScriptPlayground.js">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Content Include="wwwroot\js\WizardScript.js" />
   </ItemGroup>
   <ItemGroup>

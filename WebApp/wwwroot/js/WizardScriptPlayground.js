@@ -353,7 +353,6 @@ function CreateInputCompetence() {
 
 // #endregion
 
-//BJÖRNS OMRÅDE
 
 // #region STUDENTGROUP - crud
 
@@ -566,8 +565,6 @@ function CreateIncludedClassInput() {
 // #endregion
 
 
-// JONAS area
-
 // #region AUXILIARYASSIGNMENT - crud
 
 /* Auxiliary_assignments */
@@ -687,6 +684,9 @@ function CreateAuxiliaryAssignmentInput() {
 // #endregion
 
 
-// SOFIAS area
-
 GetCounts();
+CreateInputTeam();
+CreateInputPersonnel();
+CreateInputCompetence();
+CreateStudentGroupInput();
+CreateAuxiliaryAssignmentInput();
