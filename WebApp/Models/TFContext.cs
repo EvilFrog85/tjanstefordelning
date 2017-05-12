@@ -136,7 +136,7 @@ namespace WebApp.Models.Entities
 
         }
 
-        internal async Task<bool> AddNewTeam(TeamCreateVM viewModel, string id)
+        internal async Task<int> AddNewTeam(TeamCreateVM viewModel, string id)
         {
             var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
 
@@ -147,8 +147,8 @@ namespace WebApp.Models.Entities
             };
 
             this.Team.Add(teamToAdd);
-
-            return await SaveChangesAsync() == 1;
+            await SaveChangesAsync();
+            return teamToAdd.Id;
         }
 
         internal async Task<bool> DeleteTeam(int id)
@@ -191,7 +191,7 @@ namespace WebApp.Models.Entities
             }).ToArrayAsync();
         }
 
-        internal async Task<bool> AddNewStudentGroup(StudentGroupCreateVM viewModel, string id)
+        internal async Task<int> AddNewStudentGroup(StudentGroupCreateVM viewModel, string id)
         {
             int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
             var studentGroupToAdd = new StudentGroup
@@ -203,7 +203,8 @@ namespace WebApp.Models.Entities
 
             };
             this.StudentGroup.Add(studentGroupToAdd);
-            return await SaveChangesAsync() == 1;
+            await SaveChangesAsync();
+            return studentGroupToAdd.Id;
         }
 
         internal async Task<bool> DeleteStudentGroup(int id)
@@ -234,6 +235,39 @@ namespace WebApp.Models.Entities
                 StartingYear = s.StartingYear,
             });
             return await studentGroups.ToArrayAsync();
+        }
+
+        internal async Task<IncludedClassCreateVM[]> GetAllIncludedClasses(string id)
+        {
+            int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+            return await IncludedClass.Where(u => u.UserId == userId).Select(c => new IncludedClassCreateVM
+            {
+                Assigned = c.Assigned,
+                Duration = c.Duration,
+                UserId = c.UserId,
+                TeamId = c.TeamId,
+                ClassId = c.ClassId,
+                PersonnelId = c.PersonnelId,
+                StudentGroupId = c.StudentGroupId,
+            }).ToArrayAsync();
+        }
+
+        internal async Task<bool> AddNewIncludedClass(IncludedClassCreateVM viewModel, string id)
+        {
+            int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+            var includedClassToAdd = new IncludedClass
+            {
+                Assigned = viewModel.Assigned,
+                Duration = viewModel.Duration,
+                UserId = userId,
+                TeamId = viewModel.TeamId,
+                ClassId = viewModel.ClassId,
+                PersonnelId = viewModel.PersonnelId,
+                StudentGroupId = viewModel.StudentGroupId
+            };
+            
+
+            return await SaveChangesAsync() == 1;
         }
 
         internal async Task<bool> NewCompetence(CompetenceCreateVM viewModel, string id)

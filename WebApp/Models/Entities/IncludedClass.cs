@@ -14,6 +14,7 @@ namespace WebApp.Models.Entities
         public int? PersonnelId { get; set; }
         public int StudentGroupId { get; set; }
 
+        public virtual Class Class { get; set; }
         public virtual Personnel Personnel { get; set; }
         public virtual StudentGroup StudentGroup { get; set; }
         public virtual Team Team { get; set; }

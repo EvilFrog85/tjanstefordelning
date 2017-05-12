@@ -241,7 +241,7 @@ function AddCompetence() {
 
     //if(not already in the list)
     allChosenCompetences.push({ "Qualified": qualified, "SubjectId": subjectId });
-
+  
     $competenceDiv.append($competenceText);
     $competenceDiv.append($competenceButton);
 
@@ -298,47 +298,39 @@ function CreateInputCompetence() {
 // #region STUDENTGROUP - crud
 
 function SubmitStudentGroup() {
-    console.log("SubmitStudentGroup");
     var name = $('#studentGroupName').val();
     var year = $('#studentGroupStartingYearDropDown').val();
     var team = $('#teamIdInputForStudentGroup').val();
-    console.log(name);
-    console.log(year);
-    console.log(team);
     $.ajax({
         type: 'POST',
         url: '/Wizard/NewStudentGroup/',
         data: { Name: name, Starting_Year: year, TeamId: team },
-        success: function (result) {
-            console.log(result);
+        success: function (inputIsSuccess) {
+            console.log(inputIsSuccess);
         }
     });
 }
-//TODO: Create form for update information and decide where to do the update from (clicking SG etc..)
+//TODO: Create form for update information (automatically filled in inputs)
 function UpdateStudentGroup(id) {
-    console.log("UpdateStudentGroup");
     var name = $('#studentGroupName').val();
     var year = $('#studentGroupStartingYearDropDown').val();
     var team = $('#teamIdInputForStudentGroup').val();
-    console.log(name);
-    console.log(year);
-    console.log(team);
     $.ajax({
         type: 'POST',
         url: '/Wizard/UpdateStudentGroup/' + id,
         data: { Name: name, Starting_Year: year, TeamId: team },
-        success: function (result) {
-            console.log(result);
+        success: function (inputIsSuccess) {
+            console.log(inputIsSuccess);
         }
     });
 }
 
-function DeleteStudentGroup(id) {
+function DeleteStudentGroup(studentGroupId) {
     $.ajax({
         type: 'POST',
-        url: '/Wizard/DeleteStudentGroup/' + id,
-        success: function (data) {
-            console.log(data);
+        url: '/Wizard/DeleteStudentGroup/' + studentGroupId,
+        success: function (deletionSucceeded) {
+            console.log(deletionSucceeded);
         }
     });
 }
@@ -352,19 +344,23 @@ function CreateStudentGroupInput() {
         type: "text",
         placeholder: "Klassbeteckning"
     });
+
+    //Get current year
     var thisYear = new Date().getFullYear();
+
     var $startingYearDropDown = $('<select/>', {
         id: 'studentGroupStartingYearDropDown',
         class: 'inputSelect'
     });
     //Dropdown to select starting year +-2 years from this year
     for (let i = thisYear + 2; i >= thisYear - 2; i--) {
-        var opt = document.createElement('option');
-        opt.value = i;
-        opt.text = i;
-        if (i === thisYear)
-            opt.selected = "selected";
-        $startingYearDropDown.append(opt);
+        //Create new option
+        var option = document.createElement('option');
+        option.value = i;
+        option.text = i;
+        if (i === thisYear) //This year is default choice
+            option.selected = "selected";
+        $startingYearDropDown.append(option);
     }
 
     var $submitBtn = $('<button/>', {
@@ -373,8 +369,9 @@ function CreateStudentGroupInput() {
         text: 'Lägg till klass'
     });
 
-    //TODO : (Future) add pupilCount classroom assignment, prioritizing and if small classes can be grouped together
+    //TODO : (Future) add pupilCount. USE: classroom assignment, prioritizing and if small classes can be grouped together
 
+    //Add all elements to the student group div
     var $teamDropDown = $('<select/>', { class: 'inputSelect', text: 'Välj Avdelning', id: 'teamIdInputForStudentGroup' });
     $target.append($nameInput);
     $target.append($startingYearDropDown);
