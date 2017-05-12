@@ -61,6 +61,13 @@ namespace WebApp.Controllers
             return await _context.GetAllSubjects();
         }
 
+        [HttpGet]
+        public async Task<PersonnelVM[]> GetAllPersonnel()
+        {
+            var userId = _userManager.GetUserId(User);
+            return await _context.GetAllPersonnel(userId);
+        }
+
         [HttpPost]
         public async Task<bool> AddNewPersonnel(PersonnelCreateVM viewModel)
         {
@@ -68,6 +75,25 @@ namespace WebApp.Controllers
             return await _context.AddNewPersonnel(viewModel, userId);
         }
 
+        [HttpPost]
+        public async Task<bool> DeletePersonnel(int id)
+        {
+            return await _context.DeletePersonnel(id);
+        }
+
+        [HttpPost]
+        public async Task<bool> UpdatePersonnel(PersonnelVM viewModel)
+        {
+            return await _context.UpdatePersonnel(viewModel);
+        }
+
+        [HttpGet]
+        public int[] GetAllCounts()
+        {
+            var userId = _userManager.GetUserId(User);
+            return _context.GetAllCounts(userId);
+        }
+        
         [HttpPost]
         public async Task<bool> NewStudentGroup(StudentGroupCreateVM viewModel)
         {
@@ -91,13 +117,6 @@ namespace WebApp.Controllers
         public async Task<StudentGroupVM[]> GetAllStudentGroups()
         {
             return await _context.GetAllStudentGroups(_userManager.GetUserId(User));
-        }
-        [HttpGet]
-        public async Task<IActionResult> GetAllStudentGroupsJson() //Works with json
-        {
-
-            var res = await _context.GetAllStudentGroupsJson(_userManager.GetUserId(User));
-            return Json(res);
         }
 
         public async Task<bool> NewCompetence(CompetenceCreateVM viewModel)

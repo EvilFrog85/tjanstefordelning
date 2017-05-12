@@ -92,6 +92,63 @@ namespace WebApp.Models.Entities
             //}
         }
 
+        internal async Task<bool> DeletePersonnel(int id)
+        {
+            var personToRemove = await Personnel.SingleOrDefaultAsync(p => p.Id == id);
+            Personnel.Remove(personToRemove);
+            return await SaveChangesAsync() == 1;
+        }
+
+        internal async Task<bool> UpdatePersonnel(PersonnelVM viewModel)
+        {
+            var personToUpdate = await Personnel.SingleOrDefaultAsync(p => p.Id == viewModel.Id);
+
+            personToUpdate.FirstName = viewModel.FirstName;
+            personToUpdate.LastName = viewModel.LastName;
+            personToUpdate.ImageUrl = viewModel.ImageUrl;
+            personToUpdate.TeamId = viewModel.TeamId;
+            personToUpdate.Competence = viewModel.Competences.Select(c => new Competence { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray();
+            personToUpdate.AvailablePoints = viewModel.AvailablePoints;
+            personToUpdate.Contract = viewModel.Contract;
+
+            return await SaveChangesAsync() == 1;
+        }
+
+        internal async Task<PersonnelVM[]> GetAllPersonnel(string id)
+        {
+            var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+            return await Personnel.Where(p => p.UserId == userId).Select(p => new PersonnelVM
+            {
+                AssignedPoints = p.AssignedPoints,
+                AvailablePoints = p.AvailablePoints,
+                Competences = p.Competence.Select(c => new CompetenceVM { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray(),
+                Contract = p.Contract,
+                FirstName = p.FirstName,
+                Id = p.Id,
+                ImageUrl = p.ImageUrl,
+                IncludedClasses = p.IncludedClass.Select(i => new IncludedClassVM { ClassName = Class.SingleOrDefault(c => c.Id == i.ClassId).ToString(), Duration = i.Duration }).ToArray()
+            }).ToArrayAsync();
+        }
+
+        internal int[] GetAllCounts(string id)
+        {
+            var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+
+            int personnelCount = Personnel.Where(p => p.UserId == userId).Count();
+            int teamCount = Team.Where(p => p.UserId == userId).Count();
+            int classesCount = IncludedClass.Where(p => p.UserId == userId).Count();
+            int unAssignedClassesCount = IncludedClass.Where(p => p.UserId == userId && p.Assigned == false).Count();
+            int personnelWithAvailabilityCount = Personnel.Where(p => p.UserId == userId && p.AssignedPoints < p.AvailablePoints).Count();
+
+            return new int[] {
+                teamCount,
+                personnelCount,
+                personnelWithAvailabilityCount,
+                classesCount,
+                unAssignedClassesCount };
+
+        }
+
         internal async Task<bool> AddNewTeam(TeamCreateVM viewModel, string id)
         {
             var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
@@ -180,17 +237,6 @@ namespace WebApp.Models.Entities
         }
 
         internal async Task<StudentGroupVM[]> GetAllStudentGroups(string id)
-        {
-            int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
-            var studentGroups = StudentGroup.Where(s => s.UserId == userId).Select(s => new StudentGroupVM
-            {
-                Name = s.Name,
-                TeamId = s.TeamId,
-                StartingYear = s.StartingYear,
-            });
-            return await studentGroups.ToArrayAsync();
-        }
-        internal async Task<StudentGroupVM[]> GetAllStudentGroupsJson(string id)
         {
             int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
             var studentGroups = StudentGroup.Where(s => s.UserId == userId).Select(s => new StudentGroupVM
