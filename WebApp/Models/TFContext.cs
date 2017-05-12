@@ -58,7 +58,6 @@ namespace WebApp.Models.Entities
 
         internal string CreateSignature(string firstName, string lastName, int id)
         {
-
             string signature = firstName.Substring(0, 2) + lastName.Substring(0, 2);
 
             int dataBaseSignature = Personnel

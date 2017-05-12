@@ -3,6 +3,7 @@
 //ALEXANDERS OMRÅDE
 //Team Crud functions
 
+//Temporary info-box
 function GetCounts() {
     var countLabels = ["Avdelningar", "Personal", "Tillgänglig personal", "Inkluderade kurser", "Kurser kvar att tilldela"];
     $.ajax({
@@ -15,6 +16,8 @@ function GetCounts() {
         }
     })
 }
+
+// #region TEAM-crud
 
 function SubmitTeam() {
     var $newName = $('#teamName').val();
@@ -75,7 +78,7 @@ function DeleteTeam(id) {
 }
 
 //Team html injection
-$(function () {
+function CreateInputTeam() {
     var $name = $('<input/>', {
         class: 'inputText',
         id: 'teamName',
@@ -94,10 +97,12 @@ $(function () {
     });
 
     $('#teamCrud').append($getDataBtnTest);
-});
+};
 
-//Personnel Crud ajax 
-//TODO : CHange it to be general and not only for Personnel crud
+// #endregion
+
+//Personnel Crud ajax - NOT USING ATM
+//TODO : Change it to be general and not only for Personnel crud
 //Get all subjects to be able to choose competences
 function GetAllSubjects() {
     var allSubjects = [];
@@ -120,8 +125,9 @@ function GetAllSubjects() {
     console.log(allSubjects);
 }
 
-function AddNewPersonnel() {
+// #region PERSONNEL - crud
 
+function AddNewPersonnel() {
     var firstName = $('#firstNameInput').val();
     var lastName = $('#lastNameInput').val();
     var imageUrl = $('#imgUrlInput').val();
@@ -150,7 +156,7 @@ function AddNewPersonnel() {
 }
 
 //Personnel crud html injection
-$(function () {
+function CreateInputPersonnel() {
     var $firstNameInput = $('<input/>', {
         class: 'inputText',
         placeholder: 'Förnamn..',
@@ -191,10 +197,14 @@ $(function () {
         .append($teamIdInput)
         .append($availablePointsInput)
         .append($contractSelect);
-});
+};
+
+// #endregion
+
+
+// #region COMPETENCE - crud
 
 //Competence crud
-
 var allChosenCompetences = [];
 
 function SubmitCompetence() {
@@ -242,7 +252,7 @@ function AddCompetence() {
     console.log(allChosenCompetences);
 }
 
-$(function () {
+function CreateInputCompetence() {
     var $competenceList = $('<div/>', {
         class: 'competenceList',
         id: 'competenceList'
@@ -279,22 +289,14 @@ $(function () {
         .append($addCompetenceButton)
         .append($competenceList)
         .append($submitNewPersonnel);
+};
 
-    //    .on('click', function IsCompetenceQualified() {
-    //    if ($(this).is(':checked')) {
-    //        console.log("checked");
-    //        var dropDownValue = $('#personnelCrud').val();
-    //        console.log(dropDownValue.subjectCode);
-    //    }
-    //    else {
-    //        console.log("not checked");
-    //    }
-    //});
-});
-
-
+// #endregion
 
 //BJÖRNS OMRÅDE
+
+// #region STUDENTGROUP - crud
+
 function SubmitStudentGroup() {
     console.log("SubmitStudentGroup");
     var name = $('#studentGroupName').val();
@@ -342,7 +344,7 @@ function DeleteStudentGroup(id) {
 }
 
 //Student group html injection
-$(function () {
+function CreateStudentGroupInput() {
     var $target = $('#studentGroupCrud');
     var $nameInput = $('<input/>', {
         class: 'inputText',
@@ -379,7 +381,12 @@ $(function () {
     $target.append($teamDropDown);
     $target.append($submitBtn);
 
-});
+};
+
+// #endregion
+
+
+// #region INCLUDEDCLASS - crud
 
 //Included Class CRUD
 var allChosenStudentGroups = [];
@@ -409,7 +416,7 @@ function SubmitIncludedClass() {
 
 //Included classes html injection
 var studentGroupsArray = [];
-$(function () {
+function CreateIncludedClassInput() {
     $target = $('#includedClassCrud');
     studentGroupsArray = [];
     function PopulateStudentGroupArray() {
@@ -429,8 +436,6 @@ $(function () {
             }
         });
     }
-
-   
 
     var $studentGroupList = $('<div/>', {
         class: 'studentGroupList',
@@ -481,8 +486,6 @@ $(function () {
         class: 'inputTextAuto'
     });
 
-    
-
     var $submitBtn = $('<button/>', {
         class: 'buttonSubmit',
         onclick: 'SubmitIncludedClass()',
@@ -499,12 +502,14 @@ $(function () {
     $target.append($duration);
     $target.append($assignedLabel).append($assigned);
     $target.append($submitBtn);
-});
+};
 
-
+// #endregion
 
 
 // JONAS area
+
+// #region AUXILIARYASSIGNMENT - crud
 
 /* Auxiliary_assignments */
 function SubmitAuxiliaryAssignment() {
@@ -545,7 +550,7 @@ function SubmitAuxiliaryAssignment() {
     });
 }
 
-$(function () {
+function CreateAuxiliaryAssignmentInput() {
     var $target = $('#auxiliaryAssignmentCrud');
 
     var $nameInput = $('<input/>', {
@@ -618,9 +623,9 @@ $(function () {
     $target.append($personnelInput);
     $target.append($submitBtn);
 
-});
+};
 /* END Auxiliary_assignments */
-
+// #endregion
 
 
 // SOFIAS area
