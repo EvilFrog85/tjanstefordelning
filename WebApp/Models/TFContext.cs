@@ -19,7 +19,7 @@ namespace WebApp.Models.Entities
         internal async Task<bool> AddNewPersonnel(PersonnelCreateVM viewModel, string id)
         {
             var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
-            var userSignature = await CreateSignature(viewModel.FirstName, viewModel.LastName, userId);
+            var userSignature = CreateSignature(viewModel.FirstName, viewModel.LastName, userId);
 
             var newPersonnel = new Personnel
             {
@@ -56,40 +56,28 @@ namespace WebApp.Models.Entities
             return await SaveChangesAsync() == 1;
         }
 
-        internal async Task<string> CreateSignature(string firstName, string lastName, int id)
+        internal string CreateSignature(string firstName, string lastName, int id)
         {
-            //bool generatingSignature = true;
-            string signature = "";
 
-            //await Task.Run(() =>
-            //{
-            signature = firstName.Substring(0, 2) + lastName.Substring(0, 2);
+            string signature = firstName.Substring(0, 2) + lastName.Substring(0, 2);
 
             int dataBaseSignature = Personnel
                 .Where(p => p.UserId == id && p.Signature == signature).Count();
-                //.Select(p => p.Signature == signature).Count();
-            //.Select(p => p.Signature)
 
             if (dataBaseSignature == 0)
             {
-                //Signaturen fanns i databasen
+                //Unique signature
                 return signature;
             }
             else
             {
+                //Not unique signature, Generates a new signature with a number
                 return String.Join("", signature, dataBaseSignature + 1);
             }
 
-            //});
-            //while (generatingSignature)
+            //await Task.Run(() =>
             //{
-
-            //    
-            //    else
-            //    {
-            //        //Signaturen fanns inte i databasen
-            //    }
-            //}
+            //});
         }
 
         internal async Task<bool> DeletePersonnel(int id)
