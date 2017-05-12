@@ -60,7 +60,7 @@
 }
 /* END Button style */
 
-.competenceList {
+.competenceList, .studentGroupList {
     display: flex;
     width: 50%;
     margin: auto;
@@ -75,7 +75,7 @@
     margin-right: 5px;
     margin-bottom: 5px;
 }
-.qualifiedCompetence {
+.qualifiedCompetence, .groupToClass {
     height: 30px;
     position: relative;
     background-color: green;
@@ -83,19 +83,19 @@
     margin-right: 5px;
     margin-bottom: 5px;
 }
-    .competence p, .qualifiedCompetence p {
+    .competence p, .qualifiedCompetence p, .groupToClass p {
         padding: 7px 16px 7px 7px;
     }
 
-    .competence button, .qualifiedCompetence button {
+    .competence button, .qualifiedCompetence button, .groupToClass button {
         position: absolute;
-            top: 0;
-            right: 0;
+        top: 0;
+        right: 0;
         width: 16px;
         height: 16px;
         background-color: transparent;
         border: none;
     }
-    .competence button:hover, .qualifiedCompetence button:hover {
-        background-color: darkseagreen;
-    }
+        .competence button:hover, .qualifiedCompetence button:hover, .groupToClass button:hover {
+            background-color: darkseagreen;
+        }
