@@ -648,7 +648,7 @@ function CreateAuxiliaryAssignmentInput() {
     });
     // Options added further down
 
-    var $mandatoryInput = checkboxMaker("auxiliaryAssignmentMandatory", "Uppdraget måste tillsättars");
+    var $mandatoryInput = checkboxMaker("auxiliaryAssignmentMandatory", "Måste tillsättas");
     
     //TODO - Make autocomplete!
     var $personnelInput = $('<input />', {
