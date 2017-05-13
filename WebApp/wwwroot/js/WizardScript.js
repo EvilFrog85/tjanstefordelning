@@ -1,5 +1,26 @@
 ﻿///<reference path="jquery-2.1.0-vsdoc.js"/>
 
+
+//To generate advanced checkboxes, styled submitButtons and form messages
+//Nice to have
+function checkboxMaker(name, statement, checkboxId) {
+    return '<label for="' + name + '" class="labelCheckbox">' + statement + ': </label><label class="switch"><div><span>JA</span><span>NEJ</span></div><input id="' + checkboxId + '" name="' + name + '" type="checkbox" /><div class="slider"></div></label>';
+}
+
+function submitButtonMaker(buttonId, buttonText) {
+    return '<div class="wizButtonContainer"><button id="' + buttonId + '" class="buttonSubmit">' + buttonText + '</button></div>';
+}
+
+function generateFormMessage(type, message) {
+    if (type == "error")
+        return '<p class="errorMessage">' + message + '</p>';
+    else
+        return '<p class="successMessage">' + message + '</p>';
+}
+//END
+
+
+
 //ALEXANDERS OMRÅDE
 //Team Crud functions
 
