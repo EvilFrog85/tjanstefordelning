@@ -19,7 +19,6 @@ namespace WebApp
         public void ConfigureServices(IServiceCollection services)
         {
             var cultureInfo = new CultureInfo("en-US");
-            //cultureInfo.NumberFormat.CurrencySymbol = "€";
 
             CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
             CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
@@ -45,7 +44,7 @@ namespace WebApp
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddDebug(minLevel: LogLevel.Error);
+            loggerFactory.AddDebug(minLevel: LogLevel.Error).AddConsole();
             app.UseIdentity();
             app.UseStaticFiles();
 
