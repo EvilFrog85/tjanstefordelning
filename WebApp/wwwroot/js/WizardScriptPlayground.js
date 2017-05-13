@@ -1,6 +1,22 @@
 ﻿///<reference path="jquery-2.1.0-vsdoc.js"/>
-
+// #region StopWatch
+var ms = 0;
+var counting;
 //ALEXANDERS OMRÅDE
+function StartStopWatch() {
+    ms = 0;
+    counting = setInterval(Counting, 1)
+}
+
+function Counting() {
+    ms++;
+}
+
+function StopStopWatch() {
+    console.log('MilliSeconds Elapsed: ' + ms);
+    clearInterval(counting);
+}
+// #endregion
 //Team Crud functions
 
 //Temporary info-box
@@ -157,7 +173,10 @@ function AddNewPersonnel() {
             })).append($('<button/>', {
                 class: 'edit',
                 onclick: 'GetPersonToEdit(' + id + ')'
-            }));
+                })).append($('<button/>', {
+                    class: 'delete',
+                    onclick: 'RemovePerson(' + person.id + ')'
+                }));
             $('#firstNameInput').val('');
             $('#lastNameInput').val('');
             $('#imgUrlInput').val('');
@@ -166,7 +185,6 @@ function AddNewPersonnel() {
             $('#contractSelect').val('');
             allChosenCompetences = [];
             $('#competenceList').empty();
-
         }
     });
 }
@@ -176,6 +194,7 @@ function GetPersonToEdit(id) {
         type: 'GET',
         url: '/Wizard/GetPersonnelById/' + id,
         success: function (person) {
+            $('#competenceList').empty();
             $('#firstNameInput').val(person.firstName);
             $('#lastNameInput').val(person.lastName);
             $('#imgUrlInput').val(person.imageUrl);
@@ -207,9 +226,40 @@ function GetPersonToEdit(id) {
     });
 }
 
+function GetAllPersonnel() {
+    $.ajax({
+        type: 'GET',
+        url: '/Wizard/GetAllPersonnelToWizardList',
+        success: function (personnel) {
+            var personCounter = 0;
+            personnel.forEach(function (person) {
+                $('#personnelList').append($('<p/>', {
+                    text: person.teamName + ' ' + person.firstName + ' ' + person.lastName + ' (' + person.signature + ')',
+                    id: 'personnelList' + person.id
+                })).append($('<button/>', {
+                    class: 'edit',
+                    onclick: 'GetPersonToEdit(' + person.id + ')'
+                })).append($('<button/>', {
+                    class: 'delete',
+                    onclick: 'RemovePerson(' + person.id + ')'
+                    }))
+            });
+        }
+    });
+}
+
+function RemovePerson(id) {
+    $.ajax({
+        type: 'POST',
+        url: '/Wizard/DeletePersonnel/' + id,
+        success: function (data) {
+            $('#personnelList' + id).remove()
+        }
+    });
+}
+
 //Personnel crud html injection
 function CreateInputPersonnel() {
-    var $personnelList = $('<ul/>', { id: 'personnelList' });
     var $firstNameInput = $('<input/>', {
         class: 'inputText',
         placeholder: 'Förnamn..',
@@ -249,15 +299,8 @@ function CreateInputPersonnel() {
         .append($imgUrlInput)
         .append($teamIdInput)
         .append($availablePointsInput)
-        .append($contractSelect)
-        .append($personnelList);
+        .append($contractSelect);
 
-    $('#personnelList').append($('<p/>', {
-        text: 'Björn'
-    })).append($('<button/>', {
-        class: 'edit',
-        onclick: 'GetPersonToEdit(67)'
-    }));
 }
 
 // #endregion
@@ -301,7 +344,7 @@ function AddCompetence() {
 
     //if(not already in the list)
     allChosenCompetences.push({ "Qualified": qualified, "SubjectId": subjectId });
-  
+
     $competenceDiv.append($competenceText);
     $competenceDiv.append($competenceButton);
 
@@ -313,6 +356,8 @@ function AddCompetence() {
 }
 
 function CreateInputCompetence() {
+    var $personnelList = $('<ul/>', { id: 'personnelList' });
+
     var $competenceList = $('<div/>', {
         class: 'competenceList',
         id: 'competenceList'
@@ -348,7 +393,8 @@ function CreateInputCompetence() {
         .append($CompetenceQualified)
         .append($addCompetenceButton)
         .append($competenceList)
-        .append($submitNewPersonnel);
+        .append($submitNewPersonnel)
+        .append($personnelList);
 }
 
 // #endregion
@@ -684,9 +730,11 @@ function CreateAuxiliaryAssignmentInput() {
 // #endregion
 
 
-GetCounts();
+//GetCounts();
 CreateInputTeam();
 CreateInputPersonnel();
 CreateInputCompetence();
-CreateStudentGroupInput();
-CreateAuxiliaryAssignmentInput();
+//CreateStudentGroupInput();
+//CreateAuxiliaryAssignmentInput();
+GetTeams();
+GetAllPersonnel();

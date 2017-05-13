@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Threading;
 
 namespace WebApp.Models.Entities
 {
@@ -82,8 +83,30 @@ namespace WebApp.Models.Entities
         internal async Task<bool> DeletePersonnel(int id)
         {
             var personToRemove = await Personnel.SingleOrDefaultAsync(p => p.Id == id);
+            var classesToRemove = IncludedClass.Where(i => i.PersonnelId == personToRemove.Id);
+            var competencesToRemove = Competence.Where(c => c.PersonnelId == personToRemove.Id);
+            var auxToRemove = AuxiliaryAssignment.Where(a => a.PersonnelId == personToRemove.Id);
+
+            foreach (var classe in classesToRemove)
+            {
+                classe.Assigned = false;
+                classe.PersonnelId = null;
+            }
+            Competence.RemoveRange(competencesToRemove);
+            AuxiliaryAssignment.RemoveRange(auxToRemove);
             Personnel.Remove(personToRemove);
-            return await SaveChangesAsync() == 1;
+            bool success = true;
+            try
+            {
+                var wut = await SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+                success = false;
+            }
+            
+            return success;
         }
 
         internal async Task<bool> UpdatePersonnel(PersonnelCreateVM viewModel, int id)
@@ -97,8 +120,28 @@ namespace WebApp.Models.Entities
             personToUpdate.Competence = viewModel.Competences.Select(c => new Competence { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray();
             personToUpdate.AvailablePoints = viewModel.AvailablePoints;
             personToUpdate.Contract = viewModel.Contract;
+            var success = await SaveChangesAsync() == 1;
+            return success;
+        }
 
-            return await SaveChangesAsync() == 1;
+        internal async Task<PersonnelWizardListVM[]> GetAllPersonnelToWizardList(string id)
+        {
+            Stopwatch myWatch = new Stopwatch();
+            myWatch.Start();
+            //Vi borde nog cachea svaret på anropet?
+            var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+            var returnValue = await Personnel.Where(p => p.UserId == userId).Select(p => new PersonnelWizardListVM
+            {
+                FirstName = p.FirstName,
+                LastName = p.LastName,
+                Id = p.Id,
+                Signature = p.Signature,
+                TeamName = Team.SingleOrDefault(t => t.Id == p.TeamId).Name
+            }).OrderBy(p => p.TeamName).ToArrayAsync();
+            myWatch.Stop();
+            var timeConsumer = myWatch.ElapsedMilliseconds;
+            
+            return returnValue;
         }
         //Metod som inte hör till Wizarden Nedanför!
         internal async Task<PersonnelVM[]> GetAllPersonnel(string id)
@@ -108,12 +151,12 @@ namespace WebApp.Models.Entities
             {
                 AssignedPoints = p.AssignedPoints,
                 AvailablePoints = p.AvailablePoints,
-                Competences = p.Competence.Select(c => new CompetenceVM { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray(),
+                Competences = Competence.Where(c => c.PersonnelId == p.Id).Select(c => new CompetenceVM { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray(),
                 Contract = p.Contract,
                 FirstName = p.FirstName,
                 Id = p.Id,
                 ImageUrl = p.ImageUrl,
-                IncludedClasses = p.IncludedClass.Select(i => new IncludedClassVM { ClassName = Class.SingleOrDefault(c => c.Id == i.ClassId).ToString(), Duration = i.Duration }).ToArray()
+                IncludedClasses = IncludedClass.Where(i => i.PersonnelId == p.Id).Select(i => new IncludedClassVM { ClassName = Class.SingleOrDefault(c => c.Id == i.ClassId).ToString(), Duration = i.Duration }).ToArray()
             }).ToArrayAsync();
         }
         internal PersonnelCreateVM GetPersonnelById(int id)
