@@ -1,16 +1,197 @@
-﻿<h2>Mr. Oizo</h2>
+﻿<div id="overLay">
+    <div id="wizardLayout">
+        <div id="wizardContent">
+            <div class="innerOverLay">
+                <div class="closeInnerOverLay"></div>
+                <div class="innerOverlayContent">
+                    <div class="crudForm" id="teamCrudForm">
+                        <div class="messageBox">
+                            <!-- Om vi vill kasta eventuella meddelande så gör vi det såhär: -->
+                            <!--
+                            <p class="errorMessage">Fel123..</p>
+                            <p class="successMessage">Användaren sparades.</p>
+                            -->
+                        </div>
+                        
+                        <!-- Såhär måste en checkbox se ut för att tillämpa stylen vi önskar -->
+                        <!--
+                        <label for="..." class="labelCheckbox">Måste tillsättas: </label>
+                        <label class="switch">
+                            <div>
+                                <span>JA</span>
+                                <span>NEJ</span>
+                            </div>
+                            <input name="..." type="checkbox" />
+                            <div class="slider"></div>
+                        </label>
+                        -->
 
-<div id="teamCrud"></div>
+                        <!-- Såhär måste en "Spara-knapp" se ut för att tillämpa stylen vi önskar -->
+                        <!--
+                        <div class="wizButtonContainer">
+                            <button class="buttonSubmit">Spara</button>
+                        </div>
+                        -->
+                    </div>
+                    <div class="crudForm" id="personnelCrudForm">
+                        <div class="messageBox"></div>
+                    </div>
+                    <div class="crudForm" id="studentGroupCrudForm">
+                        <div class="messageBox"></div>
+                    </div>
+                    <div class="crudForm" id="auxiliaryAssignmentCrudForm">
+                        <div class="messageBox"></div>
+                    </div>
+                </div>
+            </div>
 
-<div id="personnelCrud"></div>
+            <div id="wizardBoxHeader">
+                <div id="counter">
+                    <p id="counterHeader">Arbetslag</p>
+                    <p>3</p>
+                </div>
+                <div id="wizardBoxItemDesc">
+                    <div id="teamCrudDesc">
+                        <h3>Hantera arbetslag</h3>
+                        <p>Knappen till höger för att lägga till ny.</p>
+                    </div>
+                    <div id="personnelCrudDesc">
+                        <h3>Hantera personal</h3>
+                        <p>Knappen till höger för att lägga till ny.</p>
+                    </div>
+                    <div id="studentGroupCrudDesc">
+                        <h3>Hantera klasser</h3>
+                        <p>Knappen till höger för att lägga till ny.</p>
+                    </div>
+                    <div id="auxiliaryAssignmentCrudDesc">
+                        <h3>Hantera uppdrag</h3>
+                        <p>Knappen till höger för att lägga till ny.</p>
+                    </div>
+                </div>
+                <div id="addButton"></div>
+            </div>
 
-<div id="competenceCrud"></div>
+            <div id="teamCrud" class="wizardDataBox">
+                <table>
+                    <tr>
+                        <td>Arbetslagsbenämning</td>
+                        <td>Redigering</td>
+                    </tr>
+                    <tr>
+                        <td>Teknik</td>
+                        <td><p class="edit"></p><p class="delete"></p></td>
+                    </tr>
+                    <tr>
+                        <td>Yrkeslaget</td>
+                        <td><p class="edit"></p><p class="delete"></p></td>
+                    </tr>
+                    <tr>
+                        <td>Övriga med ett låångt namn</td>
+                        <td><p class="edit"></p><p class="delete"></p></td>
+                    </tr>
+                </table>
+            </div>
 
-<div id="studentGroupCrud"></div>
+            <div id="personnelCrud" class="wizardDataBox">
+                <table>
+                    <tr>
+                        <td>Arbetslag</td>
+                        <td>Förnamn</td>
+                        <td>Efternamn</td>
+                        <td>Signatur</td>
+                        <td>Redigering</td>
+                    </tr>
+                    <tr>
+                        <td>Teknik</td>
+                        <td>Jonas</td>
+                        <td>Jilmefors</td>
+                        <td>JoJi</td>
+                        <td><p class="edit"></p><p class="delete"></p></td>
+                    </tr>
+                    <tr>
+                        <td>Yrkeslaget</td>
+                        <td>Björn</td>
+                        <td>Red</td>
+                        <td>BjRe</td>
+                        <td><p class="edit"></p><p class="delete"></p></td>
+                    </tr>
+                    <tr>
+                        <td>Övriga med ett låångt namn</td>
+                        <td>Lotta</td>
+                        <td>Larsson</td>
+                        <td>LoLa</td>
+                        <td><p class="edit"></p><p class="delete"></p></td>
+                    </tr>
+                </table>
+            </div>
 
-<div id="includedClassCrud"></div>
+            <div id="studentGroupCrud" class="wizardDataBox">
+                <table>
+                    <tr>
+                        <td>Arbetslag</td>
+                        <td>Klassnamn</td>
+                        <td>Startår</td>
+                        <td>Redigering</td>
+                    </tr>
+                    <tr>
+                        <td>Teknik</td>
+                        <td>Te18a</td>
+                        <td>2018</td>
+                        <td><p class="edit"></p><p class="delete"></p></td>
+                    </tr>
+                    <tr>
+                        <td>Yrkeslaget</td>
+                        <td>EE17a</td>
+                        <td>2017</td>
+                        <td><p class="edit"></p><p class="delete"></p></td>
+                    </tr>
+                    <tr>
+                        <td>Övriga med ett låångt namn</td>
+                        <td>SmEs16a</td>
+                        <td>2016</td>
+                        <td><p class="edit"></p><p class="delete"></p></td>
+                    </tr>
+                </table>
+            </div>
 
-<div id="auxiliaryAssignmentCrud"></div>
+            <div id="auxiliaryAssignmentCrud" class="wizardDataBox">
+                <table>
+                    <tr>
+                        <td>Benämning</td>
+                        <td>Omfattning</td>
+                        <td>Tilldelat</td>
+                        <td>Redigering</td>
+                    </tr>
+                    <tr>
+                        <td>Vaktmästare</td>
+                        <td>500</td>
+                        <td>Nej</td>
+                        <td><p class="edit"></p><p class="delete"></p></td>
+                    </tr>
+                    <tr>
+                        <td>Studentansvarig</td>
+                        <td>100</td>
+                        <td>Ja</td>
+                        <td><p class="edit"></p><p class="delete"></p></td>
+                    </tr>
+                    <tr>
+                        <td>Administratör</td>
+                        <td>900</td>
+                        <td>Nej</td>
+                        <td><p class="edit"></p><p class="delete"></p></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <nav>
+            <div id="teamCrudOpen" class="wizActive">Arbetslag</div>
+            <div id="personnelCrudOpen">Personal</div>
+            <div id="studentGroupCrudOpen">Klasser</div>
+            <div id="auxiliaryAssignmentCrudOpen">Uppdrag</div>
+            <div id="exitWizard">Klar</div>
+        </nav>
+    </div>
+</div>
 @section scripts{
     @*link to scripts*@
     <script src="~/js/WizardScript.js"></script>
