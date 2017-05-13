@@ -429,6 +429,7 @@ function CreateStudentGroupInput() {
         text: 'Lägg till klass'
     });
 
+
     //TODO : (Future) add pupilCount. USE: classroom assignment, prioritizing and if small classes can be grouped together
 
     //Add all elements to the student group div
