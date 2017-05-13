@@ -15,7 +15,7 @@ select:-moz-focusring {
 	outline: 0 none;
 	background: #FFF;
 }
-.inputText, .inputFile{
+.inputText, .inputTextAuto, .inputFile{
 	width: calc(100% - 26px);
 	max-width: 576px;
     /* input type="text" deals with padding in a diffrent way from other inputs --> adding the padding (as it should be for ex. a div) on top of the width */

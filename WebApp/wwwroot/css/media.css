@@ -30,5 +30,8 @@
 		width: 50%;
 		max-width: 200px;
 	}
-	/* END - Wizard media styles */
+    .inputText, .inputTextAuto, .inputSelect, .inputFile, .switch > div > span, .buttonSubmit {
+        font-size: 14px;
+    }
+    /* END - Wizard media styles */
 }
