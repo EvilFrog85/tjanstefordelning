@@ -5,12 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="wwwroot\css\StyleSheet.css" />
     <Content Include="wwwroot\css\temp_style.css" />
     <Content Include="wwwroot\img\icons\add.svg" />
     <Content Include="wwwroot\img\icons\delete.svg" />
     <Content Include="wwwroot\img\icons\done.svg" />
     <Content Include="wwwroot\img\icons\edit.svg" />
+    <Content Include="wwwroot\img\icons\wizard.svg" />
     <Content Include="wwwroot\img\staff_pictures\Img1AdW.jpg" />
     <Content Include="wwwroot\img\staff_pictures\Img1AmB.jpg" />
     <Content Include="wwwroot\img\staff_pictures\Img1AnN.jpg" />

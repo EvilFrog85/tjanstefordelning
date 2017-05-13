@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8" />
     <title>PageTitle - @ViewBag.Title</title>
 </head>
 <body>
@@ -17,6 +18,7 @@
                     <a href="#">Link 2</a>
                     <a href="#">Link 3</a>
                     <a href="#">Link 4</a>
+                    <div class="wizard" style="display: inline-block;"></div>
                 </nav>
             </div>
         </header>
@@ -32,8 +34,10 @@
         </footer>
     </div>
 
-    <link href="~/css/StyleSheet.css" property="stylesheet" rel="stylesheet" />
-    <link href="~/css/temp_style.css" property="stylesheet" rel="stylesheet" />
+    <link href="~/css/layout.css" property="stylesheet" rel="stylesheet" />
+    <link href="~/css/media.css" property="stylesheet" rel="stylesheet" />
+    <link href="~/css/inputsAndButtons.css" property="stylesheet" rel="stylesheet" />
+    <link href="~/css/wizard.css" property="stylesheet" rel="stylesheet" />
     @RenderSection("styles", false)
     <environment names="Development">
         <script src="~/js/jquery-3.1.0.js"></script>
