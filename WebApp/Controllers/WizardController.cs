@@ -102,6 +102,12 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
+        public StudentGroupVM GetStudentGroupById(int id)
+        {
+            return _context.GetStudentGroupById(id);
+        }
+
+        [HttpPost]
         public async Task<bool> UpdatePersonnel(PersonnelCreateVM viewModel, int id)
         {
             return await _context.UpdatePersonnel(viewModel, id);

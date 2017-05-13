@@ -89,14 +89,14 @@ function CreateInputTeam() {
         onclick: 'SubmitTeam()',
         text: 'Submit'
     });
-    $('#teamCrud').append($name).append($submitBtn);
+    $('#teamCrudForm').append($name).append($submitBtn);
 
     var $getDataBtnTest = $('<button/>', {
         text: 'Get All Teams',
         onclick: 'GetTeams()'
     });
 
-    $('#teamCrud').append($getDataBtnTest);
+    $('#teamCrudForm').append($getDataBtnTest);
 }
 
 // #endregion
@@ -108,7 +108,7 @@ function CreateInputTeam() {
 var allChosenCompetences = [];
 function GetAllSubjects() {
     var allSubjects = [];
-    var $target = $('#personnelCrud');
+    var $target = $('#personnelCrudForm');
     $.ajax({
         type: 'GET',
         url: '/Wizard/GetAllSubjects',
@@ -243,7 +243,7 @@ function CreateInputPersonnel() {
             value: contract.value
         }));
     });
-    $('#personnelCrud')
+    $('#personnelCrudForm')
         .append($firstNameInput)
         .append($lastNameInput)
         .append($imgUrlInput)
@@ -343,7 +343,7 @@ function CreateInputCompetence() {
         class: 'buttonSubmit'
     });
 
-    $('#competenceCrud')
+    $('#competenceCrudForm')
         .append($competenceInput)
         .append($CompetenceQualified)
         .append($addCompetenceButton)
@@ -397,7 +397,7 @@ function DeleteStudentGroup(studentGroupId) {
 
 //Student group html injection
 function CreateStudentGroupInput() {
-    var $target = $('#studentGroupCrud');
+    var $target = $('#studentGroupCrudForm');
     var $nameInput = $('<input/>', {
         class: 'inputText',
         id: "studentGroupName",
@@ -428,6 +428,7 @@ function CreateStudentGroupInput() {
         onclick: 'SubmitStudentGroup()',
         text: 'Lägg till klass'
     });
+
 
     //TODO : (Future) add pupilCount. USE: classroom assignment, prioritizing and if small classes can be grouped together
 
@@ -474,7 +475,7 @@ function SubmitIncludedClass() {
 //Included classes html injection
 var studentGroupsArray = [];
 function CreateIncludedClassInput() {
-    $target = $('#includedClassCrud');
+    $target = $('#includedClassCrudForm');
     studentGroupsArray = [];
     function PopulateStudentGroupArray() {
         $.ajax({
@@ -610,7 +611,7 @@ function SubmitAuxiliaryAssignment() {
 }
 
 function CreateAuxiliaryAssignmentInput() {
-    var $target = $('#auxiliaryAssignmentCrud');
+    var $target = $('#auxiliaryAssignmentCrudForm');
 
     var $nameInput = $('<input/>', {
         class: 'inputText',
@@ -688,5 +689,3 @@ function CreateAuxiliaryAssignmentInput() {
 
 
 // SOFIAS area
-
-GetCounts();

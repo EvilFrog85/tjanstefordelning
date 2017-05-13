@@ -62,22 +62,18 @@ namespace WebApp.Models.Entities
             string signature = firstName.Substring(0, 2) + lastName.Substring(0, 2);
 
             int dataBaseSignature = Personnel
-                .Where(p => p.UserId == id && p.Signature == signature).Count();
+                .Where(p => p.UserId == id && p.Signature.Substring(0, 4) == signature).Count();
 
+            //Unique signature
             if (dataBaseSignature == 0)
-            {
-                //Unique signature
-                return signature;
-            }
+                return String.Join("",signature + "01");
+            //Less than 10 simular signature, Generates a new signature with a 0number
+            else if (dataBaseSignature < 10)
+                return String.Join("", signature, 0, dataBaseSignature + 1);
+            //More than 10 signature, Generates a new signature with a number
             else
-            {
-                //Not unique signature, Generates a new signature with a number
                 return String.Join("", signature, dataBaseSignature + 1);
-            }
-
-            //await Task.Run(() =>
-            //{
-            //});
+            
         }
 
         internal async Task<bool> DeletePersonnel(int id)
@@ -178,7 +174,7 @@ namespace WebApp.Models.Entities
                 TeamId = person.TeamId
             };
             return editableperson;
-        } 
+        }
 
         internal int[] GetAllCounts(string id)
         {
@@ -298,6 +294,21 @@ namespace WebApp.Models.Entities
                 StartingYear = s.StartingYear,
             });
             return await studentGroups.ToArrayAsync();
+        }
+
+        internal StudentGroupVM GetStudentGroupById(int id)
+        {
+            var studentGroup = StudentGroup.SingleOrDefault(s => s.Id == id);
+
+            var currentStudentGroup = new StudentGroupVM
+            {
+                Id = studentGroup.Id,
+                Name = studentGroup.Name,
+                TeamId = studentGroup.TeamId,
+                StartingYear = studentGroup.StartingYear
+            };
+
+            return currentStudentGroup;
         }
 
         internal async Task<IncludedClassCreateVM[]> GetAllIncludedClasses(string id)
