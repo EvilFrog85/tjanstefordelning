@@ -3,12 +3,12 @@
 
 //To generate advanced checkboxes, styled submitButtons and form messages
 //Nice to have
-function checkboxMaker(name, statement, checkboxId) {
-    return '<label for="' + name + '" class="labelCheckbox">' + statement + ': </label><label class="switch"><div><span>JA</span><span>NEJ</span></div><input id="' + checkboxId + '" name="' + name + '" type="checkbox" /><div class="slider"></div></label>';
+function checkboxMaker(name, statement) {
+    return '<label for="' + name + '" class="labelCheckbox">' + statement + ': </label><label class="switch"><div><span>JA</span><span>NEJ</span></div><input id="' + name + '" name="' + name + '" type="checkbox" value="1" /><div class="slider"></div></label>';
 }
 
-function submitButtonMaker(buttonId, buttonText) {
-    return '<div class="wizButtonContainer"><button id="' + buttonId + '" class="buttonSubmit">' + buttonText + '</button></div>';
+function submitButtonMaker(buttonId, buttonText, onClickFuncName) {
+    return '<div class="wizButtonContainer"><button id="' + buttonId + '" onclick="' + onClickFuncName+'()" class="buttonSubmit">' + buttonText + '</button></div>';
 }
 
 function generateFormMessage(type, message) {
@@ -105,11 +105,9 @@ function CreateInputTeam() {
         id: 'teamName',
         type: 'text'
     });
-    var $submitBtn = $('<button/>', {
-        class: 'buttonSubmit',
-        onclick: 'SubmitTeam()',
-        text: 'Submit'
-    });
+
+
+    var $submitBtn = submitButtonMaker("createInputTeam", "Lägg till arbetslag", "SubmitTeam");
     $('#teamCrudForm').append($name).append($submitBtn);
 
     var $getDataBtnTest = $('<button/>', {
@@ -358,11 +356,8 @@ function CreateInputCompetence() {
         class: 'add',
         onclick: 'AddCompetence()'
     });
-    var $submitNewPersonnel = $('<button/>', {
-        text: 'Lägg till',
-        onclick: 'AddNewPersonnel()',
-        class: 'buttonSubmit'
-    });
+
+    var $submitNewPersonnel = submitButtonMaker("CreateInputCompetence", "Lägg till kompetens", "AddNewPersonnel");
 
     $('#competenceCrudForm')
         .append($competenceInput)
@@ -444,13 +439,8 @@ function CreateStudentGroupInput() {
         $startingYearDropDown.append(option);
     }
 
-    var $submitBtn = $('<button/>', {
-        class: 'buttonSubmit',
-        onclick: 'SubmitStudentGroup()',
-        text: 'Lägg till klass'
-    });
-
-
+    var $submitBtn = submitButtonMaker("CreateStudentGroupInput", "Lägg till klass", "SubmitStudentGroup");
+    
     //TODO : (Future) add pupilCount. USE: classroom assignment, prioritizing and if small classes can be grouped together
 
     //Add all elements to the student group div
@@ -565,13 +555,7 @@ function CreateIncludedClassInput() {
         class: 'inputTextAuto'
     });
 
-
-
-    var $submitBtn = $('<button/>', {
-        class: 'buttonSubmit',
-        onclick: 'SubmitIncludedClass()',
-        text: 'Lägg till kurs'
-    });
+    var $submitBtn = submitButtonMaker("CreateIncludedClassInput", "Lägg till kurs", "SubmitIncludedClass");
 
     $($duration).append('<option value="0" selected="selected">Hela läsåret<option/>');
     $($duration).append('<option value="1">HT<option/>');
@@ -664,20 +648,8 @@ function CreateAuxiliaryAssignmentInput() {
     });
     // Options added further down
 
-
-    var $mandatoryInput = $('<input />', {
-        name: 'auxiliaryAssignmentMandatory',
-        type: 'checkbox',
-        class: 'checkbox',
-        value: '1',
-        id: 'auxiliaryAssignmentMandatory'
-    });
-
-    var $mandatoryLabel = $('<label />', {
-        for: 'auxiliaryAssignmentMandatory',
-        text: 'Uppdraget måste tillsättas: '
-    });
-
+    var $mandatoryInput = checkboxMaker("auxiliaryAssignmentMandatory", "Uppdraget måste tillsättars");
+    
     //TODO - Make autocomplete!
     var $personnelInput = $('<input />', {
         class: 'inputTextAuto',
@@ -686,11 +658,7 @@ function CreateAuxiliaryAssignmentInput() {
         placeholder: 'Tillsätt personal..'
     });
 
-    var $submitBtn = $('<button/>', {
-        class: 'buttonSubmit',
-        onclick: 'SubmitAuxiliaryAssignment()',
-        text: 'Spara uppdrag'
-    });
+    var $submitBtn = submitButtonMaker("CreateAuxiliaryAssignmentInput", "Spara uppdrag", "SubmitAuxiliaryAssignment");
 
     $target.append($nameInput);
     $target.append($descInput);
@@ -699,7 +667,6 @@ function CreateAuxiliaryAssignmentInput() {
     $($durationInput).append('<option value="0" selected="selected">Läsår</option>');
     $($durationInput).append('<option value="1">HT</option>');
     $($durationInput).append('<option value="2">VT</option>');
-    $target.append($mandatoryLabel);
     $target.append($mandatoryInput);
     $target.append($personnelInput);
     $target.append($submitBtn);
