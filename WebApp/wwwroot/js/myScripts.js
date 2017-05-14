@@ -27,6 +27,8 @@ $(document).ready(function () {
     /* Wizard, innerLayOut Controlls */
     // When wizard is opened
     $('.wizard').on('click', function () {
+        // Get data for list - first because of possible async-delay
+        getTeamsPls();
         $('#overLay').fadeToggle("fast");
         // Hide body-scroll
         $('html').css('overflow', 'hidden');
@@ -48,6 +50,13 @@ $(document).ready(function () {
 
     // When menu-item in wizard is pushed
     $('#wizardLayout > nav > div:not(#exitWizard)').on('click', function () {
+
+        // TODO - continue on else to get other lists..
+        var listTarget = $(this).attr('id');
+        if (listTarget == "teamCrudOpen") {
+            getTeamsPls();
+        }
+
         // Change "active" tab
         $(this).siblings('div').removeClass('wizActive');
         $(this).addClass('wizActive');
@@ -77,4 +86,28 @@ $(document).ready(function () {
         $('.innerOverLay').fadeToggle("fast");
     });
     /* END - Wizard, innerLayOut Controlls */
+
+
+    /* Jonas lekplats */
+    function getTeamsPls() {
+        $.ajax({
+            type: 'GET',
+            url: '/Wizard/GetAllTeams',
+            success: function (data) {
+                console.log(data);
+                data.forEach(function (e) {
+                    $('#teamCrud table').append('<tr><td>' + e.name + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
+                });
+            }
+        });
+    }
+
+    $('.edit').on('click', function () {
+        var id = $(this).parent().attr('data-item');
+        var name = $(this).parent().prev().hmtl();
+    });
+    $('.delete').on('click', function () {
+        var id = $(this).parent().attr('data-item');
+    });
+    /* END - Jonas lekplats */
 });
