@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using WebApp.Models.Entities;
 
 namespace WebApp.Models.VM
 {
@@ -15,5 +16,7 @@ namespace WebApp.Models.VM
         public int TeamId { get; set; }
         [Display(Name = "Startår")]
         public int StartingYear { get; set; }
+        public int[] ClassId { get; set; }
+        public ClassVM[] Classes { get; set; }
     }
 }

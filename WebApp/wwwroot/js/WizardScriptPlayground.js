@@ -301,7 +301,7 @@ function AddCompetence() {
 
     //if(not already in the list)
     allChosenCompetences.push({ "Qualified": qualified, "SubjectId": subjectId });
-  
+
     $competenceDiv.append($competenceText);
     $competenceDiv.append($competenceButton);
 
@@ -445,8 +445,6 @@ function CreateStudentGroupInput() {
 // #region INCLUDEDCLASS - crud
 
 //Included Class CRUD
-var allChosenStudentGroups = [];
-
 //Included class functions
 function SubmitIncludedClass() {
     console.log("SubmitIncludedClass");
@@ -472,6 +470,7 @@ function SubmitIncludedClass() {
 
 //Included classes html injection
 var studentGroupsArray = [];
+var allChosenStudentGroups = [];
 function CreateIncludedClassInput() {
     $target = $('#includedClassCrud');
     studentGroupsArray = [];
@@ -683,10 +682,13 @@ function CreateAuxiliaryAssignmentInput() {
 /* END Auxiliary_assignments */
 // #endregion
 
-
+// #region RENDER EVERYTHING
 GetCounts();
 CreateInputTeam();
 CreateInputPersonnel();
 CreateInputCompetence();
 CreateStudentGroupInput();
+CreateIncludedClassInput();
 CreateAuxiliaryAssignmentInput();
+
+// #endregion

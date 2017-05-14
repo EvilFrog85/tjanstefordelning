@@ -256,6 +256,18 @@ namespace WebApp.Models.Entities
             });
             return await studentGroups.ToArrayAsync();
         }
+        internal async Task<ClassVM[]> GetAllClasses(string id)
+        {
+            int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+            return await Class.Select(c => new ClassVM
+            {
+                Id = c.Id,
+                ClassName = c.ClassName,
+                ClassCode = c.ClassCode,
+                Points = c.Points,
+                SubjectId = c.SubjectId,
+            }).ToArrayAsync();
+        }
 
         internal async Task<IncludedClassCreateVM[]> GetAllIncludedClasses(string id)
         {

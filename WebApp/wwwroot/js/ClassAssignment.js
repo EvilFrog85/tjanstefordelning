@@ -1,7 +1,6 @@
 ﻿///<reference path="jquery-2.1.0-vsdoc.js"/>
 
-//Included Class CRUD
-//Included class functions
+// #region Adding and removing student groups "buttons".
 var studentGroupsArray = [];
 var allChosenStudentGroups = [];
 
@@ -37,7 +36,9 @@ function AddStudentGroup(className, classId) {
     $('#studentGroupInput').val('');
     console.log(allChosenStudentGroups);
 }
+// #endregion
 
+// #region Adding and removing classes "buttons".
 var classesArray = [];
 var allChosenClasses = [];
 function RemoveClass(classId) {
@@ -72,7 +73,62 @@ function AddClass(className, classId) {
     $('#studentGroupInput').val('');
     console.log(allChosenStudentGroups);
 }
+// #endregion
 
+// #region autocomplete for included classes and student groups
+//studentGroupsArray = []; //empty array
+function PopulateStudentGroupsArray() {
+    $.ajax({
+        type: 'GET',
+        url: '/Wizard/GetAllStudentGroups/', //TODO: new controller?
+        success: function (studentGroups) {
+            console.log("GetAllStudentGroups");
+            console.log(studentGroups);
+            studentGroups.forEach(function (studentGroup) {
+                var newStudentGroup = { label: studentGroup.name, value: studentGroup.id };
+                studentGroupsArray.push(newStudentGroup);
+            });
+            $studentGroupInput.autocomplete({
+                source: studentGroupsArray,
+                select: function (event, listItems) {
+                    //ui.item./ label = klassnamn,/ value=klass id
+                    AddStudentGroup(listItems.item.label, listItems.item.value);
+                    $('#studentGroupInput').val(''); //clear input field
+                    return false; //cancel event
+                }
+            });
+
+        }
+    });
+}
+//classesArray = []; //empty array
+function PopulateClassesArray() {
+    $.ajax({
+        type: 'GET',
+        url: '/Wizard/GetAllClasses/', //TODO : new controller?
+        success: function (classes) {
+            console.log("GetAllClasses");
+            console.log(classes);
+            classes.forEach(function (cls) {
+                var newClass = { label: cls.name, value: cls.id };
+                classesArray.push(newClass);
+            });
+            $classInput.autocomplete({
+                source: classesArray,
+                select: function (event, listItems) {
+                    //ui.item./ label = klassnamn,/ value=klass id
+                    AddClass(listItems.item.label, listItems.item.value);
+                    $('#classInput').val(''); //clear input field
+                    return false; //cancel event
+                }
+            });
+
+        }
+    });
+}
+// #endregion
+
+// #region CRUD Included Class
 function SubmitIncludedClass() {
     console.log("SubmitIncludedClass");
     var teamId = $('#includedClassTeamBelongingDropDown').val();
@@ -94,77 +150,26 @@ function SubmitIncludedClass() {
         }
     });
 }
+// #endregion
 
-//Included classes html injection
+
+
+//HTML injection for adding classes to student groups and the reversed
 
 $(function () {
-    $target = $('#includedClassCrud');
+    // #region assign student group to class
+    $target = $('#assignStudentGroupsToClassDiv');
 
-    // #region autocomplete for included classes and student groups
-    studentGroupsArray = []; //empty array
-    function PopulateStudentGroupsArray() {
-        $.ajax({
-            type: 'GET',
-            url: '/Wizard/GetAllStudentGroups/', //TODO: new controller?
-            success: function (studentGroups) {
-                console.log("GetAllStudentGroups");
-                console.log(studentGroups);
-                studentGroups.forEach(function (studentGroup) {
-                    var newStudentGroup = { label: studentGroup.name, value: studentGroup.id };
-                    studentGroupsArray.push(newStudentGroup);
-                });
-                $studentGroupInput.autocomplete({
-                    source: studentGroupsArray,
-                    select: function (event, listItems) {
-                        //ui.item./ label = klassnamn,/ value=klass id
-                        AddStudentGroup(listItems.item.label, listItems.item.value);
-                        $('#studentGroupInput').val(''); //clear input field
-                        return false; //cancel event
-                    }
-                });
-
-            }
-        });
-    }
-    classesArray = []; //empty array
-    function PopulateClassesArray() {
-        $.ajax({
-            type: 'GET',
-            url: '/Wizard/GetAllClasses/', //TODO : new controller?
-            success: function (classes) {
-                console.log("GetAllClasses");
-                console.log(classes);
-                classes.forEach(function (cls) {
-                    var newClass = { label: cls.name, value: cls.id };
-                    classesArray.push(newClass);
-                });
-                $classInput.autocomplete({
-                    source: classesArray,
-                    select: function (event, listItems) {
-                        //ui.item./ label = klassnamn,/ value=klass id
-                        AddClass(listItems.item.label, listItems.item.value);
-                        $('#classInput').val(''); //clear input field
-                        return false; //cancel event
-                    }
-                });
-
-            }
-        });
-    }
-
+    //Contains the student groups that are to be assigned to the current class
     var $studentGroupList = $('<div/>', {
         class: 'studentGroupList',
         id: 'studentGroupList'
     });
 
-    var $classList = $('<div/>', {
-        class: 'classList',
-        id: 'classList'
-    });
-
+    //Inserts all student groups into an array for autocompletion
     PopulateStudentGroupsArray();
-    PopulateClassesArray();
 
+    //Text input with auto completion for choosing student groups
     var $studentGroupInput = $('<input/>', {
         id: 'studentGroupInput',
         type: 'text',
@@ -172,7 +177,7 @@ $(function () {
         class: 'inputTextAuto'
     });
 
-
+    //Choose class (autocomplete)
     var $classInput = $('<input/>', {
         id: 'classInput',
         type: 'text',
@@ -180,20 +185,7 @@ $(function () {
         class: 'inputTextAuto'
     });
 
-    // #endregion
-
-    var $assigned = $('<input/>', {
-        id: 'includedClassAssignedTeacher',
-        name: 'isTeacherAssigned',
-        type: 'checkbox'
-    });
-
-    var $assignedLabel = $('<label/>', {
-        for: 'isTeacherAssigned',
-        text: 'Kursen har en tilldelad lärare '
-    });
-
-    //Kopiera jonas lösning :)
+    //Choose duration (HT, VT or Full year) for the included class
     var $includedClassduration = $('<select/>', {
         id: 'includedClassDurationDropDown',
         class: 'inputSelect'
@@ -201,8 +193,9 @@ $(function () {
 
     //User id is automatically set
 
-    var $teamBelonging = $('<select/>', {
-        id: 'includedClassTeamBelongingDropDown',
+    //Drop down to choose which team the included class should belong to
+    var $teamId = $('<select/>', {
+        id: 'includedClassTeamIdDropDown',
         class: 'inputSelect'
     });
 
@@ -216,8 +209,6 @@ $(function () {
 
     //PersonnelId should not be set in the wizard 
 
-    
-
     var $submitBtn = $('<button/>', {
         class: 'buttonSubmit',
         onclick: 'SubmitIncludedClass()',
@@ -228,11 +219,26 @@ $(function () {
     $($includedClassduration).append('<option value="1">HT</option>');
     $($includedClassduration).append('<option value="2">VT</option>');
 
-    $target.append($teamBelonging);
+    $target.append($teamId);
     $target.append($classBelonging);
     //$target.append($studentGroupInput);
     $target.append($includedClassduration);
     //$target.append($studentGroupList);
     $target.append($assignedLabel).append($assigned);
     $target.append($submitBtn);
+    // #endregion
+
+    // #region student group
+    $target = $('#assignClassToStudentGroupDiv');
+
+    var $classList = $('<div/>', {
+        class: 'classList',
+        id: 'classList'
+    });
+
+    PopulateClassesArray();
+
+
+
+    // #endregion
 });
