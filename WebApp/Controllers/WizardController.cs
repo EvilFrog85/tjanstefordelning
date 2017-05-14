@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,10 +22,12 @@ namespace WebApp.Controllers
     {
         TFContext _context;
         UserManager<IdentityUser> _userManager;
-        public WizardController(UserManager<IdentityUser> userManager, TFContext context)
+        private readonly ILogger _logger;
+        public WizardController(UserManager<IdentityUser> userManager, TFContext context, ILogger<WizardController> logger)
         {
             _userManager = userManager;
             _context = context;
+            _logger = logger;
             
         }
         // GET: /<controller>/
@@ -72,6 +76,17 @@ namespace WebApp.Controllers
             var userId = _userManager.GetUserId(User);
             return await _context.GetAllPersonnel(userId);
         }
+        [HttpGet]
+        public async Task<PersonnelWizardListVM[]> GetAllPersonnelToWizardList()
+        {
+            Stopwatch myWatch = new Stopwatch();
+            myWatch.Start();
+            var userId = _userManager.GetUserId(User);
+            var returnValue = await _context.GetAllPersonnelToWizardList(userId);
+            myWatch.Stop();
+            _logger.LogInformation(myWatch.ElapsedMilliseconds.ToString());
+            return returnValue;
+        }
 
         [HttpPost]
         public async Task<int> AddNewPersonnel(PersonnelCreateVM viewModel)
@@ -84,6 +99,12 @@ namespace WebApp.Controllers
         public async Task<bool> DeletePersonnel(int id)
         {
             return await _context.DeletePersonnel(id);
+        }
+
+        [HttpPost]
+        public StudentGroupVM GetStudentGroupById(int id)
+        {
+            return _context.GetStudentGroupById(id);
         }
 
         [HttpPost]

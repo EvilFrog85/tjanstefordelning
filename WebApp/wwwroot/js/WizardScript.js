@@ -1,5 +1,26 @@
 ﻿///<reference path="jquery-2.1.0-vsdoc.js"/>
 
+
+//To generate advanced checkboxes, styled submitButtons and form messages
+//Nice to have
+function checkboxMaker(name, statement) {
+    return '<label for="' + name + '" class="labelCheckbox">' + statement + ': </label><label class="switch"><div><span>JA</span><span>NEJ</span></div><input id="' + name + '" name="' + name + '" type="checkbox" value="1" /><div class="slider"></div></label>';
+}
+
+function submitButtonMaker(buttonId, buttonText, onClickFuncName) {
+    return '<div class="wizButtonContainer"><button id="' + buttonId + '" onclick="' + onClickFuncName+'()" class="buttonSubmit">' + buttonText + '</button></div>';
+}
+
+function generateFormMessage(type, message) {
+    if (type == "error")
+        return '<p class="errorMessage">' + message + '</p>';
+    else
+        return '<p class="successMessage">' + message + '</p>';
+}
+//END
+
+
+
 //ALEXANDERS OMRÅDE
 //Team Crud functions
 
@@ -84,19 +105,17 @@ function CreateInputTeam() {
         id: 'teamName',
         type: 'text'
     });
-    var $submitBtn = $('<button/>', {
-        class: 'buttonSubmit',
-        onclick: 'SubmitTeam()',
-        text: 'Submit'
-    });
-    $('#teamCrud').append($name).append($submitBtn);
+
+
+    var $submitBtn = submitButtonMaker("createInputTeam", "Lägg till arbetslag", "SubmitTeam");
+    $('#teamCrudForm').append($name).append($submitBtn);
 
     var $getDataBtnTest = $('<button/>', {
         text: 'Get All Teams',
         onclick: 'GetTeams()'
     });
 
-    $('#teamCrud').append($getDataBtnTest);
+    $('#teamCrudForm').append($getDataBtnTest);
 }
 
 // #endregion
@@ -108,7 +127,7 @@ function CreateInputTeam() {
 var allChosenCompetences = [];
 function GetAllSubjects() {
     var allSubjects = [];
-    var $target = $('#personnelCrud');
+    var $target = $('#personnelCrudForm');
     $.ajax({
         type: 'GET',
         url: '/Wizard/GetAllSubjects',
@@ -243,7 +262,7 @@ function CreateInputPersonnel() {
             value: contract.value
         }));
     });
-    $('#personnelCrud')
+    $('#personnelCrudForm')
         .append($firstNameInput)
         .append($lastNameInput)
         .append($imgUrlInput)
@@ -337,13 +356,10 @@ function CreateInputCompetence() {
         class: 'add',
         onclick: 'AddCompetence()'
     });
-    var $submitNewPersonnel = $('<button/>', {
-        text: 'Lägg till',
-        onclick: 'AddNewPersonnel()',
-        class: 'buttonSubmit'
-    });
 
-    $('#competenceCrud')
+    var $submitNewPersonnel = submitButtonMaker("CreateInputCompetence", "Lägg till kompetens", "AddNewPersonnel");
+
+    $('#competenceCrudForm')
         .append($competenceInput)
         .append($CompetenceQualified)
         .append($addCompetenceButton)
@@ -397,7 +413,7 @@ function DeleteStudentGroup(studentGroupId) {
 
 //Student group html injection
 function CreateStudentGroupInput() {
-    var $target = $('#studentGroupCrud');
+    var $target = $('#studentGroupCrudForm');
     var $nameInput = $('<input/>', {
         class: 'inputText',
         id: "studentGroupName",
@@ -423,12 +439,8 @@ function CreateStudentGroupInput() {
         $startingYearDropDown.append(option);
     }
 
-    var $submitBtn = $('<button/>', {
-        class: 'buttonSubmit',
-        onclick: 'SubmitStudentGroup()',
-        text: 'Lägg till klass'
-    });
-
+    var $submitBtn = submitButtonMaker("CreateStudentGroupInput", "Lägg till klass", "SubmitStudentGroup");
+    
     //TODO : (Future) add pupilCount. USE: classroom assignment, prioritizing and if small classes can be grouped together
 
     //Add all elements to the student group div
@@ -474,7 +486,7 @@ function SubmitIncludedClass() {
 //Included classes html injection
 var studentGroupsArray = [];
 function CreateIncludedClassInput() {
-    $target = $('#includedClassCrud');
+    $target = $('#includedClassCrudForm');
     studentGroupsArray = [];
     function PopulateStudentGroupArray() {
         $.ajax({
@@ -543,13 +555,7 @@ function CreateIncludedClassInput() {
         class: 'inputTextAuto'
     });
 
-
-
-    var $submitBtn = $('<button/>', {
-        class: 'buttonSubmit',
-        onclick: 'SubmitIncludedClass()',
-        text: 'Lägg till kurs'
-    });
+    var $submitBtn = submitButtonMaker("CreateIncludedClassInput", "Lägg till kurs", "SubmitIncludedClass");
 
     $($duration).append('<option value="0" selected="selected">Hela läsåret<option/>');
     $($duration).append('<option value="1">HT<option/>');
@@ -610,7 +616,7 @@ function SubmitAuxiliaryAssignment() {
 }
 
 function CreateAuxiliaryAssignmentInput() {
-    var $target = $('#auxiliaryAssignmentCrud');
+    var $target = $('#auxiliaryAssignmentCrudForm');
 
     var $nameInput = $('<input/>', {
         class: 'inputText',
@@ -642,20 +648,8 @@ function CreateAuxiliaryAssignmentInput() {
     });
     // Options added further down
 
-
-    var $mandatoryInput = $('<input />', {
-        name: 'auxiliaryAssignmentMandatory',
-        type: 'checkbox',
-        class: 'checkbox',
-        value: '1',
-        id: 'auxiliaryAssignmentMandatory'
-    });
-
-    var $mandatoryLabel = $('<label />', {
-        for: 'auxiliaryAssignmentMandatory',
-        text: 'Uppdraget måste tillsättas: '
-    });
-
+    var $mandatoryInput = checkboxMaker("auxiliaryAssignmentMandatory", "Måste tillsättas");
+    
     //TODO - Make autocomplete!
     var $personnelInput = $('<input />', {
         class: 'inputTextAuto',
@@ -664,11 +658,7 @@ function CreateAuxiliaryAssignmentInput() {
         placeholder: 'Tillsätt personal..'
     });
 
-    var $submitBtn = $('<button/>', {
-        class: 'buttonSubmit',
-        onclick: 'SubmitAuxiliaryAssignment()',
-        text: 'Spara uppdrag'
-    });
+    var $submitBtn = submitButtonMaker("CreateAuxiliaryAssignmentInput", "Spara uppdrag", "SubmitAuxiliaryAssignment");
 
     $target.append($nameInput);
     $target.append($descInput);
@@ -677,7 +667,6 @@ function CreateAuxiliaryAssignmentInput() {
     $($durationInput).append('<option value="0" selected="selected">Läsår</option>');
     $($durationInput).append('<option value="1">HT</option>');
     $($durationInput).append('<option value="2">VT</option>');
-    $target.append($mandatoryLabel);
     $target.append($mandatoryInput);
     $target.append($personnelInput);
     $target.append($submitBtn);
@@ -688,5 +677,3 @@ function CreateAuxiliaryAssignmentInput() {
 
 
 // SOFIAS area
-
-GetCounts();
