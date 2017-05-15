@@ -15,14 +15,14 @@ $(document).ready(function () {
     });
 
     /*
-    CreateInputCompetence();
     CreateIncludedClassInput();
     GetCounts();
-    //*/
-    //CreateInputTeam();
-    //CreateInputPersonnel();
-    //CreateStudentGroupInput();
-    //CreateAuxiliaryAssignmentInput();
+    */
+    CreateInputTeam();
+    CreateInputPersonnel();
+    CreateStudentGroupInput();
+    CreateAuxiliaryAssignmentInput();
+    CreateInputCompetence();
 
     /* Wizard, innerLayOut Controlls */
     // When wizard is opened
@@ -50,15 +50,7 @@ $(document).ready(function () {
 
     // When menu-item in wizard is pushed
     $('#wizardLayout > nav > div:not(#exitWizard)').on('click', function () {
-
-        // TODO - continue on else to get other lists..
         var listTarget = $(this).attr('id');
-
-        /* Kör de andra tre, men inte teams
-        if (listTarget == "teamCrudOpen") {
-            updateTeamList();
-        }
-        */
 
         // Change "active" tab
         $(this).siblings('div').removeClass('wizActive');
@@ -73,12 +65,11 @@ $(document).ready(function () {
         var target = $(this).attr('id').slice(0, -4);
         $('#' + target).show();
         $('#' + target + 'Desc').show();
-
-        // Check if first visit on tab, if so populate list
+        
         updateLists();
     });
 
-    // Open edit data pop-up
+    // Open add/edit data pop-up
     $('#addButton').on('click', function () {
         var target = $('.wizActive').attr('id');
         target = target.slice(0, -4);
@@ -132,6 +123,7 @@ $(document).ready(function () {
                         data.forEach(function (e) {
                             $('#teamCrud table').append('<tr><td>' + e.name + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
                         });
+                        GetTeams();
                     }
                 });
             }
@@ -187,12 +179,33 @@ $(document).ready(function () {
         }
     }
 
-    $('.edit').on('click', function () {
-        var id = $(this).parent().attr('data-item');
-        var name = $(this).parent().prev().hmtl();
+    $('.wizardDataBox').on('click', 'p.edit', function () {
+        var itemId = $(this).parent().attr('data-item');
+        var target = $(this).closest('.wizardDataBox').attr("id");
+        
+        if (target == "teamCrud") {
+            return;
+        }
+        else if (target == "studentGroupCrud") {
+            return;
+            // UpdateStudentGroup(itemId);
+        }
+        else if (target == "personnelCrud") {
+            GetAllSubjects();
+            GetPersonToEdit(itemId);
+        }
+        else if (target == "auxiliaryAssignmentCrud") {
+            return;
+        }
+
+        target = target + "Form";
+        $('.innerOverLay').fadeToggle("fast");
+        $('#' + target).show();
     });
-    $('.delete').on('click', function () {
-        var id = $(this).parent().attr('data-item');
+    $('.wizardDataBox').on('click', 'p.delete', function () {
+        var itemId = $(this).parent().attr('data-item');
+        var target = $(this).closest('.wizardDataBox').attr("id");
+        
     });
     /* END - Jonas lekplats */
 });

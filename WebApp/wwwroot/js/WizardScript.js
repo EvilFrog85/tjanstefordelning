@@ -56,7 +56,6 @@ function SubmitTeam() {
 }
 
 function GetTeams() {
-    $('.teamButton').remove();
     $('#teamIdInput').empty();
     $('#teamIdInputForStudentGroup').empty();
     $('#includedClassTeamBelongingDropDown').empty();
@@ -64,14 +63,7 @@ function GetTeams() {
         type: 'GET',
         url: '/Wizard/GetAllTeams',
         success: function (data) {
-            console.log(data);
             data.forEach(function (element) {
-                $('#teamCrud').append($('<button/>', {
-                    text: element.name,
-                    onclick: 'DeleteTeam(' + element.id + ')',
-                    class: 'teamButton',
-                    id: 'teamButton' + element.id
-                }));
                 $('#teamIdInput').append($('<option/>', {
                     text: element.name,
                     value: element.id
@@ -107,17 +99,9 @@ function CreateInputTeam() {
         id: 'teamName',
         type: 'text'
     });
-
-
+    
     var $submitBtn = submitButtonMaker("createInputTeam", "Lägg till arbetslag", "SubmitTeam");
     $('#teamCrudForm').append($name).append($submitBtn);
-
-    var $getDataBtnTest = $('<button/>', {
-        text: 'Get All Teams',
-        onclick: 'GetTeams()'
-    });
-
-    $('#teamCrudForm').append($getDataBtnTest);
 }
 
 // #endregion
@@ -129,23 +113,31 @@ function CreateInputTeam() {
 var allChosenCompetences = [];
 function GetAllSubjects() {
     var allSubjects = [];
-    var $target = $('#personnelCrudForm');
+    //var $target = $('#personnelCrudForm');
     $.ajax({
         type: 'GET',
         url: '/Wizard/GetAllSubjects',
         success: function (data) {
-            var subjectDropDown = $('<select/>', { class: 'inputSelect' }); //subjectDropDown som namn kanske?
+            //var subjectInput = $('<input/>', { class: 'inputTextAuto' });
             data.forEach(function (subject) {
-                subjectDropDown.append($('<option/>', {
-                    value: subject.id,
-                    text: subject.name + ' (' + subject.subjectCode + ')'
-                }));
-                allSubjects.push({ 'id': subject.id, 'name': subject.name });
+                var newSubject = { label: subject.name, value: subject.id };
+                allSubjects.push(newSubject);
             });
-            $target.append(subjectDropDown);
+            console.log(allSubjects);
+            $('#competenceInput').autocomplete({
+                source: allSubjects
+                /*
+                select: function (event, listItems) {
+                    //ui.item./ label = klassnamn,/ value=klass id
+                    AddClass(listItems.item.label, listItems.item.value);
+                    $('#classInput').val(''); //clear input field
+                    return false; //cancel event
+                }
+                */
+            });
+            //$target.append(subjectDropDown);
         }
     });
-    console.log(allSubjects);
 }
 
 // #region PERSONNEL - crud
@@ -205,7 +197,6 @@ function GetPersonToEdit(id) {
             $('#teamIdInput').val(person.teamId);
             $('#availablePointsInput').val(person.availablePoints);
             $('#contractSelect').val(person.contract);
-            console.log(person.competences);
             person.competences.forEach(function (competence) {
                 var $competenceDiv = $('<div/>', {
                     class: competence.qualified ? 'qualifiedCompetence' : 'competence',
@@ -232,7 +223,6 @@ function GetPersonToEdit(id) {
 
 //Personnel crud html injection
 function CreateInputPersonnel() {
-    var $personnelList = $('<ul/>', { id: 'personnelList' });
     var $firstNameInput = $('<input/>', {
         class: 'inputText',
         placeholder: 'Förnamn..',
@@ -246,7 +236,8 @@ function CreateInputPersonnel() {
     var $imgUrlInput = $('<input/>', {
         class: 'inputText',
         placeholder: 'Bild..',
-        id: 'imgUrlInput'
+        id: 'imgUrlInput',
+        type: 'file',    
     });
     var $teamIdInput = $('<select/>', { class: 'inputSelect', text: 'Välj Avdelning', id: 'teamIdInput' });
     var $availablePointsInput = $('<input/>', {
@@ -266,6 +257,10 @@ function CreateInputPersonnel() {
             value: contract.value
         }));
     });
+
+
+
+
     $('#personnelCrudForm')
         .append($firstNameInput)
         .append($lastNameInput)
@@ -273,14 +268,8 @@ function CreateInputPersonnel() {
         .append($teamIdInput)
         .append($availablePointsInput)
         .append($contractSelect)
-        .append($personnelList);
-
-    $('#personnelList').append($('<p/>', {
-        text: 'Björn'
-    })).append($('<button/>', {
-        class: 'edit',
-        onclick: 'GetPersonToEdit(67)'
-    }));
+        .append('<div id="competenceCrudForm"></div>')
+        .append(submitButtonMaker('addPersonnelButton', 'Spara personal', 'AddNewPersonnel'));
 }
 
 // #endregion
@@ -353,24 +342,17 @@ function CreateInputCompetence() {
         class: 'inputTextAuto'
     });
 
-    $competenceInput.autocomplete({
-        source: subjectsArray
-    });
-
     var $addCompetenceButton = $('<button/>', {
         id: 'addCompetenceButton',
         class: 'add',
         onclick: 'AddCompetence()'
     });
-
-    var $submitNewPersonnel = submitButtonMaker("CreateInputCompetence", "Lägg till kompetens", "AddNewPersonnel");
-
+    
     $('#competenceCrudForm')
         .append($competenceInput)
         .append($CompetenceQualified)
         .append($addCompetenceButton)
-        .append($competenceList)
-        .append($submitNewPersonnel);
+        .append($competenceList);
 }
 
 // #endregion
@@ -616,7 +598,7 @@ function SubmitAuxiliaryAssignment() {
         PersonnelSignature: personnel,
         Assigned: assigned
     };
-    console.log(dataToInsert);
+    //console.log(dataToInsert);
 
     $.ajax({
         type: 'POST',
