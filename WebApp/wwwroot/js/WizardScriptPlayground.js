@@ -5,7 +5,7 @@ var counting;
 //ALEXANDERS OMRÅDE
 function StartStopWatch() {
     ms = 0;
-    counting = setInterval(Counting, 1)
+    counting = setInterval(Counting, 1);
 }
 
 function Counting() {
@@ -242,7 +242,7 @@ function GetAllPersonnel() {
                 })).append($('<button/>', {
                     class: 'delete',
                     onclick: 'RemovePerson(' + person.id + ')'
-                    }))
+                }));
             });
         }
     });
@@ -253,7 +253,7 @@ function RemovePerson(id) {
         type: 'POST',
         url: '/Wizard/DeletePersonnel/' + id,
         success: function (data) {
-            $('#personnelList' + id).remove()
+            $('#personnelList' + id).remove();
         }
     });
 }
@@ -491,8 +491,6 @@ function CreateStudentGroupInput() {
 // #region INCLUDEDCLASS - crud
 
 //Included Class CRUD
-var allChosenStudentGroups = [];
-
 //Included class functions
 function SubmitIncludedClass() {
     console.log("SubmitIncludedClass");
@@ -518,6 +516,7 @@ function SubmitIncludedClass() {
 
 //Included classes html injection
 var studentGroupsArray = [];
+var allChosenStudentGroups = [];
 function CreateIncludedClassInput() {
     $target = $('#includedClassCrud');
     studentGroupsArray = [];
