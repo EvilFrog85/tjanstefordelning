@@ -214,8 +214,9 @@ input[type=number] {
 /* jQuery UI Autocomplete style */
 .ui-autocomplete {
 	position: absolute;
-	top: 0;
-	left: 0;
+	    top: 0;
+	    left: 0;
+        z-index: 9999;
 	cursor: default;
 }
 	.ui-menu {
