@@ -9,10 +9,10 @@ namespace WebApp.Models.Entities
         public bool Assigned { get; set; }
         public int Duration { get; set; }
         public int UserId { get; set; }
-        public int TeamId { get; set; }
+        public int? TeamId { get; set; }
         public int ClassId { get; set; }
         public int? PersonnelId { get; set; }
-        public int StudentGroupId { get; set; }
+        public int? StudentGroupId { get; set; }
 
         public virtual Class Class { get; set; }
         public virtual Personnel Personnel { get; set; }

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using WebApp.Models.VM;
 
 namespace WebApp.Models.Entities
 {
@@ -15,7 +17,7 @@ namespace WebApp.Models.Entities
         public virtual DbSet<Subject> Subject { get; set; }
         public virtual DbSet<Team> Team { get; set; }
         public virtual DbSet<User> User { get; set; }
-        
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AuxiliaryAssignment>(entity =>
@@ -124,13 +126,11 @@ namespace WebApp.Models.Entities
                 entity.HasOne(d => d.StudentGroup)
                     .WithMany(p => p.IncludedClass)
                     .HasForeignKey(d => d.StudentGroupId)
-                    .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Included_class_ToStudent_group");
 
                 entity.HasOne(d => d.Team)
                     .WithMany(p => p.IncludedClass)
                     .HasForeignKey(d => d.TeamId)
-                    .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Included_class_ToTeam");
 
                 entity.HasOne(d => d.User)
@@ -176,7 +176,6 @@ namespace WebApp.Models.Entities
                 entity.HasOne(d => d.Team)
                     .WithMany(p => p.Personnel)
                     .HasForeignKey(d => d.TeamId)
-                    .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Personnel_ToTeam");
 
                 entity.HasOne(d => d.User)
@@ -203,7 +202,6 @@ namespace WebApp.Models.Entities
                 entity.HasOne(d => d.Team)
                     .WithMany(p => p.StudentGroup)
                     .HasForeignKey(d => d.TeamId)
-                    .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Student_group_ToTeam");
 
                 entity.HasOne(d => d.User)

@@ -211,6 +211,9 @@ namespace WebApp.Models.Entities
         internal async Task<bool> DeleteTeam(int id)
         {
             var teamToRemove = await Team.SingleOrDefaultAsync(c => c.Id == id);
+            await StudentGroup.Where(s => s.TeamId == id).ForEachAsync(s => s.TeamId = null);
+            await IncludedClass.Where(c => c.TeamId == id).ForEachAsync(c => c.TeamId = null);
+            await Personnel.Where(p => p.TeamId == id).ForEachAsync(p => p.TeamId = null);
             Team.Remove(teamToRemove);
             return await SaveChangesAsync() == 1;
         }
@@ -248,15 +251,6 @@ namespace WebApp.Models.Entities
             }).ToArrayAsync();
         }
 
-        //internal StudentGroupVM GetSubjectById(int id)
-        //{
-        //    var subject = Subject.SingleOrDefault(s => s.Id == id);
-
-            
-
-        //    return currentStudentGroup;
-        //}
-
         internal async Task<int> AddNewStudentGroup(StudentGroupCreateVM viewModel, string id)
         {
             int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
@@ -276,6 +270,7 @@ namespace WebApp.Models.Entities
         internal async Task<bool> DeleteStudentGroup(int id)
         {
             var studentGroupToRemove = StudentGroup.FirstOrDefault(s => s.Id == id);
+            await IncludedClass.Where(c => c.TeamId == id).ForEachAsync(c => c.TeamId = null);
             StudentGroup.Remove(studentGroupToRemove);
             return await SaveChangesAsync() == 1;
         }
@@ -293,14 +288,29 @@ namespace WebApp.Models.Entities
         internal async Task<StudentGroupVM[]> GetAllStudentGroups(string id)
         {
             int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
-            var studentGroups = StudentGroup.Where(s => s.UserId == userId).Select(s => new StudentGroupVM
+            var studentGroups = StudentGroup
+                .Include(s => s.Team)
+                .Where(s => s.UserId == userId).Select(s => new StudentGroupVM
             {
                 Id = s.Id,
                 Name = s.Name,
                 TeamId = s.TeamId,
+                TeamName = s.Team.Name,
                 StartingYear = s.StartingYear,
             });
             return await studentGroups.ToArrayAsync();
+        }
+        internal async Task<ClassVM[]> GetAllClasses()
+        {
+            //int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+            return await Class.Select(c => new ClassVM
+            {
+                Id = c.Id,
+                ClassName = c.ClassName,
+                ClassCode = c.ClassCode,
+                Points = c.Points,
+                SubjectId = c.SubjectId,
+            }).ToArrayAsync();
         }
 
         internal StudentGroupVM GetStudentGroupById(int id)
@@ -423,6 +433,19 @@ namespace WebApp.Models.Entities
             assignmentToUpdate.PersonnelId = Personnel_id;
 
             return await SaveChangesAsync() == 1;
+        }
+        internal async Task<AuxiliaryAssignmentVM[]> GetAllAuxiliaryAssignments(string id)
+        {
+            int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+            var AuxiliaryAssignments = AuxiliaryAssignment
+                .Where(s => s.UserId == userId).Select(s => new AuxiliaryAssignmentVM
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    Points = s.Points,
+                    Assigned = s.Assigned,
+                });
+            return await AuxiliaryAssignments.ToArrayAsync();
         }
     }
 }

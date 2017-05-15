@@ -50,6 +50,7 @@
     <Content Include="wwwroot\img\staff_pictures\Img2EnJ.jpg" />
     <Content Include="wwwroot\img\staff_pictures\Img2EnO.jpg" />
     <Content Include="wwwroot\img\staff_pictures\Img2MnE.jpg" />
+    <Content Include="wwwroot\img\WizardScript.js" />
     <Content Include="wwwroot\js\ClassAssignment.js" />
     <Content Include="wwwroot\js\Data.js" />
     <Content Include="wwwroot\js\jquery-3.1.0.js" />
