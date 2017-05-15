@@ -249,15 +249,6 @@ namespace WebApp.Models.Entities
             }).ToArrayAsync();
         }
 
-        //internal StudentGroupVM GetSubjectById(int id)
-        //{
-        //    var subject = Subject.SingleOrDefault(s => s.Id == id);
-
-            
-
-        //    return currentStudentGroup;
-        //}
-
         internal async Task<int> AddNewStudentGroup(StudentGroupCreateVM viewModel, string id)
         {
             int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
