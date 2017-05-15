@@ -364,8 +364,12 @@ namespace WebApp.Models.Entities
             return studentGroup;
         }
 
-        internal async Task<int> AssignClassesToStudentGroupAsync(ClassesToStudentGroupVM viewModel, string id)
+        internal async Task<bool> AssignClassesToStudentGroupAsync(ClassesToStudentGroupVM viewModel, string id)
         {
+
+            //TODO : Check if class and student group already exists in database
+            //var notAlreadyExistingClasses = IncludedClass.Join(viewModel.ClassData, ic => new { ic.ClassId, ic.StudentGroupId }, cd => new { cd.ClassId, cd.StudentGroupId }, (ic, cd) => ic);
+            var notAlreadyExistingClasses = viewModel.ClassData.Where(cd => !IncludedClass.Select(ic => ic.ClassId).Contains(cd.ClassId) && !IncludedClass.Select(ic => ic.StudentGroupId).Contains(cd.StudentGroupId));
             int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
             var includedClasses = viewModel.ClassData.Select(c => new IncludedClass
             {
@@ -380,7 +384,7 @@ namespace WebApp.Models.Entities
                 await IncludedClass.AddAsync(ic);
             }
             int numberOfClassesAdded = await SaveChangesAsync();
-            return numberOfClassesAdded;
+            return numberOfClassesAdded > 0;
         }
 
         internal async Task<IncludedClassCreateVM[]> GetAllIncludedClasses(string id)

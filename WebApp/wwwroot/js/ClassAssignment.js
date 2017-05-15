@@ -14,6 +14,10 @@ function string_of_enum(e, value) {
     return null;
 }
 
+function ClearClassList() {
+    $('#classList').empty();
+}
+
 // #endregion
 // #region Adding and removing student groups "buttons".
 var studentGroupsArray = [];
@@ -38,7 +42,8 @@ function AddStudentGroup(studentGroupName, studentGroupId) {
     });
     var $studentGroupButton = $('<button/>', {
         text: 'X',
-        onclick: 'RemoveStudentGroup("' + studentGroupId + '")'
+        onclick: 'RemoveStudentGroup("' + studentGroupId + '")',
+        id: 'assignButton'
     });
     var $studentGroupText = $('<p/>', { text: studentGroupName });
 
@@ -73,38 +78,35 @@ function AddClass(className, classId) {
     //TODO : Kolla om denna fullösningen går att fixa lite snyggare
     classId = $('#hiddenClassId').val();
     var duration = $('#includedClassDurationDropDown').val();
-    console.log(document.getElementById('includedClassTeamIdDropDown').selectedIndex);
     var teamId = $('#includedClassTeamIdDropDown').val();
     var teamName = $('#includedClassTeamIdDropDown option[value=' + teamId + ']').text();
-    console.log(classId);
-    var $classDiv = $('<div/>', {
-        class: 'classToStudentGroup',
-        id: classId,
-        'data-duration': duration,
-        'data-teamid': teamId,
-        'data-teamname': teamName,
-        style: "display: flex; flex-direction: row;"
-    });
-    var $classButton = $('<button/>', {
-        text: 'X',
-        onclick: 'RemoveClass("' + classId + '")',
-        style: "margin: 2px;"
-    });
-    var infoText = "Kurs: " + className + "    Arbetslag: " + teamName + "    Period: " + string_of_enum(durationEnum, duration);
-    var $classText = $('<pre/>', { text: infoText });
+    if (classesArray.findIndex(function (element) { return element.label == className }) != -1) {
+        var $classDiv = $('<div/>', {
+            class: 'classToStudentGroup',
+            id: classId,
+            'data-duration': duration,
+            'data-teamid': teamId,
+            'data-teamname': teamName,
+            style: "display: flex; flex-direction: row;"
+        });
+        var $classButton = $('<button/>', {
+            text: 'X',
+            onclick: 'RemoveClass("' + classId + '")',
+            id: 'assignButton',
+        });
+        var infoText = "<b>Kurs:</b> " + className + "<br/><b>Arbetslag:</b> " + teamName + "<br/><b>Period:</b> " + string_of_enum(durationEnum, duration);
+        var $classText = $('<div/>', { html: infoText });
 
-    //if(not already in the list)
-    var index = allChosenClasses.findIndex(function (element) { console.log(element); return element.ClassId === classId; });
-    if (index == -1) {
-        allChosenClasses.push({ "ClassName": className, "ClassId": classId });
-        $classDiv.append($classButton);
-        $classDiv.append($classText);
+        //if(not already in the list)
+        var index = allChosenClasses.findIndex(function (element) { console.log(element); return element.ClassId === classId; });
+        if (index == -1) {
+            allChosenClasses.push({ "ClassName": className, "ClassId": classId });
+            $classDiv.append($classButton);
+            $classDiv.append($classText);
 
-        $('#classList')
-            .append($classDiv);
-
-        $('#classInput').val('');
-
+            $('#classList').append($classDiv);
+            $('#classInput').val('');
+        }
     }
 
     console.log(allChosenClasses);
@@ -128,8 +130,8 @@ function PopulateStudentGroupsArray() {
                 source: studentGroupsArray,
                 select: function (event, listItems) {
                     $('#currentStudentGroup').empty();
-                    $('#currentStudentGroup').append($('<div/>', { text: 'Vald klass' }));
-                    $('#currentStudentGroup').append($('<div/>', { id: 'CSG', text: listItems.item.label, 'data-id': listItems.item.value }));
+                    $('#currentStudentGroup').append($('<div/>', { html: '<b>Vald klass</b>' }));
+                    $('#currentStudentGroup').append($('<div/>', { id: 'CSG', text: listItems.item.label, 'data-id': listItems.item.value, style: 'font-weight: bold; color: green; font-size: 30px;' }));
 
                     //ui.item./ label = klassnamn,/ value=klass id
                     //AddStudentGroup(listItems.item.label, listItems.item.value);
@@ -206,26 +208,29 @@ function AssignStudentGroupsToClass() {
 }
 
 function AssignClassesToStudentGroup() {
-    console.log('AssignClassesToStudentGroup');
     var studentGroupId = $('#CSG').attr('data-id');
-    console.log(studentGroupId);
     var classes = $('.classToStudentGroup');
-    console.log(classes);
-    var classDataToSend = [];
-    classes.each(function (index, cls) {
-        var newClass = { ClassId: cls.id, duration: cls.getAttribute('data-duration'), teamId: cls.getAttribute('data-teamid'), StudentGroupId: studentGroupId };
-        classDataToSend.push(newClass);
-    });
-    console.log(classDataToSend);
-    $.ajax({
-        type: 'POST',
-        url: '/Assignment/AssignStudentGroups/',
-        data: { ClassData: classDataToSend },
-        success: function (result) {
-            console.log(result);
-        }
-    });
-    //TODO : Clear divs
+    if (studentGroupId && classes.length != 0) {
+        var classDataToSend = [];
+        classes.each(function (index, cls) {
+            var newClass = { ClassId: cls.id, duration: cls.getAttribute('data-duration'), teamId: cls.getAttribute('data-teamid'), StudentGroupId: studentGroupId };
+            classDataToSend.push(newClass);
+        });
+        $.ajax({
+            type: 'POST',
+            url: '/Assignment/AssignStudentGroups/',
+            data: { ClassData: classDataToSend },
+            success: function (result) {
+                console.log(result);
+                if (result) {
+                    alert("Kurser är tillagda");
+                    $('#currentStudentGroup').empty();
+                }
+
+            }
+        });
+    }
+    //TODO : Clear divs? maybe save? Can be used to add same set of classes to another class. Add button to clear maybe?
 }
 // #endregion
 
@@ -341,7 +346,7 @@ $(function () {
 
     // #region assign classes to student group
     var $target2 = $('#assignClassesToStudentGroupDiv');
-    $target2.append($('<h2/>', { text: 'Kurser till klass' }));
+    $target2.append($('<h2/>', { text: 'Tilldela kurser till klass' }));
 
     var $classList = $('<div/>', {
         class: 'classList',
@@ -350,23 +355,32 @@ $(function () {
 
     var $addButton = $('<button/>', {
         class: 'add',
-        onclick: 'AddClass()'
+        onclick: 'AddClass()',
+        style: 'align-self: center'
     });
 
     var $submitBtn2 = $('<button/>', {
         class: 'buttonSubmit',
         onclick: 'AssignClassesToStudentGroup()',
-        text: 'Spara'
+        text: 'Spara',
+        style: 'align-self: center; margin: 5px;'
     });
+
+    var $clearClassListButton = $('<button/>', {
+        onclick: 'ClearClassList()',
+        text: 'Rensa kurslista',
+        style: 'align-self: center;'
+    })
 
     $target2.append($studentGroupInput);
     $target2.append($('<div/>', { id: 'currentStudentGroup' }));
     $target2.append($classInput);
     $target2.append($includedClassduration);
     $target2.append($teamId);
-    $target2.append($classList);
     $target2.append($addButton);
+    $target2.append($classList);
     $target2.append($submitBtn2);
+    $target2.append($clearClassListButton);
 
 
     //Inserts all student groups into an array for autocompletion
