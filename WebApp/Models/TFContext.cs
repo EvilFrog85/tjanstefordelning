@@ -27,9 +27,7 @@ namespace WebApp.Models.Entities
                 FirstName = viewModel.FirstName,
                 LastName = viewModel.LastName,
                 Signature = userSignature,
-                //Signature = String.Join("", viewModel.FirstName[0], viewModel.LastName[0]),
                 ImageUrl = viewModel.ImageUrl,
-                //TODO : Lägg till signatur samt kontrollera så den är unik, typ en metod sign = CreateSignature(firstname, lastname)
                 TeamId = viewModel.TeamId,
                 AvailablePoints = viewModel.AvailablePoints,
                 Contract = viewModel.Contract,
@@ -55,7 +53,7 @@ namespace WebApp.Models.Entities
             try
             {
 
-            await SaveChangesAsync();
+                await SaveChangesAsync();
             }
             catch (Exception)
             {
@@ -73,14 +71,14 @@ namespace WebApp.Models.Entities
 
             //Unique signature
             if (dataBaseSignature == 0)
-                return String.Join("",signature + "01");
+                return String.Join("", signature + "01");
             //Less than 10 simular signature, Generates a new signature with a 0number
             else if (dataBaseSignature < 10)
                 return String.Join("", signature, 0, dataBaseSignature + 1);
             //More than 10 signature, Generates a new signature with a number
             else
                 return String.Join("", signature, dataBaseSignature + 1);
-            
+
         }
 
         internal async Task<bool> DeletePersonnel(int id)
@@ -108,28 +106,40 @@ namespace WebApp.Models.Entities
                 string message = ex.Message;
                 success = false;
             }
-            
+
             return success;
         }
 
         internal async Task<bool> UpdatePersonnel(PersonnelCreateVM viewModel, int id)
         {
-            var personToUpdate = await Personnel.SingleOrDefaultAsync(p => p.Id == id);
-
+            var personToUpdate = await Personnel
+                .Where(p => p.Id == id)
+                .Include(c => c.Competence)
+                .SingleOrDefaultAsync();
+            
             personToUpdate.FirstName = viewModel.FirstName;
             personToUpdate.LastName = viewModel.LastName;
-            personToUpdate.ImageUrl = viewModel.ImageUrl;
+            // TODO - Activate once again when img-upload is functional
+            //personToUpdate.ImageUrl = viewModel.ImageUrl;
             personToUpdate.TeamId = viewModel.TeamId;
-            personToUpdate.Competence = viewModel.Competences.Select(c => new Competence { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray();
+            if (viewModel.Competences != null)
+            {
+                foreach (var item in personToUpdate.Competence)
+                {
+                    Competence.Remove(item);
+                }
+                personToUpdate.Competence = viewModel.Competences.Select(c => new Competence { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray();
+            }
             personToUpdate.AvailablePoints = viewModel.AvailablePoints;
             personToUpdate.Contract = viewModel.Contract;
+
             var success = await SaveChangesAsync() == 1;
             return success;
         }
 
         internal async Task<PersonnelWizardListVM[]> GetAllPersonnelToWizardList(string id)
         {
-            
+
             //Vi borde nog cachea svaret på anropet?
             var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
             var returnValue = await Personnel.Where(p => p.UserId == userId).Select(p => new PersonnelWizardListVM
@@ -140,7 +150,7 @@ namespace WebApp.Models.Entities
                 Signature = p.Signature,
                 TeamName = p.Team.Name// Team.SingleOrDefault(t => t.Id == p.TeamId).Name
             }).OrderBy(p => p.TeamName).ToArrayAsync();
-            
+
             return returnValue;
         }
         //Metod som inte hör till Wizarden Nedanför!
@@ -156,9 +166,12 @@ namespace WebApp.Models.Entities
                 Competences = p.Competence.Select(c => new CompetenceVM { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray(),
                 Contract = p.Contract,
                 FirstName = p.FirstName,
+                LastName = p.LastName,
+                Signature = p.Signature,
+                TeamName = p.Team.Name,
                 Id = p.Id,
                 ImageUrl = p.ImageUrl,
-                IncludedClasses = IncludedClass.Where(i => i.PersonnelId == p.Id).Select(i => new IncludedClassVM { ClassName = Class.SingleOrDefault(c => c.Id == i.ClassId).ToString(), Duration = i.Duration }).ToArray()
+                IncludedClasses = p.IncludedClass.Select(i => new IncludedClassVM { ClassName = i.Class.ClassName, Duration = i.Duration }).ToArray()
             }).ToArrayAsync();
         }
         internal PersonnelCreateVM GetPersonnelById(int id)
@@ -172,6 +185,7 @@ namespace WebApp.Models.Entities
                     AvailablePoints = p.AvailablePoints,
                     ImageUrl = p.ImageUrl,
                     Contract = p.Contract,
+                    TeamId = p.TeamId,
                     Competences = p.Competence.Select(o => new CompetenceCreateVM
                     {
                         Qualified = o.Qualified,
@@ -241,6 +255,19 @@ namespace WebApp.Models.Entities
             return teamArray;
         }
 
+        internal TeamVM GetTeamById(int id)
+        {
+            var team = Team
+                .Where(t => t.Id == id)
+                .Select(t => new TeamVM
+                {
+                    Id = t.Id,
+                    Name = t.Name
+                }).SingleOrDefault();
+
+            return team;
+        }
+
         internal async Task<bool> UpdateTeam(int id, TeamCreateVM updatedTeam)
         {
             var oldTeam = Team.SingleOrDefault(c => c.Id == id);
@@ -270,7 +297,6 @@ namespace WebApp.Models.Entities
                 UserId = userId,
                 StartingYear = viewModel.Starting_Year,
                 TeamId = viewModel.TeamId,
-
             };
             this.StudentGroup.Add(studentGroupToAdd);
             await SaveChangesAsync();
@@ -301,13 +327,13 @@ namespace WebApp.Models.Entities
             var studentGroups = StudentGroup
                 .Include(s => s.Team)
                 .Where(s => s.UserId == userId).Select(s => new StudentGroupVM
-            {
-                Id = s.Id,
-                Name = s.Name,
-                TeamId = s.TeamId,
-                TeamName = s.Team.Name,
-                StartingYear = s.StartingYear,
-            });
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    TeamId = s.TeamId,
+                    TeamName = s.Team.Name,
+                    StartingYear = s.StartingYear,
+                });
             return await studentGroups.ToArrayAsync();
         }
         internal async Task<ClassVM[]> GetAllClasses()
@@ -325,17 +351,17 @@ namespace WebApp.Models.Entities
 
         internal StudentGroupVM GetStudentGroupById(int id)
         {
-            var studentGroup = StudentGroup.SingleOrDefault(s => s.Id == id);
+            var studentGroup = StudentGroup
+                .Where(s => s.Id == id)
+                .Select(s => new StudentGroupVM
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    TeamId = s.TeamId,
+                    StartingYear = s.StartingYear
+                }).SingleOrDefault();
 
-            var currentStudentGroup = new StudentGroupVM
-            {
-                Id = studentGroup.Id,
-                Name = studentGroup.Name,
-                TeamId = studentGroup.TeamId,
-                StartingYear = studentGroup.StartingYear
-            };
-
-            return currentStudentGroup;
+            return studentGroup;
         }
 
         internal async Task<int> AssignClassesToStudentGroupAsync(ClassesToStudentGroupVM viewModel, string id)
@@ -372,6 +398,24 @@ namespace WebApp.Models.Entities
             }).ToArrayAsync();
         }
 
+        internal IncludedClassVM GetIncludedClassById(int id)
+        {
+            var includedClass = IncludedClass
+                .Where(i => i.Id == id)
+                .Select(i => new IncludedClassVM
+                {
+                    Id = i.Id,
+                    ClassId = i.ClassId,
+                    Assigned = i.Assigned,
+                    Duration = i.Duration,
+                    StudentGroupId = i.StudentGroup.Id,
+                    TeamId = i.Team.Id,
+                    ClassName = i.Class.ClassName
+                }).SingleOrDefault();
+
+            return includedClass;
+        }
+
         internal async Task<bool> AddNewIncludedClass(IncludedClassCreateVM viewModel, string id)
         {
             int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
@@ -385,7 +429,7 @@ namespace WebApp.Models.Entities
                 PersonnelId = viewModel.PersonnelId,
                 StudentGroupId = viewModel.StudentGroupId
             };
-            
+
 
             return await SaveChangesAsync() == 1;
         }
@@ -409,7 +453,7 @@ namespace WebApp.Models.Entities
 
             int? Personnel_id = null;
 
-             if (!String.IsNullOrWhiteSpace(viewModel.PersonnelSignature))
+            if (!String.IsNullOrWhiteSpace(viewModel.PersonnelSignature))
                 Personnel_id = Personnel.FirstOrDefault(p => p.Signature == viewModel.PersonnelSignature).Id;
 
 
@@ -438,14 +482,9 @@ namespace WebApp.Models.Entities
         {
             var assignmentToUpdate = AuxiliaryAssignment.SingleOrDefault(a => a.Id == id);
 
-            int? Personnel_id;
+            int? Personnel_id = null;
 
-            if (viewModel.PersonnelSignature == "")
-            {
-                Personnel_id = null;
-                viewModel.Assigned = false;
-            }
-            else
+            if (!String.IsNullOrWhiteSpace(viewModel.PersonnelSignature))
                 Personnel_id = Personnel.FirstOrDefault(p => p.Signature == viewModel.PersonnelSignature).Id;
 
             assignmentToUpdate.Name = viewModel.Name;
@@ -470,6 +509,21 @@ namespace WebApp.Models.Entities
                     Assigned = s.Assigned,
                 });
             return await AuxiliaryAssignments.ToArrayAsync();
+        }
+
+        internal AuxiliaryAssignmentVM GetAuxiliaryAssignmentById(int id)
+        {
+            var auxiliaryAssignment = AuxiliaryAssignment
+                .Where(a => a.Id == id)
+                .Select(a => new AuxiliaryAssignmentVM
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    Points = a.Points,
+                    Assigned = a.Assigned
+                }).SingleOrDefault();
+
+            return auxiliaryAssignment;
         }
     }
 }

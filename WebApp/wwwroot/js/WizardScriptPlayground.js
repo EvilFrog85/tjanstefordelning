@@ -364,7 +364,7 @@ function CreateInputCompetence() {
         id: 'competenceList'
     });
 
-    var $CompetenceQualified = $('<input/>', {
+    var $competenceQualified = $('<input/>', {
         type: 'checkbox',
         id: 'IsCompetenceQualified'
     });
@@ -391,7 +391,7 @@ function CreateInputCompetence() {
 
     $('#competenceCrud')
         .append($competenceInput)
-        .append($CompetenceQualified)
+        .append($competenceQualified)
         .append($addCompetenceButton)
         .append($competenceList)
         .append($submitNewPersonnel)
@@ -399,7 +399,6 @@ function CreateInputCompetence() {
 }
 
 // #endregion
-
 
 // #region STUDENTGROUP - crud
 
@@ -729,6 +728,61 @@ function CreateAuxiliaryAssignmentInput() {
 /* END Auxiliary_assignments */
 // #endregion
 
+// #region GetById-functions
+
+function GetTeamById(id) {
+
+    $.ajax({
+        type: 'POST',
+        url: '/Wizard/GetTeamById/' + id,
+        success: function (inputIsSuccess) {
+            console.log(inputIsSuccess);
+        }
+    });
+}
+
+function GetIncludedClassById(id) {
+    $.ajax({
+        type: 'POST',
+        url: '/Wizard/GetIncludedClassById/' + id,
+        success: function (inputIsSuccess) {
+            console.log(inputIsSuccess);
+        }
+    });
+}
+
+function GetAuxiliaryAssignmentById(id) {
+    $.ajax({
+        type: 'POST',
+        url: '/Wizard/GetAuxiliaryAssignmentById/' + id,
+        success: function (inputIsSuccess) {
+            console.log(inputIsSuccess);
+        }
+    });
+}
+
+function GetStudentGroupById(id) {
+    $.ajax({
+        type: 'POST',
+        url: '/Wizard/GetStudentGroupById/' + id,
+        success: function (inputIsSuccess) {
+            console.log(inputIsSuccess);
+        }
+    });
+}
+
+function GetTeamById(id) {
+
+    $.ajax({
+        type: 'POST',
+        url: '/Wizard/GetTeamById/' + id,
+        success: function (inputIsSuccess) {
+            console.log(inputIsSuccess);
+        }
+    });
+}
+
+// #endregion
 
 //GetCounts();
 CreateInputTeam();
