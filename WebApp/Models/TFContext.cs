@@ -27,9 +27,7 @@ namespace WebApp.Models.Entities
                 FirstName = viewModel.FirstName,
                 LastName = viewModel.LastName,
                 Signature = userSignature,
-                //Signature = String.Join("", viewModel.FirstName[0], viewModel.LastName[0]),
                 ImageUrl = viewModel.ImageUrl,
-                //TODO : Lägg till signatur samt kontrollera så den är unik, typ en metod sign = CreateSignature(firstname, lastname)
                 TeamId = viewModel.TeamId,
                 AvailablePoints = viewModel.AvailablePoints,
                 Contract = viewModel.Contract,
