@@ -274,7 +274,6 @@ namespace WebApp.Models.Entities
                 UserId = userId,
                 StartingYear = viewModel.Starting_Year,
                 TeamId = viewModel.TeamId,
-
             };
             this.StudentGroup.Add(studentGroupToAdd);
             await SaveChangesAsync();
