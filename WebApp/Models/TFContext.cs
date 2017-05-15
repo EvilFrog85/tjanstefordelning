@@ -52,7 +52,15 @@ namespace WebApp.Models.Entities
             }
 
             await Personnel.AddAsync(newPersonnel);
+            try
+            {
+
             await SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
             return newPersonnel.Id;
         }
 
@@ -162,6 +170,8 @@ namespace WebApp.Models.Entities
                     FirstName = p.FirstName,
                     LastName = p.LastName,
                     AvailablePoints = p.AvailablePoints,
+                    ImageUrl = p.ImageUrl,
+                    Contract = p.Contract,
                     Competences = p.Competence.Select(o => new CompetenceCreateVM
                     {
                         Qualified = o.Qualified,

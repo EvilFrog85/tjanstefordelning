@@ -175,7 +175,7 @@ function AddNewPersonnel() {
                 onclick: 'GetPersonToEdit(' + id + ')'
                 })).append($('<button/>', {
                     class: 'delete',
-                    onclick: 'RemovePerson(' + person.id + ')'
+                    onclick: 'RemovePerson(' + id + ')'
                 }));
             $('#firstNameInput').val('');
             $('#lastNameInput').val('');
