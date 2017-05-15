@@ -338,6 +338,25 @@ namespace WebApp.Models.Entities
             return currentStudentGroup;
         }
 
+        internal async Task<int> AssignClassesToStudentGroupAsync(ClassesToStudentGroupVM viewModel, string id)
+        {
+            int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+            var includedClasses = viewModel.ClassData.Select(c => new IncludedClass
+            {
+                Duration = c.Duration,
+                TeamId = c.TeamId,
+                ClassId = c.ClassId,
+                StudentGroupId = c.StudentGroupId,
+                UserId = userId
+            });
+            foreach (var ic in includedClasses)
+            {
+                await IncludedClass.AddAsync(ic);
+            }
+            int numberOfClassesAdded = await SaveChangesAsync();
+            return numberOfClassesAdded;
+        }
+
         internal async Task<IncludedClassCreateVM[]> GetAllIncludedClasses(string id)
         {
             int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
