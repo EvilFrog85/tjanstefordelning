@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using WebApp.Models.VM;
 
 namespace WebApp.Models.Entities
 {
@@ -167,7 +165,7 @@ namespace WebApp.Models.Entities
 
                 entity.Property(e => e.Signature)
                     .IsRequired()
-                    .HasColumnType("varchar(5)");
+                    .HasColumnType("varchar(6)");
 
                 entity.Property(e => e.TeamId).HasColumnName("Team_Id");
 
