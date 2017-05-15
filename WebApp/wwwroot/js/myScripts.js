@@ -68,11 +68,16 @@ $(document).ready(function () {
         
         updateLists();
     });
-
+    
     // Open add/edit data pop-up
     $('#addButton').on('click', function () {
         var target = $('.wizActive').attr('id');
         target = target.slice(0, -4);
+
+        // Get list of subjects
+        if (target == "personnelCrud" && allSubjectsExist == false)
+            GetAllSubjects();
+
         target = target + "Form";
         $('.innerOverLay').fadeToggle("fast");
         $('#' + target).show();
@@ -191,7 +196,10 @@ $(document).ready(function () {
             // UpdateStudentGroup(itemId);
         }
         else if (target == "personnelCrud") {
-            GetAllSubjects();
+            // Get list of subjects
+            if (allSubjectsExist == false)
+                GetAllSubjects();
+
             GetPersonToEdit(itemId);
         }
         else if (target == "auxiliaryAssignmentCrud") {

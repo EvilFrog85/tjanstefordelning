@@ -112,17 +112,17 @@ function CreateInputTeam() {
 
 var allChosenCompetences = [];
 var allSubjects = [];
+var allSubjectsExist = false;
 function GetAllSubjects() {
-    //var $target = $('#personnelCrudForm');
     $.ajax({
         type: 'GET',
         url: '/Wizard/GetAllSubjects',
         success: function (data) {
-            //var subjectInput = $('<input/>', { class: 'inputTextAuto' });
             data.forEach(function (subject) {
                 var newSubject = { label: subject.name, value: subject.id };
                 allSubjects.push(newSubject);
             });
+            allSubjectsExist = true;
         }
     });
 }
