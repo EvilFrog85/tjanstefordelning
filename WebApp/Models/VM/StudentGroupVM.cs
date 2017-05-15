@@ -11,8 +11,10 @@ namespace WebApp.Models.VM
         public int Id { get; set; }
         [Display(Name = "Klassnamn")]
         public string Name { get; set; }
-        [Display(Name = "Arbetslag")]
+        [Display(Name = "ArbetslagsId")]
         public int TeamId { get; set; }
+        [Display(Name = "Arbetslagsnamn")]
+        public string TeamName { get; set; }
         [Display(Name = "Startår")]
         public int StartingYear { get; set; }
     }

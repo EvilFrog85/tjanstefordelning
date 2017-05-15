@@ -135,6 +135,7 @@
 		}
 			.wizardDataBox > table{
 				border-collapse: collapse;
+                margin-bottom: 40px;
 			}
 				.wizardDataBox > table tr > td{
 					padding: 3px 12px;
