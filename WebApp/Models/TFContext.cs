@@ -34,7 +34,6 @@ namespace WebApp.Models.Entities
                 AvailablePoints = viewModel.AvailablePoints,
                 Contract = viewModel.Contract,
                 UserId = userId,
-
             };
 
             if (viewModel.Competences != null)
@@ -53,7 +52,15 @@ namespace WebApp.Models.Entities
             }
 
             await Personnel.AddAsync(newPersonnel);
+            try
+            {
+
             await SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
             return newPersonnel.Id;
         }
 
@@ -163,6 +170,8 @@ namespace WebApp.Models.Entities
                     FirstName = p.FirstName,
                     LastName = p.LastName,
                     AvailablePoints = p.AvailablePoints,
+                    ImageUrl = p.ImageUrl,
+                    Contract = p.Contract,
                     Competences = p.Competence.Select(o => new CompetenceCreateVM
                     {
                         Qualified = o.Qualified,
@@ -251,15 +260,6 @@ namespace WebApp.Models.Entities
                 Id = s.Id
             }).ToArrayAsync();
         }
-
-        //internal StudentGroupVM GetSubjectById(int id)
-        //{
-        //    var subject = Subject.SingleOrDefault(s => s.Id == id);
-
-            
-
-        //    return currentStudentGroup;
-        //}
 
         internal async Task<int> AddNewStudentGroup(StudentGroupCreateVM viewModel, string id)
         {

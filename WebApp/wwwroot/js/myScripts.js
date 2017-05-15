@@ -18,7 +18,7 @@ $(document).ready(function () {
     CreateInputCompetence();
     CreateIncludedClassInput();
     GetCounts();
-    */
+    //*/
     //CreateInputTeam();
     //CreateInputPersonnel();
     //CreateStudentGroupInput();
