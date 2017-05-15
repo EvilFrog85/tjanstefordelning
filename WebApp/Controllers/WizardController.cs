@@ -79,12 +79,8 @@ namespace WebApp.Controllers
         [HttpGet]
         public async Task<PersonnelWizardListVM[]> GetAllPersonnelToWizardList()
         {
-            Stopwatch myWatch = new Stopwatch();
-            myWatch.Start();
             var userId = _userManager.GetUserId(User);
             var returnValue = await _context.GetAllPersonnelToWizardList(userId);
-            myWatch.Stop();
-            _logger.LogInformation(myWatch.ElapsedMilliseconds.ToString());
             return returnValue;
         }
 
@@ -112,9 +108,11 @@ namespace WebApp.Controllers
         {
             return await _context.UpdatePersonnel(viewModel, id);
         }
+        [HttpGet]
         public PersonnelCreateVM GetPersonnelById(int id)
         {
-            return _context.GetPersonnelById(id);
+            var aPerson = _context.GetPersonnelById(id);
+            return aPerson;
         }
 
         [HttpGet]
