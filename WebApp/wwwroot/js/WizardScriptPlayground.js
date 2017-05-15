@@ -194,6 +194,7 @@ function GetPersonToEdit(id) {
         type: 'GET',
         url: '/Wizard/GetPersonnelById/' + id,
         success: function (person) {
+            console.log(person.availablePoints);
             $('#competenceList').empty();
             $('#firstNameInput').val(person.firstName);
             $('#lastNameInput').val(person.lastName);
@@ -734,7 +735,7 @@ function CreateAuxiliaryAssignmentInput() {
 CreateInputTeam();
 CreateInputPersonnel();
 CreateInputCompetence();
-//CreateStudentGroupInput();
-//CreateAuxiliaryAssignmentInput();
+CreateStudentGroupInput();
+CreateAuxiliaryAssignmentInput();
 GetTeams();
 GetAllPersonnel();

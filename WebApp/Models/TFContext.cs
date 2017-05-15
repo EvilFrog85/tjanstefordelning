@@ -34,7 +34,6 @@ namespace WebApp.Models.Entities
                 AvailablePoints = viewModel.AvailablePoints,
                 Contract = viewModel.Contract,
                 UserId = userId,
-
             };
 
             if (viewModel.Competences != null)
