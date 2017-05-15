@@ -156,9 +156,12 @@ namespace WebApp.Models.Entities
                 Competences = p.Competence.Select(c => new CompetenceVM { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray(),
                 Contract = p.Contract,
                 FirstName = p.FirstName,
+                LastName = p.LastName,
+                Signature = p.Signature,
+                TeamName = p.Team.Name,
                 Id = p.Id,
                 ImageUrl = p.ImageUrl,
-                IncludedClasses = IncludedClass.Where(i => i.PersonnelId == p.Id).Select(i => new IncludedClassVM { ClassName = Class.SingleOrDefault(c => c.Id == i.ClassId).ToString(), Duration = i.Duration }).ToArray()
+                IncludedClasses = p.IncludedClass.Select(i => new IncludedClassVM { ClassName = i.Class.ClassName, Duration = i.Duration }).ToArray()
             }).ToArrayAsync();
         }
         internal PersonnelCreateVM GetPersonnelById(int id)
@@ -172,6 +175,7 @@ namespace WebApp.Models.Entities
                     AvailablePoints = p.AvailablePoints,
                     ImageUrl = p.ImageUrl,
                     Contract = p.Contract,
+                    TeamId = p.TeamId,
                     Competences = p.Competence.Select(o => new CompetenceCreateVM
                     {
                         Qualified = o.Qualified,
@@ -419,14 +423,9 @@ namespace WebApp.Models.Entities
         {
             var assignmentToUpdate = AuxiliaryAssignment.SingleOrDefault(a => a.Id == id);
 
-            int? Personnel_id;
+            int? Personnel_id = null;
 
-            if (viewModel.PersonnelSignature == "")
-            {
-                Personnel_id = null;
-                viewModel.Assigned = false;
-            }
-            else
+            if (!String.IsNullOrWhiteSpace(viewModel.PersonnelSignature))
                 Personnel_id = Personnel.FirstOrDefault(p => p.Signature == viewModel.PersonnelSignature).Id;
 
             assignmentToUpdate.Name = viewModel.Name;
