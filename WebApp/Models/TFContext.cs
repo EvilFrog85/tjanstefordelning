@@ -112,17 +112,27 @@ namespace WebApp.Models.Entities
 
         internal async Task<bool> UpdatePersonnel(PersonnelCreateVM viewModel, int id)
         {
-            var personToUpdate = await Personnel.SingleOrDefaultAsync(p => p.Id == id);
-
+            var personToUpdate = await Personnel
+                .Where(p => p.Id == id)
+                .Include(c => c.Competence)
+                .SingleOrDefaultAsync();
+            
             personToUpdate.FirstName = viewModel.FirstName;
             personToUpdate.LastName = viewModel.LastName;
             // TODO - Activate once again when img-upload is functional
             //personToUpdate.ImageUrl = viewModel.ImageUrl;
             personToUpdate.TeamId = viewModel.TeamId;
-            if(viewModel.Competences != null)
+            if (viewModel.Competences != null)
+            {
+                foreach (var item in personToUpdate.Competence)
+                {
+                    Competence.Remove(item);
+                }
                 personToUpdate.Competence = viewModel.Competences.Select(c => new Competence { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray();
+            }
             personToUpdate.AvailablePoints = viewModel.AvailablePoints;
             personToUpdate.Contract = viewModel.Contract;
+
             var success = await SaveChangesAsync() == 1;
             return success;
         }

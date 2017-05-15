@@ -383,6 +383,7 @@ function CreateInputCompetence() {
     var $competenceInput = $('<input/>', {
         id: 'competenceInput',
         class: 'inputTextAuto',
+        'data-compId': 0, 
         placeholder: 'Ange kompetens..'
     });
 
@@ -393,7 +394,11 @@ function CreateInputCompetence() {
     });
 
     $competenceInput.autocomplete({
-        source: allSubjects
+        source: allSubjects,
+        select: function (event, ti) {
+            event.preventDefault();
+            $('#competenceInput').val(ti.item.label);
+        }
     })
 
     $('#competenceCrudForm')
