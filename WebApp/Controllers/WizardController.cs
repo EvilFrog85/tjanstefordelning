@@ -53,6 +53,13 @@ namespace WebApp.Controllers
         {
             return await _context.GetAllTeams(_userManager.GetUserId(User));
         }
+
+        [HttpPost]
+        public TeamVM GetTeamById(int id)
+        {
+            return _context.GetTeamById(id);
+        }
+
         [HttpPost]
         public async Task<bool> UpdateTeam(int id, TeamCreateVM updatedTeam)
         {
@@ -97,11 +104,6 @@ namespace WebApp.Controllers
             return await _context.DeletePersonnel(id);
         }
 
-        [HttpPost]
-        public StudentGroupVM GetStudentGroupById(int id)
-        {
-            return _context.GetStudentGroupById(id);
-        }
 
         [HttpPost]
         public async Task<bool> UpdatePersonnel(PersonnelCreateVM viewModel, int id)
@@ -148,6 +150,12 @@ namespace WebApp.Controllers
             return await _context.GetAllStudentGroups(_userManager.GetUserId(User));
         }
 
+        [HttpPost]
+        public StudentGroupVM GetStudentGroupById(int id)
+        {
+            return _context.GetStudentGroupById(id);
+        }
+
         //TODO : move to different controller?
         [HttpGet]
         public async Task<IncludedClassCreateVM[]> GetAllIncludedClasses()
@@ -155,6 +163,13 @@ namespace WebApp.Controllers
             return await _context.GetAllIncludedClasses(_userManager.GetUserId(User));
             
         }
+
+        [HttpPost]
+        public IncludedClassVM GetIncludedClassById(int id)
+        {
+            return _context.GetIncludedClassById(id);
+        }
+
         //TODO : Move to different controller?
         public async Task<bool> NewIncludedClass(IncludedClassCreateVM viewModel)
         {
@@ -190,6 +205,12 @@ namespace WebApp.Controllers
         public async Task<bool> UpdateAuxiliaryAssignment(AuxiliaryAssignmentCreateVM viewModel, int id)
         {
             return await _context.UpdateAuxiliaryAssignment(viewModel, id);
+        }
+
+        [HttpPost]
+        public AuxiliaryAssignmentVM GetAuxiliaryAssignmentById(int id)
+        {
+            return _context.GetAuxiliaryAssignmentById(id);
         }
 
     }
