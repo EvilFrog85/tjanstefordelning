@@ -13,7 +13,7 @@ namespace WebApp.Models.VM
         [Display(Name = "Klassnamn")]
         public string Name { get; set; }
         [Display(Name = "Arbetslag")]
-        public int TeamId { get; set; }
+        public int? TeamId { get; set; }
         [Display(Name = "Startår")]
         public int StartingYear { get; set; }
         public int[] ClassId { get; set; }

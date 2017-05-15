@@ -19,10 +19,10 @@ $(document).ready(function () {
     CreateIncludedClassInput();
     GetCounts();
     */
-    CreateInputTeam();
-    CreateInputPersonnel();
-    CreateStudentGroupInput();
-    CreateAuxiliaryAssignmentInput();
+    //CreateInputTeam();
+    //CreateInputPersonnel();
+    //CreateStudentGroupInput();
+    //CreateAuxiliaryAssignmentInput();
 
     /* Wizard, innerLayOut Controlls */
     // When wizard is opened

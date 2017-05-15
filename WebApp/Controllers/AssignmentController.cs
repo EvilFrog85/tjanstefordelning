@@ -29,6 +29,19 @@ namespace WebApp.Controllers
         }
 
         [HttpGet]
+        public async Task<TeamVM[]> GetAllTeams()
+        {
+            return await _context.GetAllTeams(_userManager.GetUserId(User));
+        }
+
+        //Needed?
+        //[HttpGet]
+        //public async Task<StudentGroupVM> GetStudentGroupById(int id)
+        //{
+        //    return await _context.GetStudentGroup(_userManager.GetUserId(User), id);
+        //}
+
+        [HttpGet]
         public async Task<StudentGroupVM[]> GetAllStudentGroups()
         {
             return await _context.GetAllStudentGroups(_userManager.GetUserId(User));
@@ -37,7 +50,13 @@ namespace WebApp.Controllers
         [HttpGet]
         public async Task<ClassVM[]> GetAllClasses()
         {
-            return await _context.GetAllClasses(_userManager.GetUserId(User));
+            return await _context.GetAllClasses();
+        }
+
+        [HttpPost]
+        public async Task<bool> AssignStudentGroups()
+        {
+            return false;
         }
     }
 }

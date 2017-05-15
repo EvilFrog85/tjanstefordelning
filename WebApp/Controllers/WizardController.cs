@@ -143,6 +143,7 @@ namespace WebApp.Controllers
             return await _context.DeleteStudentGroup(id);
         }
 
+        //TODO : is this used?
         [HttpGet]
         public async Task<StudentGroupVM[]> GetAllStudentGroups()
         {
