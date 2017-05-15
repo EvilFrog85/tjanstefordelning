@@ -217,3 +217,7 @@
 						font-weight: bold;
 						font-size: 24px;
 					}
+#personnelCrudForm img{
+    display: block;
+    margin: auto;
+}

@@ -10,6 +10,7 @@
     <Content Include="wwwroot\img\icons\done.svg" />
     <Content Include="wwwroot\img\icons\edit.svg" />
     <Content Include="wwwroot\img\icons\wizard.svg" />
+    <Content Include="wwwroot\img\staff_pictures\default.jpg" />
     <Content Include="wwwroot\img\staff_pictures\Img1AdW.jpg" />
     <Content Include="wwwroot\img\staff_pictures\Img1AmB.jpg" />
     <Content Include="wwwroot\img\staff_pictures\Img1AnN.jpg" />

@@ -180,7 +180,11 @@ function GetPersonToEdit(id) {
         success: function (person) {
             $('#firstNameInput').val(person.firstName);
             $('#lastNameInput').val(person.lastName);
-            $('#imgUrlInput').val(person.imageUrl);
+            console.log(person.imageUrl);
+            if (person.imageUrl != null)
+                $('#personnelCrudForm img').attr('src', '../img/staff_pictures/' + person.imageUrl + '.jpg');
+            else
+                $('#personnelCrudForm img').attr('src', '../img/staff_pictures/default.jpg');
             $('#teamIdInput').val(person.teamId);
             $('#availablePointsInput').val(person.availablePoints);
             $('#contractSelect').val(person.contract);
@@ -226,6 +230,10 @@ function CreateInputPersonnel() {
         id: 'imgUrlInput',
         type: 'file',
     });
+    var $img = $('<img/>', {
+        src: '../img/staff_pictures/default.jpg',
+        alt: 'Personalbild'
+    });
     var $teamIdInput = $('<select/>', { class: 'inputSelect', text: 'Välj Avdelning', id: 'teamIdInput' });
     var $availablePointsInput = $('<input/>', {
         type: 'number',
@@ -252,6 +260,7 @@ function CreateInputPersonnel() {
         .append($firstNameInput)
         .append($lastNameInput)
         .append($imgUrlInput)
+        .append($img)
         .append($teamIdInput)
         .append($availablePointsInput)
         .append($contractSelect)
