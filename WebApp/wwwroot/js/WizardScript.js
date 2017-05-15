@@ -1,8 +1,9 @@
 ﻿///<reference path="jquery-2.1.0-vsdoc.js"/>
 
+// Used in wizard to determine if list needs to be updated
+var submitClickCounter = 0;
 
 //To generate advanced checkboxes, styled submitButtons and form messages
-//Nice to have
 function checkboxMaker(name, statement) {
     return '<label for="' + name + '" class="labelCheckbox">' + statement + ': </label><label class="switch"><div><span>JA</span><span>NEJ</span></div><input id="' + name + '" name="' + name + '" type="checkbox" value="1" /><div class="slider"></div></label>';
 }
@@ -41,6 +42,7 @@ function GetCounts() {
 // #region TEAM-crud
 
 function SubmitTeam() {
+    submitClickCounter = 1;
     var $newName = $('#teamName').val();
     $('#teamName').val('');
     $.ajax({
@@ -149,6 +151,8 @@ function GetAllSubjects() {
 // #region PERSONNEL - crud
 
 function AddNewPersonnel() {
+    submitClickCounter = 1;
+
     var firstName = $('#firstNameInput').val();
     var lastName = $('#lastNameInput').val();
     var imageUrl = $('#imgUrlInput').val();
@@ -287,6 +291,8 @@ function CreateInputPersonnel() {
 //Competence crud
 
 function SubmitCompetence() {
+    submitClickCounter = 1;
+
     $.ajax({
         type: 'POST',
         url: '/Wizard/NewCompetence/',
@@ -374,6 +380,8 @@ function CreateInputCompetence() {
 // #region STUDENTGROUP - crud
 
 function SubmitStudentGroup() {
+    submitClickCounter = 1;
+
     var name = $('#studentGroupName').val();
     var year = $('#studentGroupStartingYearDropDown').val();
     var team = $('#teamIdInputForStudentGroup').val();
@@ -388,6 +396,8 @@ function SubmitStudentGroup() {
 }
 //TODO: Create form for update information (automatically filled in inputs)
 function UpdateStudentGroup(id) {
+    submitClickCounter = 1;
+
     var name = $('#studentGroupName').val();
     var year = $('#studentGroupStartingYearDropDown').val();
     var team = $('#teamIdInputForStudentGroup').val();
@@ -402,6 +412,8 @@ function UpdateStudentGroup(id) {
 }
 
 function DeleteStudentGroup(studentGroupId) {
+    submitClickCounter = 1;
+
     $.ajax({
         type: 'POST',
         url: '/Wizard/DeleteStudentGroup/' + studentGroupId,
@@ -578,6 +590,7 @@ function CreateIncludedClassInput() {
 
 /* Auxiliary_assignments */
 function SubmitAuxiliaryAssignment() {
+    submitClickCounter = 1;
 
     var name = $('#auxiliaryAssignmentName').val();
     var description = $('#auxiliaryAssignmentDesc').val();

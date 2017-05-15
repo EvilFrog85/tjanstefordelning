@@ -122,8 +122,7 @@ namespace WebApp.Models.Entities
 
         internal async Task<PersonnelWizardListVM[]> GetAllPersonnelToWizardList(string id)
         {
-            Stopwatch myWatch = new Stopwatch();
-            myWatch.Start();
+            
             //Vi borde nog cachea svaret på anropet?
             var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
             var returnValue = await Personnel.Where(p => p.UserId == userId).Select(p => new PersonnelWizardListVM
@@ -132,10 +131,8 @@ namespace WebApp.Models.Entities
                 LastName = p.LastName,
                 Id = p.Id,
                 Signature = p.Signature,
-                TeamName = Team.SingleOrDefault(t => t.Id == p.TeamId).Name
+                TeamName = p.Team.Name// Team.SingleOrDefault(t => t.Id == p.TeamId).Name
             }).OrderBy(p => p.TeamName).ToArrayAsync();
-            myWatch.Stop();
-            var timeConsumer = myWatch.ElapsedMilliseconds;
             
             return returnValue;
         }
@@ -143,11 +140,13 @@ namespace WebApp.Models.Entities
         internal async Task<PersonnelVM[]> GetAllPersonnel(string id)
         {
             var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
-            return await Personnel.Where(p => p.UserId == userId).Select(p => new PersonnelVM
+            return await Personnel
+                .Where(p => p.UserId == userId)
+                .Select(p => new PersonnelVM
             {
                 AssignedPoints = p.AssignedPoints,
                 AvailablePoints = p.AvailablePoints,
-                Competences = Competence.Where(c => c.PersonnelId == p.Id).Select(c => new CompetenceVM { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray(),
+                Competences = p.Competence.Select(c => new CompetenceVM { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray(),
                 Contract = p.Contract,
                 FirstName = p.FirstName,
                 Id = p.Id,
@@ -157,23 +156,23 @@ namespace WebApp.Models.Entities
         }
         internal PersonnelCreateVM GetPersonnelById(int id)
         {
-            var person = Personnel.SingleOrDefault(p => p.Id == id);
-            var editableperson = new PersonnelCreateVM
-            {
-                FirstName = person.FirstName,
-                LastName = person.LastName,
-                AvailablePoints = person.AvailablePoints,
-                Competences = Competence.Where(c => c.PersonnelId == person.Id).Select(c => 
-                new CompetenceCreateVM {
-                    Qualified = c.Qualified,
-                    SubjectId = c.SubjectId,
-                    Name = Subject.SingleOrDefault(s => s.Id == c.SubjectId).Name
-                }).ToArray(),
-                Contract = person.Contract,
-                ImageUrl = person.ImageUrl,
-                TeamId = person.TeamId
-            };
-            return editableperson;
+            var person = Personnel
+                .Where(p => p.Id == id)
+                .Select(p => new PersonnelCreateVM
+                {
+                    FirstName = p.FirstName,
+                    LastName = p.LastName,
+                    AvailablePoints = p.AvailablePoints,
+                    Competences = p.Competence.Select(o => new CompetenceCreateVM
+                    {
+                        Qualified = o.Qualified,
+                        Name = o.Subject.Name,
+                        SubjectId = o.SubjectId
+                    }).ToArray()
+                })
+                .SingleOrDefault();
+
+            return person;
         }
 
         internal int[] GetAllCounts(string id)
@@ -253,6 +252,15 @@ namespace WebApp.Models.Entities
             }).ToArrayAsync();
         }
 
+        //internal StudentGroupVM GetSubjectById(int id)
+        //{
+        //    var subject = Subject.SingleOrDefault(s => s.Id == id);
+
+            
+
+        //    return currentStudentGroup;
+        //}
+
         internal async Task<int> AddNewStudentGroup(StudentGroupCreateVM viewModel, string id)
         {
             int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
@@ -290,11 +298,14 @@ namespace WebApp.Models.Entities
         internal async Task<StudentGroupVM[]> GetAllStudentGroups(string id)
         {
             int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
-            var studentGroups = StudentGroup.Where(s => s.UserId == userId).Select(s => new StudentGroupVM
+            var studentGroups = StudentGroup
+                .Include(s => s.Team)
+                .Where(s => s.UserId == userId).Select(s => new StudentGroupVM
             {
                 Id = s.Id,
                 Name = s.Name,
                 TeamId = s.TeamId,
+                TeamName = s.Team.Name,
                 StartingYear = s.StartingYear,
             });
             return await studentGroups.ToArrayAsync();
@@ -432,6 +443,19 @@ namespace WebApp.Models.Entities
             assignmentToUpdate.PersonnelId = Personnel_id;
 
             return await SaveChangesAsync() == 1;
+        }
+        internal async Task<AuxiliaryAssignmentVM[]> GetAllAuxiliaryAssignments(string id)
+        {
+            int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+            var AuxiliaryAssignments = AuxiliaryAssignment
+                .Where(s => s.UserId == userId).Select(s => new AuxiliaryAssignmentVM
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    Points = s.Points,
+                    Assigned = s.Assigned,
+                });
+            return await AuxiliaryAssignments.ToArrayAsync();
         }
     }
 }
