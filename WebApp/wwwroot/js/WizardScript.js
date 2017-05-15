@@ -9,7 +9,7 @@ function checkboxMaker(name, statement) {
 }
 
 function submitButtonMaker(buttonId, buttonText, onClickFuncName) {
-    return '<div class="wizButtonContainer"><button id="' + buttonId + '" onclick="' + onClickFuncName+'()" class="buttonSubmit">' + buttonText + '</button></div>';
+    return '<div class="wizButtonContainer"><button id="' + buttonId + '" onclick="' + onClickFuncName + '()" class="buttonSubmit">' + buttonText + '</button></div>';
 }
 
 function generateFormMessage(type, message) {
@@ -99,7 +99,7 @@ function CreateInputTeam() {
         id: 'teamName',
         type: 'text'
     });
-    
+
     var $submitBtn = submitButtonMaker("createInputTeam", "Lägg till arbetslag", "SubmitTeam");
     $('#teamCrudForm').append($name).append($submitBtn);
 }
@@ -111,31 +111,18 @@ function CreateInputTeam() {
 //Get all subjects to be able to choose competences
 
 var allChosenCompetences = [];
+var allSubjects = [];
+var allSubjectsExist = false;
 function GetAllSubjects() {
-    var allSubjects = [];
-    //var $target = $('#personnelCrudForm');
     $.ajax({
         type: 'GET',
         url: '/Wizard/GetAllSubjects',
         success: function (data) {
-            //var subjectInput = $('<input/>', { class: 'inputTextAuto' });
             data.forEach(function (subject) {
                 var newSubject = { label: subject.name, value: subject.id };
                 allSubjects.push(newSubject);
             });
-            console.log(allSubjects);
-            $('#competenceInput').autocomplete({
-                source: allSubjects
-                /*
-                select: function (event, listItems) {
-                    //ui.item./ label = klassnamn,/ value=klass id
-                    AddClass(listItems.item.label, listItems.item.value);
-                    $('#classInput').val(''); //clear input field
-                    return false; //cancel event
-                }
-                */
-            });
-            //$target.append(subjectDropDown);
+            allSubjectsExist = true;
         }
     });
 }
@@ -193,7 +180,11 @@ function GetPersonToEdit(id) {
         success: function (person) {
             $('#firstNameInput').val(person.firstName);
             $('#lastNameInput').val(person.lastName);
-            $('#imgUrlInput').val(person.imageUrl);
+            console.log(person.imageUrl);
+            if (person.imageUrl != null)
+                $('#personnelCrudForm img').attr('src', '../img/staff_pictures/' + person.imageUrl + '.jpg');
+            else
+                $('#personnelCrudForm img').attr('src', '../img/staff_pictures/default.jpg');
             $('#teamIdInput').val(person.teamId);
             $('#availablePointsInput').val(person.availablePoints);
             $('#contractSelect').val(person.contract);
@@ -237,7 +228,11 @@ function CreateInputPersonnel() {
         class: 'inputText',
         placeholder: 'Bild..',
         id: 'imgUrlInput',
-        type: 'file',    
+        type: 'file',
+    });
+    var $img = $('<img/>', {
+        src: '../img/staff_pictures/default.jpg',
+        alt: 'Personalbild'
     });
     var $teamIdInput = $('<select/>', { class: 'inputSelect', text: 'Välj Avdelning', id: 'teamIdInput' });
     var $availablePointsInput = $('<input/>', {
@@ -265,6 +260,7 @@ function CreateInputPersonnel() {
         .append($firstNameInput)
         .append($lastNameInput)
         .append($imgUrlInput)
+        .append($img)
         .append($teamIdInput)
         .append($availablePointsInput)
         .append($contractSelect)
@@ -315,7 +311,7 @@ function AddCompetence() {
 
     //if(not already in the list)
     allChosenCompetences.push({ "Qualified": qualified, "SubjectId": subjectId });
-  
+
     $competenceDiv.append($competenceText);
     $competenceDiv.append($competenceButton);
 
@@ -347,7 +343,11 @@ function CreateInputCompetence() {
         class: 'add',
         onclick: 'AddCompetence()'
     });
-    
+
+    $competenceInput.autocomplete({
+        source: allSubjects
+    })
+
     $('#competenceCrudForm')
         .append($competenceInput)
         .append($CompetenceQualified)
@@ -434,7 +434,7 @@ function CreateStudentGroupInput() {
     }
 
     var $submitBtn = submitButtonMaker("CreateStudentGroupInput", "Lägg till klass", "SubmitStudentGroup");
-    
+
     //TODO : (Future) add pupilCount. USE: classroom assignment, prioritizing and if small classes can be grouped together
 
     //Add all elements to the student group div
@@ -644,7 +644,7 @@ function CreateAuxiliaryAssignmentInput() {
     // Options added further down
 
     var $mandatoryInput = checkboxMaker("auxiliaryAssignmentMandatory", "Måste tillsättas");
-    
+
     //TODO - Make autocomplete!
     var $personnelInput = $('<input />', {
         class: 'inputTextAuto',
