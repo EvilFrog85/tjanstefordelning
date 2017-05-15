@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="wwwroot\css\temp_style.css" />
     <Content Include="wwwroot\img\icons\add.svg" />
     <Content Include="wwwroot\img\icons\delete.svg" />
     <Content Include="wwwroot\img\icons\done.svg" />
@@ -50,6 +49,7 @@
     <Content Include="wwwroot\img\staff_pictures\Img2EnJ.jpg" />
     <Content Include="wwwroot\img\staff_pictures\Img2EnO.jpg" />
     <Content Include="wwwroot\img\staff_pictures\Img2MnE.jpg" />
+    <Content Include="wwwroot\img\WizardScript.js" />
     <Content Include="wwwroot\js\ClassAssignment.js" />
     <Content Include="wwwroot\js\Data.js" />
     <Content Include="wwwroot\js\jquery-3.1.0.js" />

@@ -18,7 +18,7 @@ namespace WebApp.Models.Entities
         public string LastName { get; set; }
         public string Signature { get; set; }
         public string ImageUrl { get; set; }
-        public int TeamId { get; set; }
+        public int? TeamId { get; set; }
         public decimal AvailablePoints { get; set; }
         public decimal AssignedPoints { get; set; }
         public int Contract { get; set; }

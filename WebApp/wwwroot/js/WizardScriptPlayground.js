@@ -5,7 +5,7 @@ var counting;
 //ALEXANDERS OMRÅDE
 function StartStopWatch() {
     ms = 0;
-    counting = setInterval(Counting, 1)
+    counting = setInterval(Counting, 1);
 }
 
 function Counting() {
@@ -175,7 +175,7 @@ function AddNewPersonnel() {
                 onclick: 'GetPersonToEdit(' + id + ')'
                 })).append($('<button/>', {
                     class: 'delete',
-                    onclick: 'RemovePerson(' + person.id + ')'
+                    onclick: 'RemovePerson(' + id + ')'
                 }));
             $('#firstNameInput').val('');
             $('#lastNameInput').val('');
@@ -194,6 +194,7 @@ function GetPersonToEdit(id) {
         type: 'GET',
         url: '/Wizard/GetPersonnelById/' + id,
         success: function (person) {
+            console.log(person.availablePoints);
             $('#competenceList').empty();
             $('#firstNameInput').val(person.firstName);
             $('#lastNameInput').val(person.lastName);
@@ -242,7 +243,7 @@ function GetAllPersonnel() {
                 })).append($('<button/>', {
                     class: 'delete',
                     onclick: 'RemovePerson(' + person.id + ')'
-                    }))
+                }));
             });
         }
     });
@@ -253,7 +254,7 @@ function RemovePerson(id) {
         type: 'POST',
         url: '/Wizard/DeletePersonnel/' + id,
         success: function (data) {
-            $('#personnelList' + id).remove()
+            $('#personnelList' + id).remove();
         }
     });
 }
@@ -491,8 +492,6 @@ function CreateStudentGroupInput() {
 // #region INCLUDEDCLASS - crud
 
 //Included Class CRUD
-var allChosenStudentGroups = [];
-
 //Included class functions
 function SubmitIncludedClass() {
     console.log("SubmitIncludedClass");
@@ -518,6 +517,7 @@ function SubmitIncludedClass() {
 
 //Included classes html injection
 var studentGroupsArray = [];
+var allChosenStudentGroups = [];
 function CreateIncludedClassInput() {
     $target = $('#includedClassCrud');
     studentGroupsArray = [];
@@ -734,7 +734,7 @@ function CreateAuxiliaryAssignmentInput() {
 CreateInputTeam();
 CreateInputPersonnel();
 CreateInputCompetence();
-//CreateStudentGroupInput();
-//CreateAuxiliaryAssignmentInput();
+CreateStudentGroupInput();
+CreateAuxiliaryAssignmentInput();
 GetTeams();
 GetAllPersonnel();
