@@ -175,6 +175,7 @@ namespace WebApp.Models.Entities
                     AvailablePoints = p.AvailablePoints,
                     ImageUrl = p.ImageUrl,
                     Contract = p.Contract,
+                    TeamId = p.TeamId,
                     Competences = p.Competence.Select(o => new CompetenceCreateVM
                     {
                         Qualified = o.Qualified,
