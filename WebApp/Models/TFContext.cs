@@ -372,14 +372,9 @@ namespace WebApp.Models.Entities
         {
             int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
 
-            int? Personnel_id;
+            int? Personnel_id = null;
 
-             if (viewModel.PersonnelSignature == "")
-                {
-                    Personnel_id = null;
-                    viewModel.Assigned = false;
-                }
-            else
+             if (!String.IsNullOrWhiteSpace(viewModel.PersonnelSignature))
                 Personnel_id = Personnel.FirstOrDefault(p => p.Signature == viewModel.PersonnelSignature).Id;
 
 
