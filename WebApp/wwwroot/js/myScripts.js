@@ -74,6 +74,26 @@ $(document).ready(function () {
         var target = $('.wizActive').attr('id');
         target = target.slice(0, -4);
 
+        // Empty all field 
+            //Team
+            $('#teamName').val('');
+            //Personnel
+            $('#firstNameInput').val('');
+            $('#lastNameInput').val('');
+            $('#personnelCrudForm img').attr('src', '');
+            $('#teamIdInput').val('');
+            $('#availablePointsInput').val('');
+            $('#contractSelect').val('');
+            $('#competenceList').empty();
+            allChosenCompetences = [];
+            //Student_groups
+            $('#studentGroupName').val('');
+            //Auxiliary_assignments
+            $('#auxiliaryAssignmentName').val('');
+            $('#auxiliaryAssignmentDesc').val('');
+            $('#auxiliaryAssignmentPoints').val('');
+            $('#auxiliaryAssignmentPersonnel').val('');
+
         // Get list of subjects
         if (target == "personnelCrud" && allSubjectsExist == false)
             GetAllSubjects();
@@ -201,6 +221,10 @@ $(document).ready(function () {
                 GetAllSubjects();
 
             GetPersonToEdit(itemId);
+            // Byter ut spar-knappen mot en uppdatera-knapp och ändrar funktionen som kallas. Kom ihåg att byta tillbaka efteråt / när "Add new" öppnas.
+            // ImgUrl uppdateras inte i nuläget..
+            $('#addPersonnelButton').attr('onclick', 'EditPersonById(' + itemId + ')');
+            $('#addPersonnelButton').text('Uppdatera');
         }
         else if (target == "auxiliaryAssignmentCrud") {
             return;

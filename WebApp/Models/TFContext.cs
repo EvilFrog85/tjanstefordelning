@@ -118,9 +118,11 @@ namespace WebApp.Models.Entities
 
             personToUpdate.FirstName = viewModel.FirstName;
             personToUpdate.LastName = viewModel.LastName;
-            personToUpdate.ImageUrl = viewModel.ImageUrl;
+            // TODO - Activate once again when img-upload is functional
+            //personToUpdate.ImageUrl = viewModel.ImageUrl;
             personToUpdate.TeamId = viewModel.TeamId;
-            personToUpdate.Competence = viewModel.Competences.Select(c => new Competence { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray();
+            if(viewModel.Competences != null)
+                personToUpdate.Competence = viewModel.Competences.Select(c => new Competence { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray();
             personToUpdate.AvailablePoints = viewModel.AvailablePoints;
             personToUpdate.Contract = viewModel.Contract;
             var success = await SaveChangesAsync() == 1;

@@ -37,7 +37,7 @@ namespace WebApp.Controllers
         {
             await _signInManager.PasswordSignInAsync("demo", "123", false, false);
 
-            return Redirect("/wizard/indexplayground");
+            return Redirect("/wizard/index");
 
             //Change to return View();
         }
