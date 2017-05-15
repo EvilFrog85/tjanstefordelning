@@ -175,11 +175,19 @@ namespace WebApp.Controllers
             var userId = _userManager.GetUserId(User);
             return await _context.AddNewAuxiliaryAssignment(viewModel, userId);
         }
+
+        [HttpGet]
+        public async Task<AuxiliaryAssignmentVM[]> GetAllAuxiliaryAssignments()
+        {
+            var userId = _userManager.GetUserId(User);
+            return await _context.GetAllAuxiliaryAssignments(userId);
+        }
         
         public async Task<bool> DeleteAuxiliaryAssignment(int id)
         {
             return await _context.DeleteAuxiliaryAssignment(id);
         }
+
         public async Task<bool> UpdateAuxiliaryAssignment(AuxiliaryAssignmentCreateVM viewModel, int id)
         {
             return await _context.UpdateAuxiliaryAssignment(viewModel, id);

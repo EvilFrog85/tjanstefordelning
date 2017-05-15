@@ -286,11 +286,14 @@ namespace WebApp.Models.Entities
         internal async Task<StudentGroupVM[]> GetAllStudentGroups(string id)
         {
             int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
-            var studentGroups = StudentGroup.Where(s => s.UserId == userId).Select(s => new StudentGroupVM
+            var studentGroups = StudentGroup
+                .Include(s => s.Team)
+                .Where(s => s.UserId == userId).Select(s => new StudentGroupVM
             {
                 Id = s.Id,
                 Name = s.Name,
                 TeamId = s.TeamId,
+                TeamName = s.Team.Name,
                 StartingYear = s.StartingYear,
             });
             return await studentGroups.ToArrayAsync();
@@ -416,6 +419,19 @@ namespace WebApp.Models.Entities
             assignmentToUpdate.PersonnelId = Personnel_id;
 
             return await SaveChangesAsync() == 1;
+        }
+        internal async Task<AuxiliaryAssignmentVM[]> GetAllAuxiliaryAssignments(string id)
+        {
+            int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+            var AuxiliaryAssignments = AuxiliaryAssignment
+                .Where(s => s.UserId == userId).Select(s => new AuxiliaryAssignmentVM
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    Points = s.Points,
+                    Assigned = s.Assigned,
+                });
+            return await AuxiliaryAssignments.ToArrayAsync();
         }
     }
 }
