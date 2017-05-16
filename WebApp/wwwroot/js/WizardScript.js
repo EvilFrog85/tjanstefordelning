@@ -200,10 +200,10 @@ function GetAllPersonnel() {
     allPersonnel = [];
     $.ajax({
         type: 'GET',
-        url: '/Wizard/GetAllPersonnel',
+        url: '/Wizard/GetAllPersonnelToWizardList',
         success: function (personnel) {
             personnel.forEach(function (person) {
-                var newPersonnel = { label: person.firstName + " " + person.lastName, value: person.id };
+                var newPersonnel = { label: person.firstName + " " + person.lastName + " (" + person.signature + ')', value: person.id };
                 allPersonnel.push(newPersonnel);
             });
             console.log(allPersonnel);
@@ -211,8 +211,7 @@ function GetAllPersonnel() {
                 source: allPersonnel,
                 select: function (event, ti) {
                     event.preventDefault();
-                    $('#auxiliaryAssignmentPersonnel').val(ti.item.label);
-                    $('#auxiliaryAssignmentPersonnel').attr('data-personnelid', ti.item.value);
+                    $('#auxiliaryAssignmentPersonnel').val(ti.item.label)
                 }
             });
         }
@@ -242,7 +241,7 @@ function AddNewPersonnel() {
         Contract: contract,
         Competences: allChosenCompetences
     };
-    
+
     $.ajax({
         type: 'POST',
         url: '/Wizard/AddNewPersonnel',
@@ -770,12 +769,14 @@ function SubmitAuxiliaryAssignment() {
     var description = $('#auxiliaryAssignmentDesc').val();
     var points = $('#auxiliaryAssignmentPoints').val();
     var duration = $('#auxiliaryAssignmentDurationDropDown').val();
-    
-    
     var mandatory = $('#auxiliaryAssignmentMandatory').prop('checked');
-    var personnelId = $('#auxiliaryAssignmentPersonnel').attr('data-personnelid');
-    console.log('personnelid: ' + personnelId);
     var personnel = $('#auxiliaryAssignmentPersonnel').val();
+    console.log(personnel);
+    if (personnel) {
+        var index = allPersonnel.findIndex(function (element) { return element.label == personnel; })
+        var personnelId = allPersonnel[index].value;
+        console.log('personnelid: ' + personnelId);
+    }
     var assigned = false;
     if (personnelId) {
         assigned = true;
@@ -795,11 +796,61 @@ function SubmitAuxiliaryAssignment() {
     $.ajax({
         type: 'POST',
         url: '/Wizard/NewAuxiliaryAssignment',
-        data: dataToInsert,
-        success: function (data) {
-            console.log(data);
-        }
-    });
+        data: dataToInsert
+    }).then(function (success) {
+        console.log(success);
+    }, function () {
+        console.log('error');
+    })
+}
+
+function UpdateAuxiliaryAssignment(id) {
+    var name = $('#auxiliaryAssignmentName').val();
+    var description = $('#auxiliaryAssignmentDesc').val();
+    var points = $('#auxiliaryAssignmentPoints').val();
+    var duration = $('#auxiliaryAssignmentDurationDropDown').val();
+    var mandatory = $('#auxiliaryAssignmentMandatory').prop('checked');
+    var personnel = $('#auxiliaryAssignmentPersonnel').val();
+    if (personnel) {
+        var index = allPersonnel.findIndex(function (element) { return element.label == personnel; })
+        var personnelId = allPersonnel[index].value;
+    }
+    var assigned = false;
+    if (personnelId) {
+        assigned = true;
+    }
+
+    var dataToInsert = {
+        Name: name,
+        Description: description,
+        Points: points,
+        Duration: duration,
+        Mandatory: mandatory,
+        PersonnelId: personnelId,
+        Assigned: assigned
+    };
+    //console.log(dataToInsert);
+
+    $.ajax({
+        type: 'POST',
+        url: '/Wizard/UpdateAuxiliaryAssignment/' + id,
+        data: dataToInsert
+    }).then(function (data) {
+        $('#auxiliaryAssignmentCrud table').find('tr:not(:first)').remove();
+        $.ajax({
+            type: 'GET',
+            url: '/Wizard/GetAllAuxiliaryAssignments',
+            success: function (data) {
+                data.forEach(function (e) {
+                    var yesOrNo = "Nej";
+                    if (e.assigned == true)
+                        yesOrNo = "Ja";
+                    $('#auxiliaryAssignmentCrud table').append('<tr><td>' + e.name + '</td><td>' + e.points + '</td><td>' + yesOrNo + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
+                });
+            }
+        });
+        $('.innerOverLay').fadeToggle("fast");
+    }, function () { console.log('error'); });;
 }
 
 function DeleteAuxiliaryAssignment(id) {
@@ -829,14 +880,19 @@ function GetAuxiliaryAssignmentToEdit(id) {
         type: 'GET',
         url: '/Wizard/GetAuxiliaryAssignmentById/' + id,
         success: function (assignment) {
-            $('#auxiliaryAssignmentName').val();
-            $('#auxiliaryAssignmentDesc').val();
-            $('#auxiliaryAssignmentPoints').val();
-            $('#auxiliaryAssignmentDurationDropDown').val();
-            $('#auxiliaryAssignmentMandatory').prop('checked');
-            $('#auxiliaryAssignmentPersonnel').val();
-            if (personnel !== "") {
-                assigned = true;
+            console.log(assignment);
+            $('#auxiliaryAssignmentName').val(assignment.name);
+            $('#auxiliaryAssignmentDesc').val(assignment.description);
+            $('#auxiliaryAssignmentPoints').val(assignment.points);
+            $('#auxiliaryAssignmentDurationDropDown').val(assignment.duration);
+            $('#auxiliaryAssignmentMandatory').attr('checked', assignment.mandatory);
+            if (assignment.personnelId != null) {
+                var index = allPersonnel.findIndex(function (element) { return element.value == assignment.personnelId; })
+                var personnelName = allPersonnel[index].label;
+                $('#auxiliaryAssignmentPersonnel').val(personnelName);
+            }
+            else {
+                $('#auxiliaryAssignmentPersonnel').val('');
             }
         }
     });

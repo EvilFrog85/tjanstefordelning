@@ -590,7 +590,6 @@ namespace WebApp.Models.Entities
         internal AuxiliaryAssignmentCreateVM GetAuxiliaryAssignmentById(int id)
         {
             var auxiliaryAssignment = AuxiliaryAssignment
-                .Include(a => a.Personnel)
                 .Where(a => a.Id == id)
                 .Select(a => new AuxiliaryAssignmentCreateVM
                 {
@@ -600,7 +599,7 @@ namespace WebApp.Models.Entities
                     Description = a.Description,
                     Mandatory = a.Mandatory,
                     Duration = a.Duration,
-                    PersonnelSignature = a.Personnel.FirstName
+                    PersonnelId = a.PersonnelId
                 }).SingleOrDefault();
 
             return auxiliaryAssignment;
