@@ -109,6 +109,10 @@ $(document).ready(function () {
             $('#addStudentGroupButton').attr('onclick', 'SubmitStudentGroup()');
             $('#addStudentGroupButton').text('Lägg till klass');
         }
+        if (target == "auxiliaryAssignmentCrud") {
+            $('#addAuxiliaryAssignmentButton').attr('onclick', 'SubmitAuxiliaryAssignment()');
+            $('#addAuxiliaryAssignmentButton').text('Lägg till uppdrag');
+        }
         target = target + "Form";
         $('.innerOverLay').fadeToggle("fast");
         $('#' + target).show();
@@ -257,8 +261,9 @@ $(document).ready(function () {
             $('#addPersonnelButton').text('Uppdatera');
         }
         else if (target == "auxiliaryAssignmentCrud") {
-            $('#addAuxiliaryAssignmentButton').attr('onclick', 'EditPersonById(' + itemId + ')');
+            $('#addAuxiliaryAssignmentButton').attr('onclick', 'UpdateAuxiliaryAssignment(' + itemId + ')');
             $('#addAuxiliaryAssignmentButton').text('Uppdatera');
+            GetAuxiliaryAssignmentToEdit(itemId);
         }
 
         target = target + "Form";
