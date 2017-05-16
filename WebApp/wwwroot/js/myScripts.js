@@ -97,10 +97,14 @@ $(document).ready(function () {
         // Get list of subjects
         if (target == "personnelCrud" && allSubjectsExist == false)
             GetAllSubjects();
-
+        if (target == "personnelCrud") {
+            $('#addPersonnelButton').attr('onclick', 'AddNewPersonnel()');
+            $('#addPersonnelButton').text('Spara Personal');
+        }
         target = target + "Form";
         $('.innerOverLay').fadeToggle("fast");
         $('#' + target).show();
+        
     });
 
     // Close edit data pop-up

@@ -54,6 +54,19 @@ function SubmitTeam() {
         }
     });
 }
+function UpdateTeam(id) {
+    submitClickCounter = 1;
+    var $newName = $('#teamName').val();
+    $('#teamName').val('');
+    $.ajax({
+        type: 'POST',
+        url: '/Wizard/UpdateTeam/' + id,
+        data: { "Name": $newName },
+        success: function (result) {
+            $('.innerOverLay').fadeToggle("fast");
+        }
+    });
+}
 
 //function GetTeams() {
 //    $('#teamIdInput').empty();
@@ -183,17 +196,17 @@ function AddNewPersonnel() {
             $('#lastNameInput').val('');
             $('#imgUrlInput').val('');
             $('#availablePointsInput').val('');
-            $('#contractSelect').empty();
+            $('#contractSelect').val(1);
             allChosenCompetences = [];
             $('#competenceList').empty();
             $('#messageBoxPersonnelCrud').empty();
             var personnelAddMessage = generateFormMessage("Success", "Personen blev tillagd.")
-            $('#messageBoxPersonnelCrud').append(personnelAddMessage).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+            $('#messageBoxPersonnelCrud').append(personnelAddMessage);
         }
     }, function () {
         $('#messageBoxPersonnelCrud').empty();
-        var personnelAddMessage = generateFormMessage("error", "Något gick fel...")
-        $('#messageBoxPersonnelCrud').append(personnelAddMessage).hide().fadeToggle(10).delay(2000).fadeToggle("fast")
+        var personnelAddMessage = generateFormMessage("error", "Något gick fel.")
+        $('#messageBoxPersonnelCrud').append(personnelAddMessage);
     });
 }
 
@@ -230,6 +243,7 @@ function EditPersonById(id) {
                     data.forEach(function (e) {
                         $('#personnelCrud table').append('<tr><td>' + e.teamName + '</td><td>' + e.firstName + '</td><td>' + e.lastName + '</td><td>' + e.signature + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
                     });
+                    
                 }
             });
         }
@@ -371,7 +385,9 @@ function SubmitCompetence() {
 
 function RemoveCompetence(subjectId) {
     $('#' + subjectId).remove();
-    var index = allChosenCompetences.findIndex(function (element) { return element.SubjectId == subjectId; });
+    var index = allChosenCompetences.findIndex(function (element) {
+        return element.SubjectId == subjectId;
+    });
     allChosenCompetences.splice(index, 1);
 }
 
@@ -472,11 +488,8 @@ function UpdateStudentGroup(id) {
     $.ajax({
         type: 'POST',
         url: '/Wizard/UpdateStudentGroup/' + id,
-        data: { Name: name, Starting_Year: year, TeamId: team },
-        success: function (inputIsSuccess) {
-            console.log(inputIsSuccess);
-        }
-    });
+        data: { Name: name, Starting_Year: year, TeamId: team }
+    }).then(function (success) { console.log(success) }, function () { console.log('Error')});
 }
 
 function DeleteStudentGroup(studentGroupId) {
@@ -484,11 +497,8 @@ function DeleteStudentGroup(studentGroupId) {
 
     $.ajax({
         type: 'POST',
-        url: '/Wizard/DeleteStudentGroup/' + studentGroupId,
-        success: function (deletionSucceeded) {
-            console.log(deletionSucceeded);
-        }
-    });
+        url: '/Wizard/DeleteStudentGroup/' + studentGroupId
+    }).then(function (success) { console.log('Ta bort Student Group: ' + success)}, function () { console.log('Ta bort Student Group: error') });
 }
 
 //Student group html injection
