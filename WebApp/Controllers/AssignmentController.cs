@@ -54,11 +54,18 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<bool> AssignStudentGroups(ClassesToStudentGroupVM viewModel)
+        public async Task<int> AssignStudentGroups(ClassesToStudentGroupVM viewModel)
         {
             string userId = _userManager.GetUserId(User);
             return await _context.AssignClassesToStudentGroupAsync(viewModel, userId);
             
+        }
+
+        [HttpGet]
+        public async Task<IncludedClassVM[]> GetStudentGroupClassesById(int id)
+        {
+            string userId = _userManager.GetUserId(User);
+            return await _context.GetIncludedClassesByStudentGroupId(id, userId);
         }
     }
 }

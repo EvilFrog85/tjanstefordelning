@@ -10,9 +10,10 @@ namespace WebApp.Models.VM
         public int Id { get; set; }
         public bool Assigned { get; set; }
         public int Duration { get; set; }
-        public int TeamId { get; set; }
+        public int? TeamId { get; set; }
         public int ClassId { get; set; }
-        public int StudentGroupId { get; set; }
+        public int? PersonnelId { get; set; }
+        public int? StudentGroupId { get; set; }
         public string ClassName { get; set; }
     }
 }
