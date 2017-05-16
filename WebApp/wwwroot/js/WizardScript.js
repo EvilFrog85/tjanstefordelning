@@ -193,7 +193,7 @@ function AddNewPersonnel() {
     }, function () {
         $('#messageBoxPersonnelCrud').empty();
         var personnelAddMessage = generateFormMessage("error", "Något gick fel...")
-        $('#messageBoxPersonnelCrud').append(personnelAddMessage).hide().fadeToggle("fast").delay(2000).fadeToggle("fast")
+        $('#messageBoxPersonnelCrud').append(personnelAddMessage).hide().fadeToggle(10).delay(2000).fadeToggle("fast")
     });
 }
 
