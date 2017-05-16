@@ -136,7 +136,7 @@ input[type=number] {
 /* Is buttonCancel reduntant if we have "Close-buttons". Leaving it here for now. */
 	.buttonSubmit/*, .buttonCancel*/{
 		display: inline-block;
-		width: 40%;
+		min-width: 40%;
 		max-width: 300px;
 		padding: 6px 0;
 		margin: 0 0 20px 0;
@@ -228,7 +228,6 @@ input[type=number] {
     }
 #IsCompetenceQualifiedBox {
         display: inline-block;
-        float: left;
     }
 #addCompetenceButton {
     padding: 3px 6px;

@@ -113,7 +113,7 @@
 				}
             #addButton {
                 width: calc(25% - 2px);
-                float: left;
+                float: right;
                 height: calc(100% - 2px);
                 border: 1px solid #000;
                 background-color: #4cd2ff;
@@ -182,10 +182,12 @@
 				height: 40px;
 				position: absolute;
 					top: calc(10% + 5px);
-					right: calc(10% + 10px);
+					right: calc(10% - 5px);
 					z-index: 22;
 				background: url(../img/icons/x_delete.svg);
 				transition: transform .2s linear;
+                border-radius: 20px;
+                background-color: #FFF;
 			}
 				.closeInnerOverLay:hover{
 					cursor: pointer;
@@ -197,7 +199,7 @@
 				position: relative;
 					top: 10%;
 					left: 10%;
-				padding: 20px 5px;
+				padding: 40px 5px 20px 5px;
 				background: white;
 				overflow-y: auto;
 			}

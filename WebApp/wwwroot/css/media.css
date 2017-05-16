@@ -20,14 +20,14 @@
 		font-size: 14px;
 	}
 	#counter{
-		width: 50%;
+		width: calc(50% - 2px);
 		max-width: 200px;
 	}
 	#wizardBoxItemDesc{
 		display: none;
 	}
 	#addButton{
-		width: 50%;
+		width: calc(50% - 2px);
 		max-width: 200px;
 	}
     .inputText, .inputTextAuto, .inputSelect, .inputFile, .switch > div > span, .buttonSubmit {
