@@ -92,7 +92,7 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<int> AddNewPersonnel(PersonnelCreateVM viewModel)
+        public async Task<bool> AddNewPersonnel(PersonnelCreateVM viewModel)
         {
             var userId = _userManager.GetUserId(User);
             return await _context.AddNewPersonnel(viewModel, userId);

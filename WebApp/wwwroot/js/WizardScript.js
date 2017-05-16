@@ -55,39 +55,63 @@ function SubmitTeam() {
     });
 }
 
-function GetTeams() {
-    $('#teamIdInput').empty();
-    $('#teamIdInputForStudentGroup').empty();
-    $('#includedClassTeamBelongingDropDown').empty();
-    $.ajax({
-        type: 'GET',
-        url: '/Wizard/GetAllTeams',
-        success: function (data) {
-            data.forEach(function (element) {
-                $('#teamIdInput').append($('<option/>', {
-                    text: element.name,
-                    value: element.id
-                }));
-                $('#teamIdInputForStudentGroup').append($('<option/>', {
-                    text: element.name,
-                    value: element.id
-                }));
-                $('#includedClassTeamBelongingDropDown').append($('<option/>', {
-                    text: element.name,
-                    value: element.id
-                }));
-            });
-        }
-    });
-}
+//function GetTeams() {
+//    $('#teamIdInput').empty();
+//    $('#teamIdInputForStudentGroup').empty();
+//    $('#includedClassTeamBelongingDropDown').empty();
+//    $.ajax({
+//        type: 'GET',
+//        url: '/Wizard/GetAllTeams',
+//        success: function (data) {
+//            data.forEach(function (element) {
+//                $('#teamIdInput').append($('<option/>', {
+//                    text: element.name,
+//                    value: element.id
+//                }));
+//                $('#teamIdInputForStudentGroup').append($('<option/>', {
+//                    text: element.name,
+//                    value: element.id
+//                }));
+//                $('#includedClassTeamBelongingDropDown').append($('<option/>', {
+//                    text: element.name,
+//                    value: element.id
+//                }));
+//            });
+//        }
+//    });
+//}
 
 function DeleteTeam(id) {
-    $('#teamButton' + id).remove();
     $.ajax({
         type: 'POST',
         url: '/Wizard/DeleteTeam/' + id,
         success: function (data) {
             console.log(data);
+            $('#teamCrud table').find('tr:not(:first)').remove();
+            $('#teamIdInput').empty();
+            $('#teamIdInputForStudentGroup').empty();
+            $('#includedClassTeamBelongingDropDown').empty();
+            $.ajax({
+                type: 'GET',
+                url: '/Wizard/GetAllTeams',
+                success: function (data) {
+                    data.forEach(function (element) {
+                        $('#teamCrud table').append('<tr><td>' + element.name + '</td><td data-item="' + element.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
+                        $('#teamIdInput').append($('<option/>', {
+                            text: element.name,
+                            value: element.id
+                        }));
+                        $('#teamIdInputForStudentGroup').append($('<option/>', {
+                            text: element.name,
+                            value: element.id
+                        }));
+                        $('#includedClassTeamBelongingDropDown').append($('<option/>', {
+                            text: element.name,
+                            value: element.id
+                        }));
+                    });
+                }
+            });
         }
     });
 }
@@ -152,24 +176,24 @@ function AddNewPersonnel() {
     $.ajax({
         type: 'POST',
         url: '/Wizard/AddNewPersonnel',
-        data: personnelData,
-        success: function (id) {
-            $('#personnelList').append($('<p/>', {
-                text: firstName + ' ' + lastName
-            })).append($('<button/>', {
-                class: 'edit',
-                onclick: 'GetPersonToEdit(' + id + ')'
-            }));
+        data: personnelData
+    }).then(function (success) {
+        if (success) {
             $('#firstNameInput').val('');
             $('#lastNameInput').val('');
             $('#imgUrlInput').val('');
-            $('#teamIdInput').val('');
             $('#availablePointsInput').val('');
-            $('#contractSelect').val('');
+            $('#contractSelect').empty();
             allChosenCompetences = [];
             $('#competenceList').empty();
-
+            $('#messageBoxPersonnelCrud').empty();
+            var personnelAddMessage = generateFormMessage("Success", "Personen blev tillagd.")
+            $('#messageBoxPersonnelCrud').append(personnelAddMessage).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
         }
+    }, function () {
+        $('#messageBoxPersonnelCrud').empty();
+        var personnelAddMessage = generateFormMessage("error", "Något gick fel...")
+        $('#messageBoxPersonnelCrud').append(personnelAddMessage).hide().fadeToggle(10).delay(2000).fadeToggle("fast")
     });
 }
 
@@ -190,7 +214,6 @@ function EditPersonById(id) {
         Contract: contract,
         Competences: allChosenCompetences
     };
-    console.log(personnelData);
     $.ajax({
         type: 'POST',
         url: '/Wizard/UpdatePersonnel/' + id,
@@ -253,6 +276,25 @@ function GetPersonToEdit(id) {
     });
 }
 
+function RemovePerson(id) {
+    $.ajax({
+        type: 'POST',
+        url: '/Wizard/DeletePersonnel/' + id,
+        success: function (data) {
+            console.log(data);
+            $('#personnelCrud table').find('tr:not(:first)').remove();
+            $.ajax({
+                type: 'GET',
+                url: '/Wizard/GetAllPersonnelToWizardList',
+                success: function (data) {
+                    data.forEach(function (e) {
+                        $('#personnelCrud table').append('<tr><td>' + e.teamName + '</td><td>' + e.firstName + '</td><td>' + e.lastName + '</td><td>' + e.signature + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
+                    });
+                }
+            });
+        }
+    });
+}
 //Personnel crud html injection
 function CreateInputPersonnel() {
     var $firstNameInput = $('<input/>', {
@@ -374,7 +416,7 @@ function CreateInputCompetence() {
     var $competenceInput = $('<input/>', {
         id: 'competenceInput',
         class: 'inputTextAuto',
-        'data-compId': 0, 
+        'data-compId': 0,
         placeholder: 'Ange kompetens..'
     });
 
