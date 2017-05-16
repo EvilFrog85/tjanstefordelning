@@ -283,25 +283,35 @@ $(document).ready(function () {
         var itemId = $(this).parent().attr('data-item');
         var target = $(this).closest('.wizardDataBox').attr("id");
 
-        if (target == "teamCrud") {
-            DeleteTeam(itemId);
-            personnelFirstVisit = true;
-            studentGroupFirstVisit = true;
-            auxiliaryAssignmentFirstVisit = true;
-        }
-        if (target == "personnelCrud") {
-            var removeConfirm = confirm('You sure you wanna remove?')
-            if (removeConfirm)
+        $('#removeConfirmation').attr('data-action', target);
+        $('#removeConfirmation').attr('data-id', itemId);
+        $('#removeOverLay').fadeToggle("fast");
+    });
+
+    $('#removeContent button').on('click', function () {
+        $('#removeOverLay').fadeToggle("fast");
+        if ($(this).attr('id') == "removeConfirmation") {
+            var action = $(this).attr('data-action');
+            var itemId = $(this).attr('data-id');
+            if (action == "teamCrud") {
+                DeleteTeam(itemId);
+                submitClickCounter = 1;
+            }
+            else if (action == "personnelCrud") {
                 RemovePerson(itemId);
+                submitClickCounter = 1;
+            }
+            else if (action == "studentGroupCrud") {
+                DeleteStudentGroup(itemId);
+                submitClickCounter = 1;
+            }
+            else if (action == "auxiliaryAssignmentCrud") {
+                DeleteAuxiliaryAssignment(itemId);
+                submitClickCounter = 1;
+            }
             else
                 return;
         }
-        if (target == "studentGroupCrud")
-            DeleteStudentGroup(itemId);
-        if (target == "auxiliaryAssignmentCrud") {
-            DeleteAuxiliaryAssignment(itemId);
-        }
-
     });
     /* END - Jonas lekplats */
 });

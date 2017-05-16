@@ -223,3 +223,30 @@
     margin: auto;
     text-align: center;
 }
+#removeOverLay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 19;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: none;
+}
+#removeContent {
+    position: absolute;
+    left: calc(50% - 150px);
+    top: calc(50% - 50px);
+    height: 100px;
+    width: 300px;
+    text-align: center;
+    background: #FFF;
+}
+    #removeContent p {
+        line-height: 50px;
+        vertical-align: middle;
+        font-weight: bold;
+    }
+    #removeContent button {
+        padding: 5px;
+    }
