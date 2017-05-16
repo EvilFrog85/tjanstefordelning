@@ -20,7 +20,7 @@ namespace WebApp.Models.VM
 
         // To add functionality to this part we need to connect Axuxiliary_assignments to Team!! Ex. Övrig personal connect to "Övriga uppdrag"
         // Non-mandatory, if you want to assign staff straight away
-        public string PersonnelSignature { get; set; }
+        public int? PersonnelId { get; set; }
         // True if Personnel_Id selected
         public bool Assigned { get; set; }
 

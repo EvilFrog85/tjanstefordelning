@@ -8,7 +8,7 @@ var durationEnum = {
 };
 function string_of_enum(e, value) {
     for (var k in e) {
-        if (e[k] === value)
+        if (e[k] == value)
             return k;
     }
     return null;
@@ -36,7 +36,7 @@ var allChosenStudentGroups = [];
 function RemoveStudentGroup(studentGroupId) {
     $('#' + studentGroupId).remove();
     //TODO : Check findindex
-    var index = allChosenStudentGroups.findIndex(function (element) { console.log(element); element.StudentGroupId === studentGroupId; });
+    var index = allChosenStudentGroups.findIndex(function (element) { console.log(element); element.StudentGroupId == studentGroupId; });
     console.log(index);
     allChosenStudentGroups.splice(index);
     console.log(allChosenStudentGroups);
@@ -77,26 +77,25 @@ var allChosenClasses = [];
 function RemoveClass(classId) {
     $('#' + classId).remove();
     //TODO : Check findindex
-    var index = allChosenClasses.findIndex(function (element) { console.log(element); element.ClassId === classId; });
+    var index = allChosenClasses.findIndex(function (element) { console.log(element); element.ClassId == classId; });
     console.log(index);
     allChosenClasses.splice(index);
     console.log(allChosenClasses);
 }
 
-function AddClass(className, classId) {
+function AddClass() {
     //Clear error message
     $('#assignedClasses').empty();
 
     //Get data
     className = $('#classInput').val();
-    //TODO : Kolla om denna fullösningen går att fixa lite snyggare
-    classId = $('#hiddenClassId').val();
+    classId = $('#classInput').attr('data-classid');
     var duration = $('#includedClassDurationDropDown').val();
     var teamId = $('#includedClassTeamIdDropDown').val();
     var teamName = $('#includedClassTeamIdDropDown option[value=' + teamId + ']').text();
 
     //Check that the user has input a valid class
-    if (classesArray.findIndex(function (element) { return element.label === className; }) !== -1) {
+    if (classesArray.findIndex(function (element) { return element.label == className; }) !== -1) {
         //Create the div to contain the included class information needed
         var $classDiv = $('<div/>', {
             class: 'classToStudentGroup',
@@ -117,8 +116,8 @@ function AddClass(className, classId) {
         var $classText = $('<div/>', { html: infoText });
 
         //Check if the class is in the class list
-        var index = allChosenClasses.findIndex(function (element) { console.log(element); return element.ClassId === classId; });
-        if (index === -1) {
+        var index = allChosenClasses.findIndex(function (element) { console.log(element); return element.ClassId == classId; });
+        if (index == -1) {
             allChosenClasses.push({ "ClassName": className, "ClassId": classId });
             $classDiv.append($classButton);
             $classDiv.append($classText);
@@ -126,11 +125,13 @@ function AddClass(className, classId) {
             $('#classList').append($classDiv);
             $('#classInput').val('');
         } else {
-            $('#assignedClasses').html(generateFormMessage("error", "Kursen finns redan i listan."));
+            $('#messageBoxAssignClasses').html(generateFormMessage("error", "Kursen finns redan i listan.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+            //$('#assignedClasses').html(generateFormMessage("error", "Kursen finns redan i listan."));
             $('#classInput').val('');
         }
     } else {
-        $('#assignedClasses').html(generateFormMessage("error", "Du måste välja en klass och eller kurser att lägga till."));
+        $('#messageBoxAssignClasses').html(generateFormMessage("error", "Du måste välja en klass och/eller kurs(er) att lägga till.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+        //$('#assignedClasses').html(generateFormMessage("error", "Du måste välja en klass och eller kurser att lägga till."));
     }
 
     console.log(allChosenClasses);
@@ -188,7 +189,7 @@ function PopulateClassesArray() {
                 select: function (event, listItems) {
                     //set the selected classes name in the input and save its id in hidden input for later usage
                     $('#classInput').val(listItems.item.label);
-                    $('#hiddenClassId').val(listItems.item.value);
+                    $('#classInput').attr('data-classid', listItems.item.value);
                     return false;
                 }
             });
@@ -241,10 +242,10 @@ function AssignClassesToStudentGroup() {
             success: function (result) {
                 console.log(result);
                 if (result > 0) {
-                    $('#assignedClasses').html(generateFormMessage("success", result + " kurs/kurser har blivit tillagda."));
+                    $('#messageBoxAssignClasses').html(generateFormMessage("success", result + " kurs/kurser har blivit tillagda.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
                     $('#currentStudentGroup').empty();
                 } else {
-                    $('#assignedClasses').html(generateFormMessage("error", "Inga kurser har blivit tillagda."));
+                    $('#messageBoxAssignClasses').html(generateFormMessage("error", "Inga kurser har blivit tillagda.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
                 }
             }
         });
@@ -299,7 +300,6 @@ function GetTeams() {
 $(function () {
     // #region assign student groups to class
     $target = $('#assignStudentGroupsToClassDiv');
-
 
     //Choose class (autocomplete)
     var $classInput = $('<input/>', {
@@ -391,7 +391,7 @@ $(function () {
         style: 'align-self: center; background-color: red;'
     });
 
-    $target2.append($('<div/>', { class: 'messageBox', id: 'assignedClasses' }));
+    $target2.append($('<div/>', { class: 'messageBox', id: 'messageBoxAssignClasses' }));
     $target2.append($studentGroupInput);
     $target2.append($('<div/>', { id: 'currentStudentGroup' }));
     $target2.append($classInput);

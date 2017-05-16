@@ -65,38 +65,34 @@ $(document).ready(function () {
         var target = $(this).attr('id').slice(0, -4);
         $('#' + target).show();
         $('#' + target + 'Desc').show();
-
+        
         updateLists();
-
-        var listLength = $('#' + target + ' table tr:not(:first)');
-
-        UpdateCounterInfo(listLength);
     });
-
+    
     // Open add/edit data pop-up
     $('#addButton').on('click', function () {
         var target = $('.wizActive').attr('id');
         target = target.slice(0, -4);
 
         // Empty all field 
-        //Team
-        $('#teamName').val('');
-        //Personnel
-        $('#firstNameInput').val('');
-        $('#lastNameInput').val('');
-        $('#personnelCrudForm img').attr('src', '');
-        $('#teamIdInput').val('');
-        $('#availablePointsInput').val('');
-        $('#contractSelect').val('');
-        $('#competenceList').empty();
-        allChosenCompetences = [];
-        //Student_groups
-        $('#studentGroupName').val('');
-        //Auxiliary_assignments
-        $('#auxiliaryAssignmentName').val('');
-        $('#auxiliaryAssignmentDesc').val('');
-        $('#auxiliaryAssignmentPoints').val('');
-        $('#auxiliaryAssignmentPersonnel').val('');
+            //Team
+            $('#teamName').val('');
+            //Personnel
+            $('#firstNameInput').val('');
+            $('#lastNameInput').val('');
+            $('#personnelCrudForm img').attr('src', '');
+            $('#teamIdInput').val('');
+            $('#availablePointsInput').val('');
+            $('#contractSelect').val('');
+            $('#competenceList').empty();
+            allChosenCompetences = [];
+            //Student_groups
+            $('#studentGroupName').val('');
+            //Auxiliary_assignments
+            $('#auxiliaryAssignmentName').val('');
+            $('#auxiliaryAssignmentDesc').val('');
+            $('#auxiliaryAssignmentPoints').val('');
+            $('#auxiliaryAssignmentPersonnel').val('');
 
         // Get list of subjects
         if (target == "personnelCrud" && allSubjectsExist == false)
@@ -113,10 +109,6 @@ $(document).ready(function () {
             $('#addStudentGroupButton').attr('onclick', 'SubmitStudentGroup()');
             $('#addStudentGroupButton').text('Lägg till klass');
         }
-        if (target == "auxiliaryAssignmentCrud") {
-            $('#addAuxiliaryAssignmentButton').attr('onclick', 'SubmitAuxiliaryAssignment()');
-            $('#addAuxiliaryAssignmentButton').text('Lägg till uppdrag');
-        }
         target = target + "Form";
         $('.innerOverLay').fadeToggle("fast");
         $('#' + target).show();
@@ -125,7 +117,7 @@ $(document).ready(function () {
 
     // Close edit data pop-up
     $('.closeInnerOverLay').on('click', function () {
-        $('.innerOverLay').fadeToggle("fast");
+        $('.innerOverLay').fadeToggle("fast"); 
         updateLists();
     });
     /* END - Wizard, innerLayOut Controlls */
@@ -183,7 +175,6 @@ $(document).ready(function () {
                                 value: element.id
                             }));
                         });
-                        UpdateCounterInfo(data);
                     }
                 });
             }
@@ -198,8 +189,6 @@ $(document).ready(function () {
                         data.forEach(function (e) {
                             $('#personnelCrud table').append('<tr><td>' + e.teamName + '</td><td>' + e.firstName + '</td><td>' + e.lastName + '</td><td>' + e.signature + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
                         });
-                        
-                        UpdateCounterInfo(data);
                     }
                 });
             }
@@ -214,7 +203,6 @@ $(document).ready(function () {
                         data.forEach(function (e) {
                             $('#studentGroupCrud table').append('<tr><td>' + e.teamName + '</td><td>' + e.name + '</td><td>' + e.startingYear + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
                         });
-                        UpdateCounterInfo(data);
                     }
                 });
             }
@@ -233,7 +221,6 @@ $(document).ready(function () {
                                 yesOrNo = "Ja";
                             $('#auxiliaryAssignmentCrud table').append('<tr><td>' + e.name + '</td><td>' + e.points + '</td><td>' + yesOrNo + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
                         });
-                        UpdateCounterInfo(data);
                     }
                 });
             }
@@ -247,7 +234,7 @@ $(document).ready(function () {
     $('.wizardDataBox').on('click', 'p.edit', function () {
         var itemId = $(this).parent().attr('data-item');
         var target = $(this).closest('.wizardDataBox').attr("id");
-
+        
         if (target == "teamCrud") {
             GetTeamToEdit(itemId);
             $('#addTeamButton').attr('onclick', 'UpdateTeam(' + itemId + ')');
@@ -270,9 +257,8 @@ $(document).ready(function () {
             $('#addPersonnelButton').text('Uppdatera');
         }
         else if (target == "auxiliaryAssignmentCrud") {
-            $('#addAuxiliaryAssignmentButton').attr('onclick', 'UpdateAuxiliaryAssignment(' + itemId + ')');
+            $('#addAuxiliaryAssignmentButton').attr('onclick', 'EditPersonById(' + itemId + ')');
             $('#addAuxiliaryAssignmentButton').text('Uppdatera');
-            GetAuxiliaryAssignmentToEdit(itemId);
         }
 
         target = target + "Form";

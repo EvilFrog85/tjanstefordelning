@@ -136,7 +136,7 @@ input[type=number] {
 /* Is buttonCancel reduntant if we have "Close-buttons". Leaving it here for now. */
 	.buttonSubmit/*, .buttonCancel*/{
 		display: inline-block;
-		width: 40%;
+		min-width: 40%;
 		max-width: 300px;
 		padding: 6px 0;
 		margin: 0 0 20px 0;
@@ -215,6 +215,91 @@ input[type=number] {
 	transform: rotate(360deg);
 }	
 /* END - Button styles */
+
+/* Competence area and buttons */
+#competenceButtonContainer {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto 20px auto;
+    overflow: auto;
+}
+    #competenceButtonContainer .labelCheckbox{
+        width: auto;
+    }
+#IsCompetenceQualifiedBox {
+        display: inline-block;
+    }
+#addCompetenceButton {
+    padding: 3px 6px;
+    height: 42px;
+    background: #4cd2ff;
+    border: none;
+    font-size: 18px;
+    display: block;
+    float: left;
+    margin-left: 30px;
+    box-shadow: 2px 2px 0 #888;
+}
+    #addCompetenceButton:hover {
+        cursor: pointer;
+        box-shadow: -2px -2px 0 #888;
+    }
+#competenceList {
+    width: calc(100% - 26px);
+    max-width: 576px;
+    margin: auto;
+}
+.competence {
+    background: #e5e500;
+    display: inline-block;
+    position: relative;
+    margin: 5px 45px 5px 0;
+    padding: 3px 6px 3px 6px;
+    transition: all .2s linear;
+}
+    .competence:hover {
+        margin: 5px 15px 5px 0;
+        padding-right: 36px;
+    }
+    .competence p {
+        overflow: auto;
+        height: 30px;
+        line-height: 30px;
+        vertical-align: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    .competence button {
+        position: absolute;
+        top: 3px;
+        right: 3px;
+        z-index: 9999;
+        width: 30px;
+        height: 30px;
+        border-radius: 15px;
+        border: none;
+        background: transparent;
+        transition: background .2s linear;
+    }
+    .competence:hover > button {
+        background-color: #b2b200;
+        background-image: url(../img/icons/x.svg);
+        background-size: 40% 40%;
+        background-repeat: no-repeat;
+        background-position: center center;
+    }
+.qualified:hover > button {
+    background-color: #00d936;
+}
+.competence button:hover {
+    cursor: pointer;
+}
+.qualified {
+    background: #26ff5c;
+}
+/* END - Competence area and buttons */
 			
 /* jQuery UI Autocomplete style */
 .ui-autocomplete {
