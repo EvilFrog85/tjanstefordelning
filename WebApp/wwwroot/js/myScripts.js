@@ -1,19 +1,4 @@
-$(document).ready(function () {
-    function stickyFooter() {
-        $('main').css({ 'paddingBottom': $('footer').height() });
-        $('#innerFooter').css({ 'lineHeight': $('footer').height() - 20 + 'px' });
-    }
-    stickyFooter();
-    $('#hamburgerBtn').on('click', function () {
-        return $('header nav').stop().slideToggle();
-    });
-    $(window).resize(function () {
-        if ($(window).width() > 768) {
-            $('header nav').removeAttr('style');
-        }
-        stickyFooter();
-    });
-
+$(function () {
     /*
     CreateIncludedClassInput();
     GetCounts();
@@ -23,10 +8,10 @@ $(document).ready(function () {
     CreateStudentGroupInput();
     CreateAuxiliaryAssignmentInput();
     CreateInputCompetence();
-
+    var firstTime = true;
     /* Wizard, innerLayOut Controlls */
     // When wizard is opened
-    $('.wizard').on('click', function () {
+    //$('.wizard').on('click', function () {
         // Get data for list - first because of possible async-delay
         updateLists();
         $('#overLay').fadeToggle("fast");
@@ -35,7 +20,7 @@ $(document).ready(function () {
         // Show data for team and add description
         $('#teamCrud').show();
         $('#teamCrudDesc').show();
-    });
+    //});
 
     // When wizard is exited
     $('#exitWizard').on('click', function () {
@@ -134,7 +119,7 @@ $(document).ready(function () {
     var auxiliaryAssignmentFirstVisit = true;
 
     function updateLists() {
-        if (submitClickCounter > 0 || teamFirstVisit == true || personnelFirstVisit == true || studentGroupFirstVisit == true || auxiliaryAssignmentFirstVisit == true) {
+        if (firstTime || submitClickCounter > 0 || teamFirstVisit == true || personnelFirstVisit == true || studentGroupFirstVisit == true || auxiliaryAssignmentFirstVisit == true) {
             //alert("Inne i funktionen");
             var target = $('.wizActive').attr('id');
             target = target.slice(0, -4);
@@ -153,7 +138,8 @@ $(document).ready(function () {
 
             //alert("Genomför uppdatering");
 
-            if (target == "teamCrud") {
+            if (target == "teamCrud" || firstTime) {
+                firstTime = false;
                 //alert("Uppdaterar team");
                 teamFirstVisit = false;
                 $('#teamCrud table').find('tr:not(:first)').remove();

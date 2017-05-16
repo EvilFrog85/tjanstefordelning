@@ -807,6 +807,12 @@ function SubmitAuxiliaryAssignment() {
         data: dataToInsert
     }).then(function (success) {
         console.log(success);
+        $('#auxiliaryAssignmentName').val('');
+        $('#auxiliaryAssignmentDesc').val('');
+        $('#auxiliaryAssignmentPoints').val('');
+        $('#auxiliaryAssignmentDurationDropDown').val('');
+        $('#auxiliaryAssignmentMandatory').prop('checked', false);
+        $('#auxiliaryAssignmentPersonnel').val('');
     }, function () {
         console.log('error');
     })

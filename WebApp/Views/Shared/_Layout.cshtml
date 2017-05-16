@@ -14,7 +14,7 @@
                     <div></div>
                 </div>
                 <nav>
-                    <a asp-action="Index">Home</a>
+                    <a asp-controller="Home" asp-action="Index">Home</a>
                     <a href="#">Link 2</a>
                     <a href="#">Link 3</a>
                     <a href="#">Link 4</a>
@@ -52,8 +52,8 @@
         <script src="http://ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.min.js"></script>
         <script src="~/js/jquery-ui.min.js"></script>
     </environment>
-    <script src="~/js/Data.js"></script>
-    <script src="~/js/myScripts.js"></script>
+
+    <script src="~/js/homeScript.js"></script>
     @RenderSection("scripts", false)
 </body>
 </html>
