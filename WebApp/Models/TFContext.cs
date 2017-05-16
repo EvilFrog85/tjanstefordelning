@@ -52,7 +52,6 @@ namespace WebApp.Models.Entities
             await Personnel.AddAsync(newPersonnel);
             try
             {
-
                 await SaveChangesAsync();
             }
             catch (Exception)

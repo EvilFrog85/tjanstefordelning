@@ -195,11 +195,12 @@ function EditPersonById(id) {
         type: 'POST',
         url: '/Wizard/UpdatePersonnel/' + id,
         data: personnelData,
-        success: function (data) {
-            if (data) {
-                $('#innerOverLay').fadeToggle("fast");
-                // Copy of updateLists - personnel - from myScripts
-                $('#personnelCrud table').find('tr:not(:first)').remove();
+        //success: function (data) {
+        //    console.log(data);
+        ////    if (data) {
+        //        $('#innerOverLay').fadeToggle("fast");
+        //        // Copy of updateLists - personnel - from myScripts
+        //        $('#personnelCrud table').find('tr:not(:first)').remove();
 
                 //TODO imorgon!
                 /*
@@ -213,9 +214,13 @@ function EditPersonById(id) {
                     }
                 });
                 */
-            }
-        }
-    });
+            //}
+        //}
+    }).then(function (data) {
+        $('#innerOverLay').fadeToggle("fast");
+        // Copy of updateLists - personnel - from myScripts
+        $('#personnelCrud table').find('tr:not(:first)').remove();
+        }, function () { console.log('Error! Wii'); });
 }
 
 function GetPersonToEdit(id) {
