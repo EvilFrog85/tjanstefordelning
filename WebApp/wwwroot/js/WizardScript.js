@@ -55,39 +55,63 @@ function SubmitTeam() {
     });
 }
 
-function GetTeams() {
-    $('#teamIdInput').empty();
-    $('#teamIdInputForStudentGroup').empty();
-    $('#includedClassTeamBelongingDropDown').empty();
-    $.ajax({
-        type: 'GET',
-        url: '/Wizard/GetAllTeams',
-        success: function (data) {
-            data.forEach(function (element) {
-                $('#teamIdInput').append($('<option/>', {
-                    text: element.name,
-                    value: element.id
-                }));
-                $('#teamIdInputForStudentGroup').append($('<option/>', {
-                    text: element.name,
-                    value: element.id
-                }));
-                $('#includedClassTeamBelongingDropDown').append($('<option/>', {
-                    text: element.name,
-                    value: element.id
-                }));
-            });
-        }
-    });
-}
+//function GetTeams() {
+//    $('#teamIdInput').empty();
+//    $('#teamIdInputForStudentGroup').empty();
+//    $('#includedClassTeamBelongingDropDown').empty();
+//    $.ajax({
+//        type: 'GET',
+//        url: '/Wizard/GetAllTeams',
+//        success: function (data) {
+//            data.forEach(function (element) {
+//                $('#teamIdInput').append($('<option/>', {
+//                    text: element.name,
+//                    value: element.id
+//                }));
+//                $('#teamIdInputForStudentGroup').append($('<option/>', {
+//                    text: element.name,
+//                    value: element.id
+//                }));
+//                $('#includedClassTeamBelongingDropDown').append($('<option/>', {
+//                    text: element.name,
+//                    value: element.id
+//                }));
+//            });
+//        }
+//    });
+//}
 
 function DeleteTeam(id) {
-    $('#teamButton' + id).remove();
     $.ajax({
         type: 'POST',
         url: '/Wizard/DeleteTeam/' + id,
         success: function (data) {
             console.log(data);
+            $('#teamCrud table').find('tr:not(:first)').remove();
+            $('#teamIdInput').empty();
+            $('#teamIdInputForStudentGroup').empty();
+            $('#includedClassTeamBelongingDropDown').empty();
+            $.ajax({
+                type: 'GET',
+                url: '/Wizard/GetAllTeams',
+                success: function (data) {
+                    data.forEach(function (element) {
+                        $('#teamCrud table').append('<tr><td>' + element.name + '</td><td data-item="' + element.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
+                        $('#teamIdInput').append($('<option/>', {
+                            text: element.name,
+                            value: element.id
+                        }));
+                        $('#teamIdInputForStudentGroup').append($('<option/>', {
+                            text: element.name,
+                            value: element.id
+                        }));
+                        $('#includedClassTeamBelongingDropDown').append($('<option/>', {
+                            text: element.name,
+                            value: element.id
+                        }));
+                    });
+                }
+            });
         }
     });
 }
@@ -153,22 +177,22 @@ function AddNewPersonnel() {
         type: 'POST',
         url: '/Wizard/AddNewPersonnel',
         data: personnelData,
-        success: function (id) {
-            $('#personnelList').append($('<p/>', {
-                text: firstName + ' ' + lastName
-            })).append($('<button/>', {
-                class: 'edit',
-                onclick: 'GetPersonToEdit(' + id + ')'
-            }));
-            $('#firstNameInput').val('');
-            $('#lastNameInput').val('');
-            $('#imgUrlInput').val('');
-            $('#teamIdInput').val('');
-            $('#availablePointsInput').val('');
-            $('#contractSelect').val('');
-            allChosenCompetences = [];
-            $('#competenceList').empty();
-
+        success: function (success) {
+            if (success) {
+                $('#firstNameInput').val('');
+                $('#lastNameInput').val('');
+                $('#imgUrlInput').val('');
+                $('#availablePointsInput').val('');
+                $('#contractSelect').empty();
+                allChosenCompetences = [];
+                $('#competenceList').empty();
+                var personnelAddMessage = generateFormMessage("Success", "Personen blev tillagd.")
+                $('#messageBoxPersonnelCrud').append(personnelAddMessage);
+            }
+            else {
+                var personnelAddMessage = generateFormMessage("error", "Något gick fel...")
+                $('#messageBoxPersonnelCrud').append(personnelAddMessage);
+            }
         }
     });
 }
@@ -195,26 +219,19 @@ function EditPersonById(id) {
         url: '/Wizard/UpdatePersonnel/' + id,
         data: personnelData,
         success: function (data) {
-            console.log("Fisk:"+data);
-            $('#innerOverLay').fadeToggle("fast");
+            $('.innerOverLay').fadeToggle("fast");
             // Copy of updateLists - personnel - from myScripts
             $('#personnelCrud table').find('tr:not(:first)').remove();
-            console.log("punkt 1");
             //TODO imorgon!
-
-
-            /*
             $.ajax({
                 type: 'GET',
                 url: '/Wizard/GetAllPersonnelToWizardList',
                 success: function (data) {
-                    console.log("punkt 2");
                     data.forEach(function (e) {
                         $('#personnelCrud table').append('<tr><td>' + e.teamName + '</td><td>' + e.firstName + '</td><td>' + e.lastName + '</td><td>' + e.signature + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
                     });
                 }
             });
-            */
         }
     });
 }
@@ -247,7 +264,6 @@ function GetPersonToEdit(id) {
                 });
                 var $competenceText = $('<p/>', { text: competence.name });
 
-                //if(not already in the list)
                 allChosenCompetences.push({ "Qualified": competence.qualified, "SubjectId": competence.subjectId });
 
                 $competenceDiv.append($competenceText);
@@ -260,6 +276,25 @@ function GetPersonToEdit(id) {
     });
 }
 
+function RemovePerson(id) {
+    $.ajax({
+        type: 'POST',
+        url: '/Wizard/DeletePersonnel/' + id,
+        success: function (data) {
+            console.log(data);
+            $('#personnelCrud table').find('tr:not(:first)').remove();
+            $.ajax({
+                type: 'GET',
+                url: '/Wizard/GetAllPersonnelToWizardList',
+                success: function (data) {
+                    data.forEach(function (e) {
+                        $('#personnelCrud table').append('<tr><td>' + e.teamName + '</td><td>' + e.firstName + '</td><td>' + e.lastName + '</td><td>' + e.signature + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
+                    });
+                }
+            });
+        }
+    });
+}
 //Personnel crud html injection
 function CreateInputPersonnel() {
     var $firstNameInput = $('<input/>', {
@@ -300,9 +335,6 @@ function CreateInputPersonnel() {
             value: contract.value
         }));
     });
-
-
-
 
     $('#personnelCrudForm')
         .append($firstNameInput)
