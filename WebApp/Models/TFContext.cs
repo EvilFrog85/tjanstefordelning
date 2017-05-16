@@ -17,7 +17,7 @@ namespace WebApp.Models.Entities
         public TFContext(DbContextOptions<TFContext> options) : base(options)
         {
         }
-        internal async Task<int> AddNewPersonnel(PersonnelCreateVM viewModel, string id)
+        internal async Task<bool> AddNewPersonnel(PersonnelCreateVM viewModel, string id)
         {
             var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
             var userSignature = CreateSignature(viewModel.FirstName, viewModel.LastName, userId);
@@ -50,16 +50,18 @@ namespace WebApp.Models.Entities
             }
 
             await Personnel.AddAsync(newPersonnel);
+
+            bool success = false;
             try
             {
-
-                await SaveChangesAsync();
+                success = await SaveChangesAsync() > 0;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                Debug.Write(ex.Message);
+                return success;
             }
-            return newPersonnel.Id;
+            return success;
         }
 
         internal string CreateSignature(string firstName, string lastName, int id)
@@ -258,12 +260,31 @@ namespace WebApp.Models.Entities
 
         internal async Task<bool> DeleteTeam(int id)
         {
-            var teamToRemove = await Team.SingleOrDefaultAsync(c => c.Id == id);
-            await StudentGroup.Where(s => s.TeamId == id).ForEachAsync(s => s.TeamId = null);
-            await IncludedClass.Where(c => c.TeamId == id).ForEachAsync(c => c.TeamId = null);
-            await Personnel.Where(p => p.TeamId == id).ForEachAsync(p => p.TeamId = null);
+            var teamToRemove = await Team
+                .Include(t => t.StudentGroup)
+                .Include(t => t.IncludedClass)
+                .Include(t => t.Personnel)
+                .SingleOrDefaultAsync(c => c.Id == id);
+
+            var studentGroups = teamToRemove.StudentGroup;
+            var includedClasses = teamToRemove.IncludedClass;
+            var personnel = teamToRemove.Personnel;
+
+            foreach (var studentGroup in studentGroups)
+            {
+                studentGroup.TeamId = null;
+            }
+            foreach (var classe in includedClasses)
+            {
+                classe.TeamId = null;
+            }
+            foreach (var person in personnel)
+            {
+                person.TeamId = null;
+            }
+
             Team.Remove(teamToRemove);
-            return await SaveChangesAsync() == 1;
+            return await SaveChangesAsync() > 1;
         }
 
         internal async Task<TeamVM[]> GetAllTeams(string id)

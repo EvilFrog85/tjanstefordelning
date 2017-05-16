@@ -141,14 +141,28 @@ $(document).ready(function () {
                 //alert("Uppdaterar team");
                 teamFirstVisit = false;
                 $('#teamCrud table').find('tr:not(:first)').remove();
+                $('#teamIdInput').empty();
+                $('#teamIdInputForStudentGroup').empty();
+                $('#includedClassTeamBelongingDropDown').empty();
                 $.ajax({
                     type: 'GET',
                     url: '/Wizard/GetAllTeams',
                     success: function (data) {
-                        data.forEach(function (e) {
-                            $('#teamCrud table').append('<tr><td>' + e.name + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
+                        data.forEach(function (element) {
+                            $('#teamCrud table').append('<tr><td>' + element.name + '</td><td data-item="' + element.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
+                            $('#teamIdInput').append($('<option/>', {
+                                text: element.name,
+                                value: element.id
+                            }));
+                            $('#teamIdInputForStudentGroup').append($('<option/>', {
+                                text: element.name,
+                                value: element.id
+                            }));
+                            $('#includedClassTeamBelongingDropDown').append($('<option/>', {
+                                text: element.name,
+                                value: element.id
+                            }));
                         });
-                        GetTeams();
                     }
                 });
             }
@@ -245,8 +259,12 @@ $(document).ready(function () {
             else
                 return;
         }
-        if (target == "teamCrud")
+        if (target == "teamCrud") {
             DeleteTeam(itemId);
+            personnelFirstVisit = true;
+            studentGroupFirstVisit = true;
+            auxiliaryAssignmentFirstVisit = true;
+        }
         if (target == "studentGroupCrud")
             DeleteStudentGroup(itemId);
         
