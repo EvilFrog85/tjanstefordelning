@@ -636,7 +636,7 @@ namespace WebApp.Models.Entities
                     Description = a.Description,
                     Mandatory = a.Mandatory,
                     Duration = a.Duration,
-                    PersonnelSignature = a.Personnel.Signature
+                    PersonnelSignature = a.Personnel.FirstName
                 }).SingleOrDefault();
 
             return auxiliaryAssignment;
