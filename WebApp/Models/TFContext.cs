@@ -13,7 +13,6 @@ namespace WebApp.Models.Entities
 {
     public partial class TFContext : DbContext
     {
-        //TODO lots of stuff
         public TFContext(DbContextOptions<TFContext> options) : base(options)
         {
         }
@@ -68,18 +67,52 @@ namespace WebApp.Models.Entities
         {
             string signature = firstName.Substring(0, 2) + lastName.Substring(0, 2);
 
-            int dataBaseSignature = Personnel
-                .Where(p => p.UserId == id && p.Signature.Substring(0, 4) == signature).Count();
-
+            var simularSignatures = Personnel
+                .Where(p => p.UserId == id && p.Signature.Substring(0, 4) == signature).Select(p => p.Signature).ToArray();
+            Array.Sort(simularSignatures);
             //Unique signature
-            if (dataBaseSignature == 0)
+            if (simularSignatures.Length == 0)
                 return String.Join("", signature + "01");
-            //Less than 10 simular signature, Generates a new signature with a 0number
-            else if (dataBaseSignature < 10)
-                return String.Join("", signature, 0, dataBaseSignature + 1);
-            //More than 10 signature, Generates a new signature with a number
             else
-                return String.Join("", signature, dataBaseSignature + 1);
+            {
+                //bool generatingSignatures = true;
+                //int noMatch = 0;
+                int counter = 2;
+
+                //while (generatingSignatures)
+                //{
+                var newSignature = String.Join("", signature + "0" + counter);
+                foreach (var item in simularSignatures)
+                {
+                    if (newSignature == item)
+                    {
+                        counter++;
+                        newSignature = String.Join("", signature + "0" + counter);//signature.Remove(4);
+                        //break;
+                    }
+                    //else
+                    //{
+                    //    noMatch++;
+                    //}
+                    //if (noMatch == simularSignatures.Length)
+                    //{
+                    //    return signature;
+                    //}
+                }
+                //noMatch = 0;
+                //}
+                return signature;
+            }
+
+
+
+
+            ////Less than 10 simular signature, Generates a new signature with a 0number
+            //else if (dataBaseSignature < 10)
+            //    return String.Join("", signature, 0, dataBaseSignature + 1);
+            ////More than 10 signature, Generates a new signature with a number
+            //else
+            //    return String.Join("", signature, dataBaseSignature + 1);
 
         }
 
@@ -129,7 +162,7 @@ namespace WebApp.Models.Entities
                 .Include(c => c.Team)
                 .Include(c => c.User)
                 .SingleOrDefaultAsync();
-            
+
             personToUpdate.FirstName = viewModel.FirstName;
             personToUpdate.LastName = viewModel.LastName;
             // TODO - Activate once again when img-upload is functional
@@ -186,19 +219,19 @@ namespace WebApp.Models.Entities
             return await Personnel
                 .Where(p => p.UserId == userId)
                 .Select(p => new PersonnelVM
-            {
-                AssignedPoints = p.AssignedPoints,
-                AvailablePoints = p.AvailablePoints,
-                Competences = p.Competence.Select(c => new CompetenceVM { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray(),
-                Contract = p.Contract,
-                FirstName = p.FirstName,
-                LastName = p.LastName,
-                Signature = p.Signature,
-                TeamName = p.Team.Name,
-                Id = p.Id,
-                ImageUrl = p.ImageUrl,
-                IncludedClasses = p.IncludedClass.Select(i => new IncludedClassVM { ClassName = i.Class.ClassName, Duration = i.Duration }).ToArray()
-            }).ToArrayAsync();
+                {
+                    AssignedPoints = p.AssignedPoints,
+                    AvailablePoints = p.AvailablePoints,
+                    Competences = p.Competence.Select(c => new CompetenceVM { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray(),
+                    Contract = p.Contract,
+                    FirstName = p.FirstName,
+                    LastName = p.LastName,
+                    Signature = p.Signature,
+                    TeamName = p.Team.Name,
+                    Id = p.Id,
+                    ImageUrl = p.ImageUrl,
+                    IncludedClasses = p.IncludedClass.Select(i => new IncludedClassVM { ClassName = i.Class.ClassName, Duration = i.Duration }).ToArray()
+                }).ToArrayAsync();
         }
         internal PersonnelCreateVM GetPersonnelById(int id)
         {
@@ -351,7 +384,7 @@ namespace WebApp.Models.Entities
         internal async Task<bool> DeleteStudentGroup(int id)
         {
             var studentGroupToRemove = StudentGroup.FirstOrDefault(s => s.Id == id);
-            await IncludedClass.Where(c => c.TeamId == id).ForEachAsync(c => c.TeamId = null);
+            await IncludedClass.Where(c => c.StudentGroupId == id).ForEachAsync(c => c.StudentGroupId = null);
             StudentGroup.Remove(studentGroupToRemove);
             return await SaveChangesAsync() == 1;
         }
@@ -409,14 +442,17 @@ namespace WebApp.Models.Entities
             return studentGroup;
         }
 
-        internal async Task<bool> AssignClassesToStudentGroupAsync(ClassesToStudentGroupVM viewModel, string id)
+        internal async Task<int> AssignClassesToStudentGroupAsync(ClassesToStudentGroupVM viewModel, string id)
         {
 
             //TODO : Check if class and student group already exists in database
+            var filteredClasses = viewModel.ClassData
+                .Where(cd => !IncludedClass.Any(ic => cd.ClassId == ic.ClassId && cd.StudentGroupId == ic.StudentGroupId)).ToArray();
+
             //var notAlreadyExistingClasses = IncludedClass.Join(viewModel.ClassData, ic => new { ic.ClassId, ic.StudentGroupId }, cd => new { cd.ClassId, cd.StudentGroupId }, (ic, cd) => ic);
-            var notAlreadyExistingClasses = viewModel.ClassData.Where(cd => !IncludedClass.Select(ic => ic.ClassId).Contains(cd.ClassId) && !IncludedClass.Select(ic => ic.StudentGroupId).Contains(cd.StudentGroupId));
+            //var notAlreadyExistingClasses = viewModel.ClassData.Where(cd => !IncludedClass.Select(ic => ic.ClassId).Contains(cd.ClassId) && !IncludedClass.Select(ic => ic.StudentGroupId).Contains(cd.StudentGroupId));
             int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
-            var includedClasses = viewModel.ClassData.Select(c => new IncludedClass
+            var includedClasses = filteredClasses.Select(c => new IncludedClass
             {
                 Duration = c.Duration,
                 TeamId = c.TeamId,
@@ -429,7 +465,7 @@ namespace WebApp.Models.Entities
                 await IncludedClass.AddAsync(ic);
             }
             int numberOfClassesAdded = await SaveChangesAsync();
-            return numberOfClassesAdded > 0;
+            return numberOfClassesAdded;
         }
 
         internal async Task<IncludedClassCreateVM[]> GetAllIncludedClasses(string id)
@@ -463,6 +499,23 @@ namespace WebApp.Models.Entities
                 }).SingleOrDefault();
 
             return includedClass;
+        }
+
+        internal Task<IncludedClassVM[]> GetIncludedClassesByStudentGroupId(int studentGroupId, string id)
+        {
+            int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+            //var classes = IncludedClass
+                //.Where(ic => ic.UserId == userId && ic.StudentGroupId == studentGroupId)
+                //.Join(Class, ic => ic, c => c, (ic, c) => new IncludedClassVM
+                //{
+                //    Id = ic.Id,
+                //    Duration = ic.Duration,
+                //    TeamId = ic.TeamId,
+                //    ClassId = ic.ClassId,
+                //    StudentGroupId = ic.StudentGroupId,
+
+                //})ToArray();
+            return null;
         }
 
         internal async Task<bool> AddNewIncludedClass(IncludedClassCreateVM viewModel, string id)

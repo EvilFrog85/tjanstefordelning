@@ -7,7 +7,7 @@ namespace WebApp.Models.VM
 {
     public class IncludedClassCreateVM
     {
-        //TODO : Validation, Add Enum(?)
+        //TODO : Validation, Add Enum for semester display(?)
 
         //If the class has an assigned teacher
         public bool Assigned { get; set; }
