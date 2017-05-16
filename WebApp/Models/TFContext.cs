@@ -83,30 +83,39 @@ namespace WebApp.Models.Entities
 
         internal async Task<bool> DeletePersonnel(int id)
         {
-            var personToRemove = await Personnel.SingleOrDefaultAsync(p => p.Id == id);
-            var classesToRemove = IncludedClass.Where(i => i.PersonnelId == personToRemove.Id);
-            var competencesToRemove = Competence.Where(c => c.PersonnelId == personToRemove.Id);
-            var auxToRemove = AuxiliaryAssignment.Where(a => a.PersonnelId == personToRemove.Id);
+            var personToRemove = await Personnel
+                .Include(p => p.Competence)
+                .Include(p => p.AuxiliaryAssignment)
+                .Include(p => p.IncludedClass)
+                .SingleOrDefaultAsync(p => p.Id == id);
+
+            var classesToRemove = personToRemove.IncludedClass;
+            var competencesToRemove = personToRemove.Competence;
+            var auxToRemove = personToRemove.AuxiliaryAssignment;
 
             foreach (var classe in classesToRemove)
             {
                 classe.Assigned = false;
                 classe.PersonnelId = null;
             }
+            foreach (var aux in auxToRemove)
+            {
+                aux.Assigned = false;
+                aux.PersonnelId = null;
+            }
+
             Competence.RemoveRange(competencesToRemove);
-            AuxiliaryAssignment.RemoveRange(auxToRemove);
             Personnel.Remove(personToRemove);
-            bool success = true;
+
+            bool success = false;
             try
             {
-                var wut = await SaveChangesAsync();
+                success = await SaveChangesAsync() > 0;
             }
             catch (Exception ex)
             {
-                string message = ex.Message;
-                success = false;
+                Debug.Write(ex.Message);
             }
-
             return success;
         }
 
