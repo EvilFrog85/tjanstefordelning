@@ -54,7 +54,7 @@ namespace WebApp.Controllers
             return await _context.GetAllTeams(_userManager.GetUserId(User));
         }
 
-        [HttpPost]
+        [HttpGet]
         public TeamVM GetTeamById(int id)
         {
             return _context.GetTeamById(id);
@@ -196,7 +196,7 @@ namespace WebApp.Controllers
             var userId = _userManager.GetUserId(User);
             return await _context.GetAllAuxiliaryAssignments(userId);
         }
-        
+        [HttpPost]
         public async Task<bool> DeleteAuxiliaryAssignment(int id)
         {
             return await _context.DeleteAuxiliaryAssignment(id);
@@ -207,8 +207,8 @@ namespace WebApp.Controllers
             return await _context.UpdateAuxiliaryAssignment(viewModel, id);
         }
 
-        [HttpPost]
-        public AuxiliaryAssignmentVM GetAuxiliaryAssignmentById(int id)
+        [HttpGet]
+        public AuxiliaryAssignmentCreateVM GetAuxiliaryAssignmentById(int id)
         {
             return _context.GetAuxiliaryAssignmentById(id);
         }
