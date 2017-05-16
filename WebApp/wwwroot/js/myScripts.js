@@ -252,18 +252,18 @@ $(document).ready(function () {
         var itemId = $(this).parent().attr('data-item');
         var target = $(this).closest('.wizardDataBox').attr("id");
 
+        if (target == "teamCrud") {
+            DeleteTeam(itemId);
+            personnelFirstVisit = true;
+            studentGroupFirstVisit = true;
+            auxiliaryAssignmentFirstVisit = true;
+        }
         if (target == "personnelCrud") {
             var removeConfirm = confirm('You sure you wanna remove?')
             if (removeConfirm)
                 RemovePerson(itemId);
             else
                 return;
-        }
-        if (target == "teamCrud") {
-            DeleteTeam(itemId);
-            personnelFirstVisit = true;
-            studentGroupFirstVisit = true;
-            auxiliaryAssignmentFirstVisit = true;
         }
         if (target == "studentGroupCrud")
             DeleteStudentGroup(itemId);
