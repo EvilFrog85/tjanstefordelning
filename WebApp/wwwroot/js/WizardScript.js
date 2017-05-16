@@ -176,24 +176,24 @@ function AddNewPersonnel() {
     $.ajax({
         type: 'POST',
         url: '/Wizard/AddNewPersonnel',
-        data: personnelData,
-        success: function (success) {
-            if (success) {
-                $('#firstNameInput').val('');
-                $('#lastNameInput').val('');
-                $('#imgUrlInput').val('');
-                $('#availablePointsInput').val('');
-                $('#contractSelect').empty();
-                allChosenCompetences = [];
-                $('#competenceList').empty();
-                var personnelAddMessage = generateFormMessage("Success", "Personen blev tillagd.")
-                $('#messageBoxPersonnelCrud').append(personnelAddMessage);
-            }
-            else {
-                var personnelAddMessage = generateFormMessage("error", "Något gick fel...")
-                $('#messageBoxPersonnelCrud').append(personnelAddMessage);
-            }
+        data: personnelData
+    }).then(function (success) {
+        if (success) {
+            $('#firstNameInput').val('');
+            $('#lastNameInput').val('');
+            $('#imgUrlInput').val('');
+            $('#availablePointsInput').val('');
+            $('#contractSelect').empty();
+            allChosenCompetences = [];
+            $('#competenceList').empty();
+            $('#messageBoxPersonnelCrud').empty();
+            var personnelAddMessage = generateFormMessage("Success", "Personen blev tillagd.")
+            $('#messageBoxPersonnelCrud').append(personnelAddMessage).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
         }
+    }, function () {
+        $('#messageBoxPersonnelCrud').empty();
+        var personnelAddMessage = generateFormMessage("error", "Något gick fel...")
+        $('#messageBoxPersonnelCrud').append(personnelAddMessage).hide().fadeToggle(10).delay(2000).fadeToggle("fast")
     });
 }
 
@@ -416,7 +416,7 @@ function CreateInputCompetence() {
     var $competenceInput = $('<input/>', {
         id: 'competenceInput',
         class: 'inputTextAuto',
-        'data-compId': 0, 
+        'data-compId': 0,
         placeholder: 'Ange kompetens..'
     });
 
