@@ -290,11 +290,19 @@ function RemovePerson(id) {
                     data.forEach(function (e) {
                         $('#personnelCrud table').append('<tr><td>' + e.teamName + '</td><td>' + e.firstName + '</td><td>' + e.lastName + '</td><td>' + e.signature + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
                     });
+                    UpdateCounterInfo(data);
                 }
             });
         }
     });
 }
+
+//Update info-box
+function UpdateCounterInfo(data) {
+    $('#counterInfo').empty();
+    $('#counterInfo').append(data.length);
+}
+
 //Personnel crud html injection
 function CreateInputPersonnel() {
     var $firstNameInput = $('<input/>', {

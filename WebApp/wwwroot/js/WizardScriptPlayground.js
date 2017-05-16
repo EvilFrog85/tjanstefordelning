@@ -254,7 +254,7 @@ function RemovePerson(id) {
         type: 'POST',
         url: '/Wizard/DeletePersonnel/' + id,
         success: function (data) {
-            $('#personnelList' + id).remove();
+            $('#personnelList' + id).remove();                        
         }
     });
 }
