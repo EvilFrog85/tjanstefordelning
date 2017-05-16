@@ -7,9 +7,11 @@
   <ItemGroup>
     <Content Include="wwwroot\img\icons\add.svg" />
     <Content Include="wwwroot\img\icons\delete.svg" />
+    <Content Include="wwwroot\img\icons\x_delete.svg" />
     <Content Include="wwwroot\img\icons\done.svg" />
     <Content Include="wwwroot\img\icons\edit.svg" />
     <Content Include="wwwroot\img\icons\wizard.svg" />
+    <Content Include="wwwroot\img\icons\x.svg" />
     <Content Include="wwwroot\img\staff_pictures\default.jpg" />
     <Content Include="wwwroot\img\staff_pictures\Img1AdW.jpg" />
     <Content Include="wwwroot\img\staff_pictures\Img1AmB.jpg" />

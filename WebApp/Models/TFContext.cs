@@ -69,51 +69,27 @@ namespace WebApp.Models.Entities
 
             var simularSignatures = Personnel
                 .Where(p => p.UserId == id && p.Signature.Substring(0, 4) == signature).Select(p => p.Signature).ToArray();
+
             Array.Sort(simularSignatures);
+
             //Unique signature
             if (simularSignatures.Length == 0)
                 return String.Join("", signature + "01");
             else
             {
-                //bool generatingSignatures = true;
-                //int noMatch = 0;
                 int counter = 2;
-
-                //while (generatingSignatures)
-                //{
                 var newSignature = String.Join("", signature + "0" + counter);
+
                 foreach (var item in simularSignatures)
                 {
                     if (newSignature == item)
                     {
                         counter++;
-                        newSignature = String.Join("", signature + "0" + counter);//signature.Remove(4);
-                        //break;
+                        newSignature = String.Join("", signature + "0" + counter);
                     }
-                    //else
-                    //{
-                    //    noMatch++;
-                    //}
-                    //if (noMatch == simularSignatures.Length)
-                    //{
-                    //    return signature;
-                    //}
                 }
-                //noMatch = 0;
-                //}
-                return signature;
+                return newSignature;
             }
-
-
-
-
-            ////Less than 10 simular signature, Generates a new signature with a 0number
-            //else if (dataBaseSignature < 10)
-            //    return String.Join("", signature, 0, dataBaseSignature + 1);
-            ////More than 10 signature, Generates a new signature with a number
-            //else
-            //    return String.Join("", signature, dataBaseSignature + 1);
-
         }
 
         internal async Task<bool> DeletePersonnel(int id)
@@ -317,7 +293,7 @@ namespace WebApp.Models.Entities
             }
 
             Team.Remove(teamToRemove);
-            return await SaveChangesAsync() > 1;
+            return await SaveChangesAsync() > 0;
         }
 
         internal async Task<TeamVM[]> GetAllTeams(string id)
@@ -352,7 +328,7 @@ namespace WebApp.Models.Entities
 
             oldTeam.Name = updatedTeam.Name;
 
-            return await SaveChangesAsync() == 1;
+            return await SaveChangesAsync() > 0;
         }
 
         internal async Task<SubjectVM[]> GetAllSubjects()
@@ -383,10 +359,19 @@ namespace WebApp.Models.Entities
 
         internal async Task<bool> DeleteStudentGroup(int id)
         {
-            var studentGroupToRemove = StudentGroup.FirstOrDefault(s => s.Id == id);
-            await IncludedClass.Where(c => c.StudentGroupId == id).ForEachAsync(c => c.StudentGroupId = null);
+            var studentGroupToRemove = await StudentGroup
+                .Include(s => s.IncludedClass)
+                .SingleOrDefaultAsync(s => s.Id == id);
+
+            var includedClasses = studentGroupToRemove.IncludedClass;
+
+            foreach (var item in includedClasses)
+            {
+                item.StudentGroupId = null;
+            }
+
             StudentGroup.Remove(studentGroupToRemove);
-            return await SaveChangesAsync() == 1;
+            return await SaveChangesAsync() > 0;
         }
 
         internal async Task<bool> UpdateStudentGroup(StudentGroupCreateVM viewModel, int studentGroupId)
@@ -396,7 +381,7 @@ namespace WebApp.Models.Entities
             studentGroupToUpdate.StartingYear = viewModel.Starting_Year;
             studentGroupToUpdate.TeamId = viewModel.TeamId;
 
-            return await SaveChangesAsync() == 1;
+            return await SaveChangesAsync() > 0;
         }
 
         internal async Task<StudentGroupVM[]> GetAllStudentGroups(string id)
@@ -532,8 +517,7 @@ namespace WebApp.Models.Entities
                 StudentGroupId = viewModel.StudentGroupId
             };
 
-
-            return await SaveChangesAsync() == 1;
+            return await SaveChangesAsync() > 0;
         }
 
         internal async Task<bool> NewCompetence(CompetenceCreateVM viewModel, string id)
@@ -545,7 +529,7 @@ namespace WebApp.Models.Entities
                 Qualified = viewModel.Qualified,
                 SubjectId = viewModel.SubjectId
             };
-            return await SaveChangesAsync() == 1;
+            return await SaveChangesAsync() > 0;
 
         }
 
@@ -564,14 +548,16 @@ namespace WebApp.Models.Entities
                 UserId = userId
             };
             this.AuxiliaryAssignment.Add(AuxiliaryAssignmentToAdd);
-            return await SaveChangesAsync() == 1;
+            return await SaveChangesAsync() > 0;
         }
 
         internal async Task<bool> DeleteAuxiliaryAssignment(int id)
         {
-            var assignmentToRemove = AuxiliaryAssignment.SingleOrDefault(a => a.Id == id);
+            var assignmentToRemove = AuxiliaryAssignment
+                .SingleOrDefault(a => a.Id == id);
+            
             AuxiliaryAssignment.Remove(assignmentToRemove);
-            return await SaveChangesAsync() == 1;
+            return await SaveChangesAsync() > 0;
         }
         internal async Task<bool> UpdateAuxiliaryAssignment(AuxiliaryAssignmentCreateVM viewModel, int id)
         {
@@ -585,7 +571,7 @@ namespace WebApp.Models.Entities
             assignmentToUpdate.Mandatory = viewModel.Mandatory;
             assignmentToUpdate.PersonnelId = viewModel.PersonnelId;
 
-            return await SaveChangesAsync() == 1;
+            return await SaveChangesAsync() > 0;
         }
         internal async Task<AuxiliaryAssignmentVM[]> GetAllAuxiliaryAssignments(string id)
         {
@@ -601,16 +587,20 @@ namespace WebApp.Models.Entities
             return await AuxiliaryAssignments.ToArrayAsync();
         }
 
-        internal AuxiliaryAssignmentVM GetAuxiliaryAssignmentById(int id)
+        internal AuxiliaryAssignmentCreateVM GetAuxiliaryAssignmentById(int id)
         {
             var auxiliaryAssignment = AuxiliaryAssignment
+                .Include(a => a.Personnel)
                 .Where(a => a.Id == id)
-                .Select(a => new AuxiliaryAssignmentVM
+                .Select(a => new AuxiliaryAssignmentCreateVM
                 {
-                    Id = a.Id,
                     Name = a.Name,
                     Points = a.Points,
-                    Assigned = a.Assigned
+                    Assigned = a.Assigned,
+                    Description = a.Description,
+                    Mandatory = a.Mandatory,
+                    Duration = a.Duration,
+                    PersonnelSignature = a.Personnel.FirstName
                 }).SingleOrDefault();
 
             return auxiliaryAssignment;

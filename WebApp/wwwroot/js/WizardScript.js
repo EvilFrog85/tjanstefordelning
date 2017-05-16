@@ -51,6 +51,55 @@ function SubmitTeam() {
         }
     });
 }
+function UpdateTeam(id) {
+    submitClickCounter = 1;
+    var $newName = $('#teamName').val();
+    $('#teamName').val('');
+    $.ajax({
+        type: 'POST',
+        url: '/Wizard/UpdateTeam/' + id,
+        data: { "Name": $newName },
+        success: function (result) {
+            $('.innerOverLay').fadeToggle("fast");
+            $('#teamCrud table').find('tr:not(:first)').remove();
+            $('#teamIdInput').empty();
+            $('#teamIdInputForStudentGroup').empty();
+            $('#includedClassTeamBelongingDropDown').empty();
+            $.ajax({
+                type: 'GET',
+                url: '/Wizard/GetAllTeams',
+                success: function (data) {
+                    data.forEach(function (element) {
+                        $('#teamCrud table').append('<tr><td>' + element.name + '</td><td data-item="' + element.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
+                        $('#teamIdInput').append($('<option/>', {
+                            text: element.name,
+                            value: element.id
+                        }));
+                        $('#teamIdInputForStudentGroup').append($('<option/>', {
+                            text: element.name,
+                            value: element.id
+                        }));
+                        $('#includedClassTeamBelongingDropDown').append($('<option/>', {
+                            text: element.name,
+                            value: element.id
+                        }));
+                    });
+                }
+            });
+        }
+    });
+}
+
+function GetTeamToEdit(id) {
+    $.ajax({
+        type: 'GET',
+        url: '/Wizard/GetTeamById/' + id,
+        success: function (team) {
+            console.log(team);
+            $('#teamName').val(team.name)
+        }
+    });
+}
 
 //function GetTeams() {
 //    $('#teamIdInput').empty();
@@ -121,7 +170,7 @@ function CreateInputTeam() {
         type: 'text'
     });
 
-    var $submitBtn = submitButtonMaker("createInputTeam", "Lägg till arbetslag", "SubmitTeam");
+    var $submitBtn = submitButtonMaker("addTeamButton", "Lägg till arbetslag", "SubmitTeam");
     $('#teamCrudForm').append($name).append($submitBtn);
 }
 
@@ -204,17 +253,17 @@ function AddNewPersonnel() {
             $('#lastNameInput').val('');
             $('#imgUrlInput').val('');
             $('#availablePointsInput').val('');
-            $('#contractSelect').empty();
+            $('#contractSelect').val(1);
             allChosenCompetences = [];
             $('#competenceList').empty();
             $('#messageBoxPersonnelCrud').empty();
-            var personnelAddMessage = generateFormMessage("Success", "Personen blev tillagd.");
-            $('#messageBoxPersonnelCrud').append(personnelAddMessage).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+            var personnelAddMessage = generateFormMessage("Success", "Personen blev tillagd.")
+            $('#messageBoxPersonnelCrud').append(personnelAddMessage);
         }
     }, function () {
         $('#messageBoxPersonnelCrud').empty();
-        var personnelAddMessage = generateFormMessage("error", "Något gick fel...");
-        $('#messageBoxPersonnelCrud').append(personnelAddMessage).hide().fadeToggle(10).delay(2000).fadeToggle("fast");
+        var personnelAddMessage = generateFormMessage("error", "Något gick fel.")
+        $('#messageBoxPersonnelCrud').append(personnelAddMessage);
     });
 }
 
@@ -251,6 +300,7 @@ function EditPersonById(id) {
                     data.forEach(function (e) {
                         $('#personnelCrud table').append('<tr><td>' + e.teamName + '</td><td>' + e.firstName + '</td><td>' + e.lastName + '</td><td>' + e.signature + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
                     });
+
                 }
             });
         }
@@ -276,11 +326,10 @@ function GetPersonToEdit(id) {
             allChosenCompetences = [];
             person.competences.forEach(function (competence) {
                 var $competenceDiv = $('<div/>', {
-                    class: competence.qualified ? 'qualifiedCompetence' : 'competence',
-                    id: competence.subjectId
+                    class: competence.qualified ? 'competence qualified' : 'competence',
+                    id: 'comp' + competence.subjectId
                 });
                 var $competenceButton = $('<button/>', {
-                    text: 'X',
                     onclick: 'RemoveCompetence("' + competence.subjectId + '")'
                 });
                 var $competenceText = $('<p/>', { text: competence.name });
@@ -366,7 +415,7 @@ function CreateInputPersonnel() {
         .append($availablePointsInput)
         .append($contractSelect)
         .append('<div id="competenceCrudForm"></div>')
-        .append(submitButtonMaker('addPersonnelButton', 'Spara personal', 'AddNewPersonnel'));
+        .append(submitButtonMaker('addPersonnelButton', 'Lägg till personal', 'AddNewPersonnel'));
 }
 
 // #endregion
@@ -391,7 +440,7 @@ function SubmitCompetence() {
 }
 
 function RemoveCompetence(subjectId) {
-    $('#' + subjectId).remove();
+    $('#comp' + subjectId).remove();
     var index = allChosenCompetences.findIndex(function (element) { return element.SubjectId == subjectId; });
     allChosenCompetences.splice(index, 1);
 }
@@ -401,11 +450,10 @@ function AddCompetence() {
     var competence = $('#competenceInput').val();
     var subjectId = subjectsArray.indexOf(competence) + 1;
     var $competenceDiv = $('<div/>', {
-        class: qualified ? 'qualifiedCompetence' : 'competence',
-        id: subjectId
+        class: qualified ? 'competence qualified' : 'competence',
+        id: 'comp' + subjectId
     });
     var $competenceButton = $('<button/>', {
-        text: 'X',
         onclick: 'RemoveCompetence("' + subjectId + '")'
     });
     var $competenceText = $('<p/>', { text: competence });
@@ -429,22 +477,25 @@ function CreateInputCompetence() {
         id: 'competenceList'
     });
 
-    var $CompetenceQualified = $('<input/>', {
-        type: 'checkbox',
-        id: 'IsCompetenceQualified'
+    var $competenceButtonContainer = $('<div/>', {
+        id: 'competenceButtonContainer'
     });
 
-    var $competenceInput = $('<input/>', {
-        id: 'competenceInput',
-        class: 'inputTextAuto',
-        'data-compId': 0,
-        placeholder: 'Ange kompetens..'
-    });
+        var $competenceInput = $('<input/>', {
+            id: 'competenceInput',
+            class: 'inputTextAuto',
+            'data-compId': 0,
+            placeholder: 'Ange kompetens..'
+        });
+
+        var $competenceQualifiedBox = $('<div/>', {
+            id: 'IsCompetenceQualifiedBox'
+        });
 
     var $addCompetenceButton = $('<button/>', {
         id: 'addCompetenceButton',
-        class: 'add',
-        onclick: 'AddCompetence()'
+        onclick: 'AddCompetence()',
+        text: 'Lägg till behörighet'
     });
 
     $competenceInput.autocomplete({
@@ -456,10 +507,14 @@ function CreateInputCompetence() {
     });
 
     $('#competenceCrudForm')
-        .append($competenceInput)
-        .append($CompetenceQualified)
-        .append($addCompetenceButton)
+        .append($competenceButtonContainer)
         .append($competenceList);
+    $('#competenceButtonContainer')
+        .append($competenceInput)
+        .append($competenceQualifiedBox)
+        .append($addCompetenceButton);
+    $('#IsCompetenceQualifiedBox')
+        .append(checkboxMaker('IsCompetenceQualified', 'Behörig'));
 }
 
 // #endregion
@@ -492,11 +547,20 @@ function UpdateStudentGroup(id) {
     $.ajax({
         type: 'POST',
         url: '/Wizard/UpdateStudentGroup/' + id,
-        data: { Name: name, Starting_Year: year, TeamId: team },
-        success: function (inputIsSuccess) {
-            console.log(inputIsSuccess);
-        }
-    });
+        data: { Name: name, Starting_Year: year, TeamId: team }
+    }).then(function (success) {
+        $('#studentGroupCrud table').find('tr:not(:first)').remove();
+        $.ajax({
+            type: 'GET',
+            url: '/Wizard/GetAllStudentGroups',
+            success: function (data) {
+                data.forEach(function (e) {
+                    $('#studentGroupCrud table').append('<tr><td>' + e.teamName + '</td><td>' + e.name + '</td><td>' + e.startingYear + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
+                });
+            }
+        });
+        $('.innerOverLay').fadeToggle("fast");
+    }, function () { console.log('Error') });
 }
 
 function DeleteStudentGroup(studentGroupId) {
@@ -504,9 +568,30 @@ function DeleteStudentGroup(studentGroupId) {
 
     $.ajax({
         type: 'POST',
-        url: '/Wizard/DeleteStudentGroup/' + studentGroupId,
-        success: function (deletionSucceeded) {
-            console.log(deletionSucceeded);
+        url: '/Wizard/DeleteStudentGroup/' + studentGroupId
+    }).then(function (success) {
+        $('#studentGroupCrud table').find('tr:not(:first)').remove();
+        $.ajax({
+            type: 'GET',
+            url: '/Wizard/GetAllStudentGroups',
+            success: function (data) {
+                data.forEach(function (e) {
+                    $('#studentGroupCrud table').append('<tr><td>' + e.teamName + '</td><td>' + e.name + '</td><td>' + e.startingYear + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
+                });
+            }
+        });
+    }, function () { console.log('Ta bort Student Group: error') });
+}
+
+function GetStudentGroupToEdit(id) {
+    $.ajax({
+        type: 'POST',
+        url: '/Wizard/GetStudentGroupById/' + id,
+        success: function (studentGroup) {
+            console.log(studentGroup);
+            var name = $('#studentGroupName').val(studentGroup.name);
+            var year = $('#studentGroupStartingYearDropDown').val(studentGroup.startingYear);
+            var team = $('#teamIdInputForStudentGroup').val(studentGroup.teamId);
         }
     });
 }
@@ -539,7 +624,7 @@ function CreateStudentGroupInput() {
         $startingYearDropDown.append(option);
     }
 
-    var $submitBtn = submitButtonMaker("CreateStudentGroupInput", "Lägg till klass", "SubmitStudentGroup");
+    var $submitBtn = submitButtonMaker("addStudentGroupButton", "Lägg till klass", "SubmitStudentGroup");
 
     //TODO : (Future) add pupilCount. USE: classroom assignment, prioritizing and if small classes can be grouped together
 
@@ -715,6 +800,38 @@ function SubmitAuxiliaryAssignment() {
     });
 }
 
+function DeleteAuxiliaryAssignment(id) {
+    $.ajax({
+        type: 'POST',
+        url: '/Wizard/DeleteAuxiliaryAssignment/' + id
+    }).then(function (data) {
+        $('#auxiliaryAssignmentCrud table').find('tr:not(:first)').remove();
+        $.ajax({
+            type: 'GET',
+            url: '/Wizard/GetAllAuxiliaryAssignments',
+            success: function (data) {
+                data.forEach(function (e) {
+                    var yesOrNo = "Nej";
+                    if (e.assigned == true)
+                        yesOrNo = "Ja";
+                    $('#auxiliaryAssignmentCrud table').append('<tr><td>' + e.name + '</td><td>' + e.points + '</td><td>' + yesOrNo + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
+                });
+            }
+        });
+    }, function () {
+        console.log('Something went wrong')
+    });
+}
+function GetAuxiliaryAssignmentToEdit(id) {
+    $.ajax({
+        type: 'GET',
+        url: '/Wizard/GetAuxiliaryAssignmentById/' + id,
+        success: function (assignment) {
+            
+        }
+    });
+}
+
 function CreateAuxiliaryAssignmentInput() {
     var $target = $('#auxiliaryAssignmentCrudForm');
 
@@ -758,7 +875,7 @@ function CreateAuxiliaryAssignmentInput() {
         placeholder: 'Tillsätt personal..'
     });
 
-    var $submitBtn = submitButtonMaker("CreateAuxiliaryAssignmentInput", "Spara uppdrag", "SubmitAuxiliaryAssignment");
+    var $submitBtn = submitButtonMaker("addAuxiliaryAssignmentButton", "Lägg till uppdrag", "SubmitAuxiliaryAssignment");
 
     $target.append($nameInput);
     $target.append($descInput);
