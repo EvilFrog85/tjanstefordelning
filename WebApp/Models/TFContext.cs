@@ -69,51 +69,27 @@ namespace WebApp.Models.Entities
 
             var simularSignatures = Personnel
                 .Where(p => p.UserId == id && p.Signature.Substring(0, 4) == signature).Select(p => p.Signature).ToArray();
+
             Array.Sort(simularSignatures);
+
             //Unique signature
             if (simularSignatures.Length == 0)
                 return String.Join("", signature + "01");
             else
             {
-                //bool generatingSignatures = true;
-                //int noMatch = 0;
                 int counter = 2;
-
-                //while (generatingSignatures)
-                //{
                 var newSignature = String.Join("", signature + "0" + counter);
+
                 foreach (var item in simularSignatures)
                 {
                     if (newSignature == item)
                     {
                         counter++;
-                        newSignature = String.Join("", signature + "0" + counter);//signature.Remove(4);
-                        //break;
+                        newSignature = String.Join("", signature + "0" + counter);
                     }
-                    //else
-                    //{
-                    //    noMatch++;
-                    //}
-                    //if (noMatch == simularSignatures.Length)
-                    //{
-                    //    return signature;
-                    //}
                 }
-                //noMatch = 0;
-                //}
-                return signature;
+                return newSignature;
             }
-
-
-
-
-            ////Less than 10 simular signature, Generates a new signature with a 0number
-            //else if (dataBaseSignature < 10)
-            //    return String.Join("", signature, 0, dataBaseSignature + 1);
-            ////More than 10 signature, Generates a new signature with a number
-            //else
-            //    return String.Join("", signature, dataBaseSignature + 1);
-
         }
 
         internal async Task<bool> DeletePersonnel(int id)

@@ -305,11 +305,10 @@ function GetPersonToEdit(id) {
             allChosenCompetences = [];
             person.competences.forEach(function (competence) {
                 var $competenceDiv = $('<div/>', {
-                    class: competence.qualified ? 'qualifiedCompetence' : 'competence',
-                    id: competence.subjectId
+                    class: competence.qualified ? 'competence qualified' : 'competence',
+                    id: 'comp' + competence.subjectId
                 });
                 var $competenceButton = $('<button/>', {
-                    text: 'X',
                     onclick: 'RemoveCompetence("' + competence.subjectId + '")'
                 });
                 var $competenceText = $('<p/>', { text: competence.name });
@@ -420,10 +419,8 @@ function SubmitCompetence() {
 }
 
 function RemoveCompetence(subjectId) {
-    $('#' + subjectId).remove();
-    var index = allChosenCompetences.findIndex(function (element) {
-        return element.SubjectId == subjectId;
-    });
+    $('#comp' + subjectId).remove();
+    var index = allChosenCompetences.findIndex(function (element) { return element.SubjectId == subjectId; });
     allChosenCompetences.splice(index, 1);
 }
 
@@ -432,11 +429,10 @@ function AddCompetence() {
     var competence = $('#competenceInput').val();
     var subjectId = subjectsArray.indexOf(competence) + 1;
     var $competenceDiv = $('<div/>', {
-        class: qualified ? 'qualifiedCompetence' : 'competence',
-        id: subjectId
+        class: qualified ? 'competence qualified' : 'competence',
+        id: 'comp' + subjectId
     });
     var $competenceButton = $('<button/>', {
-        text: 'X',
         onclick: 'RemoveCompetence("' + subjectId + '")'
     });
     var $competenceText = $('<p/>', { text: competence });
@@ -460,22 +456,25 @@ function CreateInputCompetence() {
         id: 'competenceList'
     });
 
-    var $CompetenceQualified = $('<input/>', {
-        type: 'checkbox',
-        id: 'IsCompetenceQualified'
+    var $competenceButtonContainer = $('<div/>', {
+        id: 'competenceButtonContainer'
     });
 
-    var $competenceInput = $('<input/>', {
-        id: 'competenceInput',
-        class: 'inputTextAuto',
-        'data-compId': 0,
-        placeholder: 'Ange kompetens..'
-    });
+        var $competenceInput = $('<input/>', {
+            id: 'competenceInput',
+            class: 'inputTextAuto',
+            'data-compId': 0,
+            placeholder: 'Ange kompetens..'
+        });
+
+        var $competenceQualifiedBox = $('<div/>', {
+            id: 'IsCompetenceQualifiedBox'
+        });
 
     var $addCompetenceButton = $('<button/>', {
         id: 'addCompetenceButton',
-        class: 'add',
-        onclick: 'AddCompetence()'
+        onclick: 'AddCompetence()',
+        text: 'Lägg till behörighet'
     });
 
     $competenceInput.autocomplete({
@@ -487,10 +486,14 @@ function CreateInputCompetence() {
     })
 
     $('#competenceCrudForm')
-        .append($competenceInput)
-        .append($CompetenceQualified)
-        .append($addCompetenceButton)
+        .append($competenceButtonContainer)
         .append($competenceList);
+    $('#competenceButtonContainer')
+        .append($competenceInput)
+        .append($competenceQualifiedBox)
+        .append($addCompetenceButton);
+    $('#IsCompetenceQualifiedBox')
+        .append(checkboxMaker('IsCompetenceQualified', 'Behörig'));
 }
 
 // #endregion
