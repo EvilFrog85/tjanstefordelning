@@ -236,7 +236,7 @@ input[type=number] {
     border: none;
     font-size: 18px;
     display: block;
-    float: left;
+    float: right;
     margin-left: 30px;
     box-shadow: 2px 2px 0 #888;
 }
