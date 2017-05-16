@@ -8,7 +8,7 @@ var durationEnum = {
 };
 function string_of_enum(e, value) {
     for (var k in e) {
-        if (e[k] == value)
+        if (e[k] === value)
             return k;
     }
     return null;
@@ -16,6 +16,16 @@ function string_of_enum(e, value) {
 
 function ClearClassList() {
     $('#classList').empty();
+}
+
+function LoadCurrentStudentGroupsClasses(studentGroupId){
+    $.ajax({
+        type: 'GET',
+        url: 'Assignment/GetStudentGroupClassesById/' + studentGroupId,
+        success: function (includedClasses) {
+
+        }
+    });
 }
 
 // #endregion
@@ -74,13 +84,20 @@ function RemoveClass(classId) {
 }
 
 function AddClass(className, classId) {
+    //Clear error message
+    $('#assignedClasses').empty();
+
+    //Get data
     className = $('#classInput').val();
     //TODO : Kolla om denna fullösningen går att fixa lite snyggare
     classId = $('#hiddenClassId').val();
     var duration = $('#includedClassDurationDropDown').val();
     var teamId = $('#includedClassTeamIdDropDown').val();
     var teamName = $('#includedClassTeamIdDropDown option[value=' + teamId + ']').text();
-    if (classesArray.findIndex(function (element) { return element.label == className }) != -1) {
+
+    //Check that the user has input a valid class
+    if (classesArray.findIndex(function (element) { return element.label === className; }) !== -1) {
+        //Create the div to contain the included class information needed
         var $classDiv = $('<div/>', {
             class: 'classToStudentGroup',
             id: classId,
@@ -89,24 +106,31 @@ function AddClass(className, classId) {
             'data-teamname': teamName,
             style: "display: flex; flex-direction: row;"
         });
+        //Add a delete button
         var $classButton = $('<button/>', {
             text: 'X',
             onclick: 'RemoveClass("' + classId + '")',
-            id: 'assignButton',
+            id: 'assignButton'
         });
+        //Class information to display
         var infoText = "<b>Kurs:</b> " + className + "<br/><b>Arbetslag:</b> " + teamName + "<br/><b>Period:</b> " + string_of_enum(durationEnum, duration);
         var $classText = $('<div/>', { html: infoText });
 
-        //if(not already in the list)
+        //Check if the class is in the class list
         var index = allChosenClasses.findIndex(function (element) { console.log(element); return element.ClassId === classId; });
-        if (index == -1) {
+        if (index === -1) {
             allChosenClasses.push({ "ClassName": className, "ClassId": classId });
             $classDiv.append($classButton);
             $classDiv.append($classText);
 
             $('#classList').append($classDiv);
             $('#classInput').val('');
+        } else {
+            $('#assignedClasses').html(generateFormMessage("error", "Kursen finns redan i listan."));
+            $('#classInput').val('');
         }
+    } else {
+        $('#assignedClasses').html(generateFormMessage("error", "Du måste välja en klass och eller kurser att lägga till."));
     }
 
     console.log(allChosenClasses);
@@ -129,12 +153,15 @@ function PopulateStudentGroupsArray() {
             $('#studentGroupInput').autocomplete({
                 source: studentGroupsArray,
                 select: function (event, listItems) {
+                    //Set current student group
                     $('#currentStudentGroup').empty();
                     $('#currentStudentGroup').append($('<div/>', { html: '<b>Vald klass</b>' }));
                     $('#currentStudentGroup').append($('<div/>', { id: 'CSG', text: listItems.item.label, 'data-id': listItems.item.value, style: 'font-weight: bold; color: green; font-size: 30px;' }));
 
-                    //ui.item./ label = klassnamn,/ value=klass id
-                    //AddStudentGroup(listItems.item.label, listItems.item.value);
+                    //Load the current student groups included classes
+                    LoadCurrentStudentGroupsClasses(listItems.item.value);
+
+                    //clear input field on select
                     $('#studentGroupInput').val(''); //clear input field
                     return false; //cancel event
                 }
@@ -143,6 +170,7 @@ function PopulateStudentGroupsArray() {
         }
     });
 }
+
 function PopulateClassesArray() {
     classesArray = []; //empty array
     $.ajax({
@@ -155,23 +183,13 @@ function PopulateClassesArray() {
                 var newClass = { label: cls.className, value: cls.id };
                 classesArray.push(newClass);
             });
-            //$classInput.autocomplete({
             $('#classInput').autocomplete({
                 source: classesArray,
                 select: function (event, listItems) {
-                    //Show selected course
-                    //$('#currentClass').empty();
-                    //$('#currentClass').append($('<div/>', {text : 'Vald kurs'}));
-                    //$('#currentClass').append($('<div/>', {text: listItems.item.label, 'data-id': listItems.item.value}))
-
-                    //ui.item./ label = klassnamn,/ value=klass id
+                    //set the selected classes name in the input and save its id in hidden input for later usage
                     $('#classInput').val(listItems.item.label);
                     $('#hiddenClassId').val(listItems.item.value);
                     return false;
-
-                    //AddClass(listItems.item.label, listItems.item.value);
-                    //$('#classInput').val(''); //clear input field
-                    //return false; //cancel event
                 }
             });
 
@@ -210,7 +228,7 @@ function AssignStudentGroupsToClass() {
 function AssignClassesToStudentGroup() {
     var studentGroupId = $('#CSG').attr('data-id');
     var classes = $('.classToStudentGroup');
-    if (studentGroupId && classes.length != 0) {
+    if (studentGroupId && classes.length > 0) {
         var classDataToSend = [];
         classes.each(function (index, cls) {
             var newClass = { ClassId: cls.id, duration: cls.getAttribute('data-duration'), teamId: cls.getAttribute('data-teamid'), StudentGroupId: studentGroupId };
@@ -222,11 +240,12 @@ function AssignClassesToStudentGroup() {
             data: { ClassData: classDataToSend },
             success: function (result) {
                 console.log(result);
-                if (result) {
-                    alert("Kurser är tillagda");
+                if (result > 0) {
+                    $('#assignedClasses').html(generateFormMessage("success", result + " kurs/kurser har blivit tillagda."));
                     $('#currentStudentGroup').empty();
+                } else {
+                    $('#assignedClasses').html(generateFormMessage("error", "Inga kurser har blivit tillagda."));
                 }
-
             }
         });
     }
@@ -354,24 +373,25 @@ $(function () {
     });
 
     var $addButton = $('<button/>', {
-        class: 'add',
         onclick: 'AddClass()',
-        style: 'align-self: center'
+        style: 'align-self: center; background-color: #a5cd4e',
+        text: 'Lägg till kurs'
     });
 
     var $submitBtn2 = $('<button/>', {
         class: 'buttonSubmit',
         onclick: 'AssignClassesToStudentGroup()',
-        text: 'Spara',
+        text: 'Klar med klass',
         style: 'align-self: center; margin: 5px;'
     });
 
     var $clearClassListButton = $('<button/>', {
         onclick: 'ClearClassList()',
         text: 'Rensa kurslista',
-        style: 'align-self: center;'
-    })
+        style: 'align-self: center; background-color: red;'
+    });
 
+    $target2.append($('<div/>', { class: 'messageBox', id: 'assignedClasses' }));
     $target2.append($studentGroupInput);
     $target2.append($('<div/>', { id: 'currentStudentGroup' }));
     $target2.append($classInput);
@@ -379,8 +399,8 @@ $(function () {
     $target2.append($teamId);
     $target2.append($addButton);
     $target2.append($classList);
-    $target2.append($submitBtn2);
     $target2.append($clearClassListButton);
+    $target2.append($submitBtn2);
 
 
     //Inserts all student groups into an array for autocompletion
