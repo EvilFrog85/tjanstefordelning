@@ -3,7 +3,7 @@
 // Used in wizard to determine if list needs to be updated
 var submitClickCounter = 0;
 
-//To generate advanced checkboxes, styled submitButtons and form messages
+// #region To generate advanced checkboxes, styled submitButtons and form messages
 function checkboxMaker(name, statement) {
     return '<label for="' + name + '" class="labelCheckbox">' + statement + ': </label><label class="switch"><div><span>JA</span><span>NEJ</span></div><input id="' + name + '" name="' + name + '" type="checkbox" value="1" /><div class="slider"></div></label>';
 }
@@ -18,11 +18,8 @@ function generateFormMessage(type, message) {
     else
         return '<p class="successMessage">' + message + '</p>';
 }
-//END
+// #endregion
 
-
-
-//ALEXANDERS OMRÅDE
 //Team Crud functions
 
 //Temporary info-box
@@ -179,13 +176,12 @@ function CreateInputTeam() {
 
 // #endregion
 
-//Personnel Crud ajax - NOT USING ATM
-//TODO : Change it to be general and not only for Personnel crud
-//Get all subjects to be able to choose competences
-
+// #region Populate arrays for autocomplete
+var allPersonnel = [];
 var allChosenCompetences = [];
 var allSubjects = [];
 var allSubjectsExist = false;
+//Get all subjects to be able to choose competences
 function GetAllSubjects() {
     $.ajax({
         type: 'GET',
@@ -199,6 +195,31 @@ function GetAllSubjects() {
         }
     });
 }
+
+function GetAllPersonnel() {
+    allPersonnel = [];
+    $.ajax({
+        type: 'GET',
+        url: '/Wizard/GetAllPersonnel',
+        success: function (personnel) {
+            personnel.forEach(function (person) {
+                var newPersonnel = { label: person.firstName + " " + person.lastName, value: person.id };
+                allPersonnel.push(newPersonnel);
+            });
+            console.log(allPersonnel);
+            $('#auxiliaryAssignmentPersonnel').autocomplete({
+                source: allPersonnel,
+                select: function (event, ti) {
+                    event.preventDefault();
+                    $('#auxiliaryAssignmentPersonnel').val(ti.item.label);
+                    $('#auxiliaryAssignmentPersonnel').attr('data-personnelid', ti.item.value);
+                }
+            });
+        }
+    });
+}
+// #endregion
+
 
 // #region PERSONNEL - crud
 
@@ -221,7 +242,7 @@ function AddNewPersonnel() {
         Contract: contract,
         Competences: allChosenCompetences
     };
-
+    
     $.ajax({
         type: 'POST',
         url: '/Wizard/AddNewPersonnel',
@@ -360,7 +381,7 @@ function CreateInputPersonnel() {
         class: 'inputText',
         placeholder: 'Bild..',
         id: 'imgUrlInput',
-        type: 'file',
+        type: 'file'
     });
     var $img = $('<img/>', {
         src: '../img/staff_pictures/default.jpg',
@@ -483,7 +504,7 @@ function CreateInputCompetence() {
             event.preventDefault();
             $('#competenceInput').val(ti.item.label);
         }
-    })
+    });
 
     $('#competenceCrudForm')
         .append($competenceButtonContainer)
@@ -498,7 +519,6 @@ function CreateInputCompetence() {
 
 // #endregion
 
-//BJÖRNS OMRÅDE
 
 // #region STUDENTGROUP - crud
 
@@ -740,8 +760,6 @@ function CreateIncludedClassInput() {
 // #endregion
 
 
-// JONAS area
-
 // #region AUXILIARYASSIGNMENT - crud
 
 /* Auxiliary_assignments */
@@ -752,10 +770,14 @@ function SubmitAuxiliaryAssignment() {
     var description = $('#auxiliaryAssignmentDesc').val();
     var points = $('#auxiliaryAssignmentPoints').val();
     var duration = $('#auxiliaryAssignmentDurationDropDown').val();
+    
+    
     var mandatory = $('#auxiliaryAssignmentMandatory').prop('checked');
+    var personnelId = $('#auxiliaryAssignmentPersonnel').attr('data-personnelid');
+    console.log('personnelid: ' + personnelId);
     var personnel = $('#auxiliaryAssignmentPersonnel').val();
     var assigned = false;
-    if (personnel !== "") {
+    if (personnelId) {
         assigned = true;
     }
 
@@ -765,7 +787,7 @@ function SubmitAuxiliaryAssignment() {
         Points: points,
         Duration: duration,
         Mandatory: mandatory,
-        PersonnelSignature: personnel,
+        PersonnelId: personnelId,
         Assigned: assigned
     };
     //console.log(dataToInsert);
@@ -879,6 +901,3 @@ function CreateAuxiliaryAssignmentInput() {
 }
 /* END Auxiliary_assignments */
 // #endregion
-
-
-// SOFIAS area
