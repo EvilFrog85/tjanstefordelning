@@ -125,11 +125,13 @@ function AddClass() {
             $('#classList').append($classDiv);
             $('#classInput').val('');
         } else {
-            $('#assignedClasses').html(generateFormMessage("error", "Kursen finns redan i listan."));
+            $('#messageBoxAssignClasses').html(generateFormMessage("error", "Kursen finns redan i listan.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+            //$('#assignedClasses').html(generateFormMessage("error", "Kursen finns redan i listan."));
             $('#classInput').val('');
         }
     } else {
-        $('#assignedClasses').html(generateFormMessage("error", "Du måste välja en klass och eller kurser att lägga till."));
+        $('#messageBoxAssignClasses').html(generateFormMessage("error", "Du måste välja en klass och/eller kurs(er) att lägga till.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+        //$('#assignedClasses').html(generateFormMessage("error", "Du måste välja en klass och eller kurser att lägga till."));
     }
 
     console.log(allChosenClasses);
@@ -188,7 +190,6 @@ function PopulateClassesArray() {
                     //set the selected classes name in the input and save its id in hidden input for later usage
                     $('#classInput').val(listItems.item.label);
                     $('#classInput').attr('data-classid', listItems.item.value);
-                    $('#hiddenClassId').val(listItems.item.value);
                     return false;
                 }
             });
@@ -241,10 +242,10 @@ function AssignClassesToStudentGroup() {
             success: function (result) {
                 console.log(result);
                 if (result > 0) {
-                    $('#assignedClasses').html(generateFormMessage("success", result + " kurs/kurser har blivit tillagda."));
+                    $('#messageBoxAssignClasses').html(generateFormMessage("success", result + " kurs/kurser har blivit tillagda.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
                     $('#currentStudentGroup').empty();
                 } else {
-                    $('#assignedClasses').html(generateFormMessage("error", "Inga kurser har blivit tillagda."));
+                    $('#messageBoxAssignClasses').html(generateFormMessage("error", "Inga kurser har blivit tillagda.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
                 }
             }
         });
@@ -299,7 +300,6 @@ function GetTeams() {
 $(function () {
     // #region assign student groups to class
     $target = $('#assignStudentGroupsToClassDiv');
-
 
     //Choose class (autocomplete)
     var $classInput = $('<input/>', {
@@ -391,7 +391,7 @@ $(function () {
         style: 'align-self: center; background-color: red;'
     });
 
-    $target2.append($('<div/>', { class: 'messageBox', id: 'assignedClasses' }));
+    $target2.append($('<div/>', { class: 'messageBox', id: 'messageBoxAssignClasses' }));
     $target2.append($studentGroupInput);
     $target2.append($('<div/>', { id: 'currentStudentGroup' }));
     $target2.append($classInput);

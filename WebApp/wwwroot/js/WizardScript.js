@@ -3,7 +3,7 @@
 // Used in wizard to determine if list needs to be updated
 var submitClickCounter = 0;
 
-//To generate advanced checkboxes, styled submitButtons and form messages
+// #region To generate advanced checkboxes, styled submitButtons and form messages
 function checkboxMaker(name, statement) {
     return '<label for="' + name + '" class="labelCheckbox">' + statement + ': </label><label class="switch"><div><span>JA</span><span>NEJ</span></div><input id="' + name + '" name="' + name + '" type="checkbox" value="1" /><div class="slider"></div></label>';
 }
@@ -18,11 +18,8 @@ function generateFormMessage(type, message) {
     else
         return '<p class="successMessage">' + message + '</p>';
 }
-//END
+// #endregion
 
-
-
-//ALEXANDERS OMRÅDE
 //Team Crud functions
 
 //Temporary info-box
@@ -130,13 +127,12 @@ function CreateInputTeam() {
 
 // #endregion
 
-//Personnel Crud ajax - NOT USING ATM
-//TODO : Change it to be general and not only for Personnel crud
-//Get all subjects to be able to choose competences
-
+// #region Populate arrays for autocomplete
+var allPersonnel = [];
 var allChosenCompetences = [];
 var allSubjects = [];
 var allSubjectsExist = false;
+//Get all subjects to be able to choose competences
 function GetAllSubjects() {
     $.ajax({
         type: 'GET',
@@ -150,6 +146,23 @@ function GetAllSubjects() {
         }
     });
 }
+
+function GetAllPersonnel() {
+    allPersonnel = [];
+    $.ajax({
+        type: 'GET',
+        url: '/Wizard/GetAllPersonnel',
+        success: function (personnel) {
+            console.log(personnel);
+            personnel.forEach(function (person) {
+                var newPersonnel = { label: person.name, value: person.id };
+                allPersonnel.push(newPersonnel);
+            });
+        }
+    });
+}
+// #endregion
+
 
 // #region PERSONNEL - crud
 
@@ -172,7 +185,7 @@ function AddNewPersonnel() {
         Contract: contract,
         Competences: allChosenCompetences
     };
-
+    
     $.ajax({
         type: 'POST',
         url: '/Wizard/AddNewPersonnel',
@@ -187,13 +200,13 @@ function AddNewPersonnel() {
             allChosenCompetences = [];
             $('#competenceList').empty();
             $('#messageBoxPersonnelCrud').empty();
-            var personnelAddMessage = generateFormMessage("Success", "Personen blev tillagd.")
+            var personnelAddMessage = generateFormMessage("Success", "Personen blev tillagd.");
             $('#messageBoxPersonnelCrud').append(personnelAddMessage).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
         }
     }, function () {
         $('#messageBoxPersonnelCrud').empty();
-        var personnelAddMessage = generateFormMessage("error", "Något gick fel...")
-        $('#messageBoxPersonnelCrud').append(personnelAddMessage).hide().fadeToggle(10).delay(2000).fadeToggle("fast")
+        var personnelAddMessage = generateFormMessage("error", "Något gick fel...");
+        $('#messageBoxPersonnelCrud').append(personnelAddMessage).hide().fadeToggle(10).delay(2000).fadeToggle("fast");
     });
 }
 
@@ -311,7 +324,7 @@ function CreateInputPersonnel() {
         class: 'inputText',
         placeholder: 'Bild..',
         id: 'imgUrlInput',
-        type: 'file',
+        type: 'file'
     });
     var $img = $('<img/>', {
         src: '../img/staff_pictures/default.jpg',
@@ -432,7 +445,7 @@ function CreateInputCompetence() {
             event.preventDefault();
             $('#competenceInput').val(ti.item.label);
         }
-    })
+    });
 
     $('#competenceCrudForm')
         .append($competenceInput)
@@ -443,7 +456,6 @@ function CreateInputCompetence() {
 
 // #endregion
 
-//BJÖRNS OMRÅDE
 
 // #region STUDENTGROUP - crud
 
@@ -652,8 +664,6 @@ function CreateIncludedClassInput() {
 // #endregion
 
 
-// JONAS area
-
 // #region AUXILIARYASSIGNMENT - crud
 
 /* Auxiliary_assignments */
@@ -739,6 +749,17 @@ function CreateAuxiliaryAssignmentInput() {
         placeholder: 'Tillsätt personal..'
     });
 
+    //populate personnelarray
+    GetAllPersonnel();
+
+    $personnelInput.autocomplete({
+        source: allPersonnel,
+        select: function (event, ti) {
+            event.preventDefault();
+            $('#auxiliaryAssignmentPersonnel').val(ti.item.label);
+        }
+    });
+
     var $submitBtn = submitButtonMaker("CreateAuxiliaryAssignmentInput", "Spara uppdrag", "SubmitAuxiliaryAssignment");
 
     $target.append($nameInput);
@@ -755,6 +776,3 @@ function CreateAuxiliaryAssignmentInput() {
 }
 /* END Auxiliary_assignments */
 // #endregion
-
-
-// SOFIAS area
