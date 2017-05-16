@@ -65,18 +65,52 @@ namespace WebApp.Models.Entities
         {
             string signature = firstName.Substring(0, 2) + lastName.Substring(0, 2);
 
-            int dataBaseSignature = Personnel
-                .Where(p => p.UserId == id && p.Signature.Substring(0, 4) == signature).Count();
-
+            var simularSignatures = Personnel
+                .Where(p => p.UserId == id && p.Signature.Substring(0, 4) == signature).Select(p => p.Signature).ToArray();
+            Array.Sort(simularSignatures);
             //Unique signature
-            if (dataBaseSignature == 0)
+            if (simularSignatures.Length == 0)
                 return String.Join("", signature + "01");
-            //Less than 10 simular signature, Generates a new signature with a 0number
-            else if (dataBaseSignature < 10)
-                return String.Join("", signature, 0, dataBaseSignature + 1);
-            //More than 10 signature, Generates a new signature with a number
             else
-                return String.Join("", signature, dataBaseSignature + 1);
+            {
+                //bool generatingSignatures = true;
+                //int noMatch = 0;
+                int counter = 2;
+
+                //while (generatingSignatures)
+                //{
+                var newSignature = String.Join("", signature + "0" + counter);
+                foreach (var item in simularSignatures)
+                {
+                    if (newSignature == item)
+                    {
+                        counter++;
+                        newSignature = String.Join("", signature + "0" + counter);//signature.Remove(4);
+                        //break;
+                    }
+                    //else
+                    //{
+                    //    noMatch++;
+                    //}
+                    //if (noMatch == simularSignatures.Length)
+                    //{
+                    //    return signature;
+                    //}
+                }
+                //noMatch = 0;
+                //}
+                return signature;
+            }
+
+
+
+
+            ////Less than 10 simular signature, Generates a new signature with a 0number
+            //else if (dataBaseSignature < 10)
+            //    return String.Join("", signature, 0, dataBaseSignature + 1);
+            ////More than 10 signature, Generates a new signature with a number
+            //else
+            //    return String.Join("", signature, dataBaseSignature + 1);
 
         }
 
@@ -117,7 +151,7 @@ namespace WebApp.Models.Entities
                 .Include(c => c.Team)
                 .Include(c => c.User)
                 .SingleOrDefaultAsync();
-            
+
             personToUpdate.FirstName = viewModel.FirstName;
             personToUpdate.LastName = viewModel.LastName;
             // TODO - Activate once again when img-upload is functional
@@ -174,19 +208,19 @@ namespace WebApp.Models.Entities
             return await Personnel
                 .Where(p => p.UserId == userId)
                 .Select(p => new PersonnelVM
-            {
-                AssignedPoints = p.AssignedPoints,
-                AvailablePoints = p.AvailablePoints,
-                Competences = p.Competence.Select(c => new CompetenceVM { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray(),
-                Contract = p.Contract,
-                FirstName = p.FirstName,
-                LastName = p.LastName,
-                Signature = p.Signature,
-                TeamName = p.Team.Name,
-                Id = p.Id,
-                ImageUrl = p.ImageUrl,
-                IncludedClasses = p.IncludedClass.Select(i => new IncludedClassVM { ClassName = i.Class.ClassName, Duration = i.Duration }).ToArray()
-            }).ToArrayAsync();
+                {
+                    AssignedPoints = p.AssignedPoints,
+                    AvailablePoints = p.AvailablePoints,
+                    Competences = p.Competence.Select(c => new CompetenceVM { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray(),
+                    Contract = p.Contract,
+                    FirstName = p.FirstName,
+                    LastName = p.LastName,
+                    Signature = p.Signature,
+                    TeamName = p.Team.Name,
+                    Id = p.Id,
+                    ImageUrl = p.ImageUrl,
+                    IncludedClasses = p.IncludedClass.Select(i => new IncludedClassVM { ClassName = i.Class.ClassName, Duration = i.Duration }).ToArray()
+                }).ToArrayAsync();
         }
         internal PersonnelCreateVM GetPersonnelById(int id)
         {
