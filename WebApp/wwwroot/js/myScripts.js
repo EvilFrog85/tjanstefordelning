@@ -99,7 +99,15 @@ $(document).ready(function () {
             GetAllSubjects();
         if (target == "personnelCrud") {
             $('#addPersonnelButton').attr('onclick', 'AddNewPersonnel()');
-            $('#addPersonnelButton').text('Spara Personal');
+            $('#addPersonnelButton').text('Lägg till personal');
+        }
+        if (target == "teamCrud") {
+            $('#addTeamButton').attr('onclick', 'SubmitTeam()');
+            $('#addTeamButton').text('Lägg till arbetslag');
+        }
+        if (target == "studentGroupCrud") {
+            $('#addStudentGroupButton').attr('onclick', 'SubmitStudentGroup()');
+            $('#addStudentGroupButton').text('Lägg till klass');
         }
         target = target + "Form";
         $('.innerOverLay').fadeToggle("fast");
@@ -227,11 +235,14 @@ $(document).ready(function () {
         var target = $(this).closest('.wizardDataBox').attr("id");
         
         if (target == "teamCrud") {
-            return;
+            GetTeamToEdit(itemId);
+            $('#addTeamButton').attr('onclick', 'UpdateTeam(' + itemId + ')');
+            $('#addTeamButton').text('Uppdatera');
         }
         else if (target == "studentGroupCrud") {
-            return;
-            // UpdateStudentGroup(itemId);
+            GetStudentGroupToEdit(itemId);
+            $('#addStudentGroupButton').attr('onclick', 'UpdateStudentGroup(' + itemId + ')');
+            $('#addStudentGroupButton').text('Uppdatera');
         }
         else if (target == "personnelCrud") {
             // Get list of subjects
@@ -245,7 +256,8 @@ $(document).ready(function () {
             $('#addPersonnelButton').text('Uppdatera');
         }
         else if (target == "auxiliaryAssignmentCrud") {
-            return;
+            $('#addAuxiliaryAssignmentButton').attr('onclick', 'EditPersonById(' + itemId + ')');
+            $('#addAuxiliaryAssignmentButton').text('Uppdatera');
         }
 
         target = target + "Form";
@@ -271,6 +283,9 @@ $(document).ready(function () {
         }
         if (target == "studentGroupCrud")
             DeleteStudentGroup(itemId);
+        if (target == "auxiliaryAssignmentCrud") {
+            DeleteAuxiliaryAssignment(itemId);
+        }
         
     });
     /* END - Jonas lekplats */
