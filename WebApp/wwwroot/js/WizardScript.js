@@ -367,9 +367,10 @@ function RemovePerson(id) {
 }
 
 //Update info-box
-function UpdateCounterInfo(data) {
-    $('#counterInfo').empty();
-    $('#counterInfo').append(data.length);
+function UpdateCounterInfo(data, name) {
+    $('#counterInfo').html(data.length);
+    $('#counterHeader').html(name);
+
 }
 
 //Personnel crud html injection
