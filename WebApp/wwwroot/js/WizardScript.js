@@ -190,30 +190,31 @@ function EditPersonById(id) {
         Contract: contract,
         Competences: allChosenCompetences
     };
-    console.log(personnelData);
     $.ajax({
         type: 'POST',
         url: '/Wizard/UpdatePersonnel/' + id,
         data: personnelData,
         success: function (data) {
-            if (data) {
-                $('#innerOverLay').fadeToggle("fast");
-                // Copy of updateLists - personnel - from myScripts
-                $('#personnelCrud table').find('tr:not(:first)').remove();
+            console.log("Fisk:"+data);
+            $('#innerOverLay').fadeToggle("fast");
+            // Copy of updateLists - personnel - from myScripts
+            $('#personnelCrud table').find('tr:not(:first)').remove();
+            console.log("punkt 1");
+            //TODO imorgon!
 
-                //TODO imorgon!
-                /*
-                $.ajax({
-                    type: 'GET',
-                    url: '/Wizard/GetAllPersonnelToWizardList',
-                    success: function (data) {
-                        data.forEach(function (e) {
-                            $('#personnelCrud table').append('<tr><td>' + e.teamName + '</td><td>' + e.firstName + '</td><td>' + e.lastName + '</td><td>' + e.signature + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
-                        });
-                    }
-                });
-                */
-            }
+
+            /*
+            $.ajax({
+                type: 'GET',
+                url: '/Wizard/GetAllPersonnelToWizardList',
+                success: function (data) {
+                    console.log("punkt 2");
+                    data.forEach(function (e) {
+                        $('#personnelCrud table').append('<tr><td>' + e.teamName + '</td><td>' + e.firstName + '</td><td>' + e.lastName + '</td><td>' + e.signature + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
+                    });
+                }
+            });
+            */
         }
     });
 }
