@@ -113,17 +113,19 @@
 				#wizardBoxItemDesc div{
 					display: none;
 				}
-			#addButton{
-				width: 25%;
-				height: calc(100% - 2px);
-				border: 1px solid #000;
-				background-color: #4cd2ff;
-				background-image: url(../img/icons/add.svg);
-				background-repeat: no-repeat;
-				background-position: center;
-				background-size: auto 85%;
-				transition: transform .2s linear;
-			}
+            #addButton {
+                width: 25%;
+                /*height: calc(100% - 2px);*/
+                /*Chrome height bug*/
+                height: 51px;
+                border: 1px solid #000;
+                background-color: #4cd2ff;
+                background-image: url(../img/icons/add.svg);
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: auto 85%;
+                transition: transform .2s linear;
+            }
 			#addButton:hover{
 				cursor: pointer;
 				transform: scale(0.95);

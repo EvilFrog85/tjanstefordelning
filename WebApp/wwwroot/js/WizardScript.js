@@ -214,7 +214,6 @@ function EditPersonById(id) {
         Contract: contract,
         Competences: allChosenCompetences
     };
-    console.log(personnelData);
     $.ajax({
         type: 'POST',
         url: '/Wizard/UpdatePersonnel/' + id,
