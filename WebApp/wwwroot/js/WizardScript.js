@@ -153,10 +153,18 @@ function GetAllPersonnel() {
         type: 'GET',
         url: '/Wizard/GetAllPersonnel',
         success: function (personnel) {
-            console.log(personnel);
             personnel.forEach(function (person) {
-                var newPersonnel = { label: person.name, value: person.id };
+                var newPersonnel = { label: person.firstName + " " + person.lastName, value: person.id };
                 allPersonnel.push(newPersonnel);
+            });
+            console.log(allPersonnel);
+            $('#auxiliaryAssignmentPersonnel').autocomplete({
+                source: allPersonnel,
+                select: function (event, ti) {
+                    event.preventDefault();
+                    $('#auxiliaryAssignmentPersonnel').val(ti.item.label);
+                    $('#auxiliaryAssignmentPersonnel').attr('data-personnelid', ti.item.value);
+                }
             });
         }
     });
@@ -679,9 +687,10 @@ function SubmitAuxiliaryAssignment() {
         mandatory = true;
     else
         mandatory = false;
-    var personnel = $('#auxiliaryAssignmentPersonnel').val();
+    var personnelId = $('#auxiliaryAssignmentPersonnel').attr('data-personnelid');
+    console.log('personnelid: ' + personnelId);
     var assigned = false;
-    if (personnel !== "") {
+    if (personnelId) {
         assigned = true;
     }
 
@@ -691,7 +700,7 @@ function SubmitAuxiliaryAssignment() {
         Points: points,
         Duration: duration,
         Mandatory: mandatory,
-        PersonnelSignature: personnel,
+        PersonnelId: personnelId,
         Assigned: assigned
     };
     //console.log(dataToInsert);
@@ -747,17 +756,6 @@ function CreateAuxiliaryAssignmentInput() {
         id: 'auxiliaryAssignmentPersonnel',
         type: 'text',
         placeholder: 'Tillsätt personal..'
-    });
-
-    //populate personnelarray
-    GetAllPersonnel();
-
-    $personnelInput.autocomplete({
-        source: allPersonnel,
-        select: function (event, ti) {
-            event.preventDefault();
-            $('#auxiliaryAssignmentPersonnel').val(ti.item.label);
-        }
     });
 
     var $submitBtn = submitButtonMaker("CreateAuxiliaryAssignmentInput", "Spara uppdrag", "SubmitAuxiliaryAssignment");

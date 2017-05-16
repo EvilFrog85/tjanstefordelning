@@ -196,6 +196,7 @@ $(document).ready(function () {
             }
             else if (target == "auxiliaryAssignmentCrud") {
                 //alert("Uppdaterar uppdrag");
+                GetAllPersonnel();
                 auxiliaryAssignmentFirstVisit = false;
                 $('#auxiliaryAssignmentCrud table').find('tr:not(:first)').remove();
                 $.ajax({

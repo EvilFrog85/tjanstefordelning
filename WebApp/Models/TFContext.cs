@@ -552,13 +552,6 @@ namespace WebApp.Models.Entities
         internal async Task<bool> AddNewAuxiliaryAssignment(AuxiliaryAssignmentCreateVM viewModel, string id)
         {
             int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
-
-            int? Personnel_id = null;
-
-            if (!String.IsNullOrWhiteSpace(viewModel.PersonnelSignature))
-                Personnel_id = Personnel.FirstOrDefault(p => p.Signature == viewModel.PersonnelSignature).Id;
-
-
             var AuxiliaryAssignmentToAdd = new AuxiliaryAssignment
             {
                 Name = viewModel.Name,
@@ -567,7 +560,7 @@ namespace WebApp.Models.Entities
                 Duration = viewModel.Duration,
                 Assigned = viewModel.Assigned,
                 Mandatory = viewModel.Mandatory,
-                PersonnelId = Personnel_id,
+                PersonnelId = viewModel.PersonnelId,
                 UserId = userId
             };
             this.AuxiliaryAssignment.Add(AuxiliaryAssignmentToAdd);
@@ -584,18 +577,13 @@ namespace WebApp.Models.Entities
         {
             var assignmentToUpdate = AuxiliaryAssignment.SingleOrDefault(a => a.Id == id);
 
-            int? Personnel_id = null;
-
-            if (!String.IsNullOrWhiteSpace(viewModel.PersonnelSignature))
-                Personnel_id = Personnel.FirstOrDefault(p => p.Signature == viewModel.PersonnelSignature).Id;
-
             assignmentToUpdate.Name = viewModel.Name;
             assignmentToUpdate.Description = viewModel.Description;
             assignmentToUpdate.Points = viewModel.Points;
             assignmentToUpdate.Duration = viewModel.Duration;
             assignmentToUpdate.Assigned = viewModel.Assigned;
             assignmentToUpdate.Mandatory = viewModel.Mandatory;
-            assignmentToUpdate.PersonnelId = Personnel_id;
+            assignmentToUpdate.PersonnelId = viewModel.PersonnelId;
 
             return await SaveChangesAsync() == 1;
         }
