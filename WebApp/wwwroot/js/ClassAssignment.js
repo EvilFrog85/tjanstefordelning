@@ -8,7 +8,7 @@ var durationEnum = {
 };
 function string_of_enum(e, value) {
     for (var k in e) {
-        if (e[k] === value)
+        if (e[k] == value)
             return k;
     }
     return null;
@@ -36,7 +36,7 @@ var allChosenStudentGroups = [];
 function RemoveStudentGroup(studentGroupId) {
     $('#' + studentGroupId).remove();
     //TODO : Check findindex
-    var index = allChosenStudentGroups.findIndex(function (element) { console.log(element); element.StudentGroupId === studentGroupId; });
+    var index = allChosenStudentGroups.findIndex(function (element) { console.log(element); element.StudentGroupId == studentGroupId; });
     console.log(index);
     allChosenStudentGroups.splice(index);
     console.log(allChosenStudentGroups);
@@ -77,26 +77,29 @@ var allChosenClasses = [];
 function RemoveClass(classId) {
     $('#' + classId).remove();
     //TODO : Check findindex
-    var index = allChosenClasses.findIndex(function (element) { console.log(element); element.ClassId === classId; });
+    var index = allChosenClasses.findIndex(function (element) { console.log(element); element.ClassId == classId; });
     console.log(index);
     allChosenClasses.splice(index);
     console.log(allChosenClasses);
 }
 
-function AddClass(className, classId) {
+function AddClass() {
     //Clear error message
     $('#assignedClasses').empty();
 
     //Get data
     className = $('#classInput').val();
     //TODO : Kolla om denna fullösningen går att fixa lite snyggare
-    classId = $('#hiddenClassId').val();
+    //classId = $('#hiddenClassId').val();
+    classId = $('#classInput').attr('data-classid');
+    console.log('classId ' + classId);
     var duration = $('#includedClassDurationDropDown').val();
+    console.log('duration ' + duration);
     var teamId = $('#includedClassTeamIdDropDown').val();
     var teamName = $('#includedClassTeamIdDropDown option[value=' + teamId + ']').text();
 
     //Check that the user has input a valid class
-    if (classesArray.findIndex(function (element) { return element.label === className; }) !== -1) {
+    if (classesArray.findIndex(function (element) { return element.label == className; }) !== -1) {
         //Create the div to contain the included class information needed
         var $classDiv = $('<div/>', {
             class: 'classToStudentGroup',
@@ -113,12 +116,14 @@ function AddClass(className, classId) {
             id: 'assignButton'
         });
         //Class information to display
+        console.log('bfore textinfo ' + duration);
+
         var infoText = "<b>Kurs:</b> " + className + "<br/><b>Arbetslag:</b> " + teamName + "<br/><b>Period:</b> " + string_of_enum(durationEnum, duration);
         var $classText = $('<div/>', { html: infoText });
 
         //Check if the class is in the class list
-        var index = allChosenClasses.findIndex(function (element) { console.log(element); return element.ClassId === classId; });
-        if (index === -1) {
+        var index = allChosenClasses.findIndex(function (element) { console.log(element); return element.ClassId == classId; });
+        if (index == -1) {
             allChosenClasses.push({ "ClassName": className, "ClassId": classId });
             $classDiv.append($classButton);
             $classDiv.append($classText);
@@ -188,6 +193,7 @@ function PopulateClassesArray() {
                 select: function (event, listItems) {
                     //set the selected classes name in the input and save its id in hidden input for later usage
                     $('#classInput').val(listItems.item.label);
+                    $('#classInput').attr('data-classid', listItems.item.value);
                     $('#hiddenClassId').val(listItems.item.value);
                     return false;
                 }
