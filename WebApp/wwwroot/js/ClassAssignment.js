@@ -89,12 +89,8 @@ function AddClass() {
 
     //Get data
     className = $('#classInput').val();
-    //TODO : Kolla om denna fullösningen går att fixa lite snyggare
-    //classId = $('#hiddenClassId').val();
     classId = $('#classInput').attr('data-classid');
-    console.log('classId ' + classId);
     var duration = $('#includedClassDurationDropDown').val();
-    console.log('duration ' + duration);
     var teamId = $('#includedClassTeamIdDropDown').val();
     var teamName = $('#includedClassTeamIdDropDown option[value=' + teamId + ']').text();
 
@@ -116,8 +112,6 @@ function AddClass() {
             id: 'assignButton'
         });
         //Class information to display
-        console.log('bfore textinfo ' + duration);
-
         var infoText = "<b>Kurs:</b> " + className + "<br/><b>Arbetslag:</b> " + teamName + "<br/><b>Period:</b> " + string_of_enum(durationEnum, duration);
         var $classText = $('<div/>', { html: infoText });
 
