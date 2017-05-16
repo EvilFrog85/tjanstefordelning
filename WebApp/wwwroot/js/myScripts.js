@@ -41,7 +41,7 @@ $(document).ready(function () {
     $('#exitWizard').on('click', function () {
         // Reset active tab
         $('.wizActive').removeClass('wizActive');
-        $('#teamCrudOpen').addClass('wizActive');
+        $('#teamCrudOpen').addClass('wizActive');//TODO Fråga jonas
         $('.wizardDataBox').hide();
         $('#wizardBoxItemDesc div').hide();
         $('#overLay').fadeToggle("fast");

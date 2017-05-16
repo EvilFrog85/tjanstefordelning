@@ -78,6 +78,25 @@ ul{
         }
 
 /* Vad ska behållas av nedanstående??? */
+
+#assignClassesToStudentGroupDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.classList {
+    width: 80%;
+    margin: 0 10%;
+    display: flex;
+    flex-direction: column;
+}
+.classToStudentGroup {
+    display: flex;
+    margin: 10px 0;
+}
+#currentStudentGroup {
+    text-align: center;
+}
 /*
 .competenceList, .studentGroupList {
     display: flex;

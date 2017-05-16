@@ -114,6 +114,8 @@ namespace WebApp.Models.Entities
             var personToUpdate = await Personnel
                 .Where(p => p.Id == id)
                 .Include(c => c.Competence)
+                .Include(c => c.Team)
+                .Include(c => c.User)
                 .SingleOrDefaultAsync();
             
             personToUpdate.FirstName = viewModel.FirstName;
@@ -121,18 +123,31 @@ namespace WebApp.Models.Entities
             // TODO - Activate once again when img-upload is functional
             //personToUpdate.ImageUrl = viewModel.ImageUrl;
             personToUpdate.TeamId = viewModel.TeamId;
+            if (personToUpdate.Competence.Count() > 0)
+            {
+                Competence.RemoveRange(personToUpdate.Competence);
+            }
             if (viewModel.Competences != null)
             {
-                foreach (var item in personToUpdate.Competence)
+                var competences = viewModel.Competences.Select(c => new Competence { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray();
+                foreach (var item in competences)
                 {
-                    Competence.Remove(item);
+                    personToUpdate.Competence.Add(item);
                 }
-                personToUpdate.Competence = viewModel.Competences.Select(c => new Competence { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray();
             }
             personToUpdate.AvailablePoints = viewModel.AvailablePoints;
             personToUpdate.Contract = viewModel.Contract;
 
-            var success = await SaveChangesAsync() == 1;
+            bool success = false;
+
+            try
+            {
+                success = await SaveChangesAsync() > 0;
+            }
+            catch (Exception ex)
+            {
+                Debug.Write(ex.Message);
+            }
             return success;
         }
 
@@ -361,6 +376,29 @@ namespace WebApp.Models.Entities
                 }).SingleOrDefault();
 
             return studentGroup;
+        }
+
+        internal async Task<bool> AssignClassesToStudentGroupAsync(ClassesToStudentGroupVM viewModel, string id)
+        {
+
+            //TODO : Check if class and student group already exists in database
+            //var notAlreadyExistingClasses = IncludedClass.Join(viewModel.ClassData, ic => new { ic.ClassId, ic.StudentGroupId }, cd => new { cd.ClassId, cd.StudentGroupId }, (ic, cd) => ic);
+            var notAlreadyExistingClasses = viewModel.ClassData.Where(cd => !IncludedClass.Select(ic => ic.ClassId).Contains(cd.ClassId) && !IncludedClass.Select(ic => ic.StudentGroupId).Contains(cd.StudentGroupId));
+            int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+            var includedClasses = viewModel.ClassData.Select(c => new IncludedClass
+            {
+                Duration = c.Duration,
+                TeamId = c.TeamId,
+                ClassId = c.ClassId,
+                StudentGroupId = c.StudentGroupId,
+                UserId = userId
+            });
+            foreach (var ic in includedClasses)
+            {
+                await IncludedClass.AddAsync(ic);
+            }
+            int numberOfClassesAdded = await SaveChangesAsync();
+            return numberOfClassesAdded > 0;
         }
 
         internal async Task<IncludedClassCreateVM[]> GetAllIncludedClasses(string id)

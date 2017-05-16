@@ -195,32 +195,22 @@ function EditPersonById(id) {
         type: 'POST',
         url: '/Wizard/UpdatePersonnel/' + id,
         data: personnelData,
-        //success: function (data) {
-        //    console.log(data);
-        ////    if (data) {
-        //        $('#innerOverLay').fadeToggle("fast");
-        //        // Copy of updateLists - personnel - from myScripts
-        //        $('#personnelCrud table').find('tr:not(:first)').remove();
-
-                //TODO imorgon!
-                /*
-                $.ajax({
-                    type: 'GET',
-                    url: '/Wizard/GetAllPersonnelToWizardList',
-                    success: function (data) {
-                        data.forEach(function (e) {
-                            $('#personnelCrud table').append('<tr><td>' + e.teamName + '</td><td>' + e.firstName + '</td><td>' + e.lastName + '</td><td>' + e.signature + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
-                        });
-                    }
-                });
-                */
-            //}
-        //}
-    }).then(function (data) {
-        $('#innerOverLay').fadeToggle("fast");
-        // Copy of updateLists - personnel - from myScripts
-        $('#personnelCrud table').find('tr:not(:first)').remove();
-        }, function () { console.log('Error! Wii'); });
+        success: function (data) {
+            $('.innerOverLay').fadeToggle("fast");
+            // Copy of updateLists - personnel - from myScripts
+            $('#personnelCrud table').find('tr:not(:first)').remove();
+            //TODO imorgon!
+            $.ajax({
+                type: 'GET',
+                url: '/Wizard/GetAllPersonnelToWizardList',
+                success: function (data) {
+                    data.forEach(function (e) {
+                        $('#personnelCrud table').append('<tr><td>' + e.teamName + '</td><td>' + e.firstName + '</td><td>' + e.lastName + '</td><td>' + e.signature + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
+                    });
+                }
+            });
+        }
+    });
 }
 
 function GetPersonToEdit(id) {
@@ -251,7 +241,6 @@ function GetPersonToEdit(id) {
                 });
                 var $competenceText = $('<p/>', { text: competence.name });
 
-                //if(not already in the list)
                 allChosenCompetences.push({ "Qualified": competence.qualified, "SubjectId": competence.subjectId });
 
                 $competenceDiv.append($competenceText);
@@ -304,9 +293,6 @@ function CreateInputPersonnel() {
             value: contract.value
         }));
     });
-
-
-
 
     $('#personnelCrudForm')
         .append($firstNameInput)

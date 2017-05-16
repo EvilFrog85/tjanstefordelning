@@ -1,5 +1,24 @@
 ﻿///<reference path="jquery-2.1.0-vsdoc.js"/>
 
+// #region utils
+var durationEnum = {
+    'Hela läsåret': 0,
+    'HT': 1,
+    'VT': 2
+};
+function string_of_enum(e, value) {
+    for (var k in e) {
+        if (e[k] == value)
+            return k;
+    }
+    return null;
+}
+
+function ClearClassList() {
+    $('#classList').empty();
+}
+
+// #endregion
 // #region Adding and removing student groups "buttons".
 var studentGroupsArray = [];
 var allChosenStudentGroups = [];
@@ -13,22 +32,23 @@ function RemoveStudentGroup(studentGroupId) {
     console.log(allChosenStudentGroups);
 }
 
-function AddStudentGroup(className, classId) {
+function AddStudentGroup(studentGroupName, studentGroupId) {
     var duration = $('#includedClassDurationDropDown').val();
     var $studentGroupDiv = $('<div/>', {
         class: 'groupToClass',
-        id: classId,
-        'data-id': classId,
+        id: studentGroupId,
+        'data-id': studentGroupId,
         'data-duration': duration
     });
     var $studentGroupButton = $('<button/>', {
         text: 'X',
-        onclick: 'RemoveStudentGroup("' + classId + '")'
+        onclick: 'RemoveStudentGroup("' + studentGroupId + '")',
+        id: 'assignButton'
     });
-    var $studentGroupText = $('<p/>', { text: className });
+    var $studentGroupText = $('<p/>', { text: studentGroupName });
 
     //if(not already in the list)
-    allChosenStudentGroups.push({ "StudentGroupName": className, "StudentGroupId": classId });
+    allChosenStudentGroups.push({ "StudentGroupName": studentGroupName, "StudentGroupId": studentGroupId });
 
     $studentGroupDiv.append($studentGroupText);
     $studentGroupDiv.append($studentGroupButton);
@@ -54,26 +74,41 @@ function RemoveClass(classId) {
 }
 
 function AddClass(className, classId) {
-    var $classDiv = $('<div/>', {
-        class: 'groupToClass',
-        id: classId
-    });
-    var $classButton = $('<button/>', {
-        text: 'X',
-        onclick: 'RemoveClass("' + classId + '")'
-    });
-    var $classText = $('<p/>', { text: className });
+    className = $('#classInput').val();
+    //TODO : Kolla om denna fullösningen går att fixa lite snyggare
+    classId = $('#hiddenClassId').val();
+    var duration = $('#includedClassDurationDropDown').val();
+    var teamId = $('#includedClassTeamIdDropDown').val();
+    var teamName = $('#includedClassTeamIdDropDown option[value=' + teamId + ']').text();
+    if (classesArray.findIndex(function (element) { return element.label == className }) != -1) {
+        var $classDiv = $('<div/>', {
+            class: 'classToStudentGroup',
+            id: classId,
+            'data-duration': duration,
+            'data-teamid': teamId,
+            'data-teamname': teamName,
+            style: "display: flex; flex-direction: row;"
+        });
+        var $classButton = $('<button/>', {
+            text: 'X',
+            onclick: 'RemoveClass("' + classId + '")',
+            id: 'assignButton',
+        });
+        var infoText = "<b>Kurs:</b> " + className + "<br/><b>Arbetslag:</b> " + teamName + "<br/><b>Period:</b> " + string_of_enum(durationEnum, duration);
+        var $classText = $('<div/>', { html: infoText });
 
-    //if(not already in the list)
-    allChosenClasses.push({ "ClassName": className, "ClassId": classId });
+        //if(not already in the list)
+        var index = allChosenClasses.findIndex(function (element) { console.log(element); return element.ClassId === classId; });
+        if (index == -1) {
+            allChosenClasses.push({ "ClassName": className, "ClassId": classId });
+            $classDiv.append($classButton);
+            $classDiv.append($classText);
 
-    $classDiv.append($classText);
-    $classDiv.append($classButton);
+            $('#classList').append($classDiv);
+            $('#classInput').val('');
+        }
+    }
 
-    $('#classList')
-        .append($classDiv);
-
-    $('#classInput').val('');
     console.log(allChosenClasses);
 }
 // #endregion
@@ -94,8 +129,12 @@ function PopulateStudentGroupsArray() {
             $('#studentGroupInput').autocomplete({
                 source: studentGroupsArray,
                 select: function (event, listItems) {
+                    $('#currentStudentGroup').empty();
+                    $('#currentStudentGroup').append($('<div/>', { html: '<b>Vald klass</b>' }));
+                    $('#currentStudentGroup').append($('<div/>', { id: 'CSG', text: listItems.item.label, 'data-id': listItems.item.value, style: 'font-weight: bold; color: green; font-size: 30px;' }));
+
                     //ui.item./ label = klassnamn,/ value=klass id
-                    AddStudentGroup(listItems.item.label, listItems.item.value);
+                    //AddStudentGroup(listItems.item.label, listItems.item.value);
                     $('#studentGroupInput').val(''); //clear input field
                     return false; //cancel event
                 }
@@ -121,14 +160,18 @@ function PopulateClassesArray() {
                 source: classesArray,
                 select: function (event, listItems) {
                     //Show selected course
-                    $('#currentClass').empty();
-                    $('#currentClass').append($('<div/>', {text : 'Vald kurs'}));
-                    $('#currentClass').append($('<div/>', {text: listItems.item.label, 'data-id': listItems.item.value}))
+                    //$('#currentClass').empty();
+                    //$('#currentClass').append($('<div/>', {text : 'Vald kurs'}));
+                    //$('#currentClass').append($('<div/>', {text: listItems.item.label, 'data-id': listItems.item.value}))
 
-                    ////ui.item./ label = klassnamn,/ value=klass id
+                    //ui.item./ label = klassnamn,/ value=klass id
+                    $('#classInput').val(listItems.item.label);
+                    $('#hiddenClassId').val(listItems.item.value);
+                    return false;
+
                     //AddClass(listItems.item.label, listItems.item.value);
-                    $('#classInput').val(''); //clear input field
-                    return false; //cancel event
+                    //$('#classInput').val(''); //clear input field
+                    //return false; //cancel event
                 }
             });
 
@@ -162,6 +205,32 @@ function AssignStudentGroupsToClass() {
     //        console.log(result);
     //    }
     //});
+}
+
+function AssignClassesToStudentGroup() {
+    var studentGroupId = $('#CSG').attr('data-id');
+    var classes = $('.classToStudentGroup');
+    if (studentGroupId && classes.length != 0) {
+        var classDataToSend = [];
+        classes.each(function (index, cls) {
+            var newClass = { ClassId: cls.id, duration: cls.getAttribute('data-duration'), teamId: cls.getAttribute('data-teamid'), StudentGroupId: studentGroupId };
+            classDataToSend.push(newClass);
+        });
+        $.ajax({
+            type: 'POST',
+            url: '/Assignment/AssignStudentGroups/',
+            data: { ClassData: classDataToSend },
+            success: function (result) {
+                console.log(result);
+                if (result) {
+                    alert("Kurser är tillagda");
+                    $('#currentStudentGroup').empty();
+                }
+
+            }
+        });
+    }
+    //TODO : Clear divs? maybe save? Can be used to add same set of classes to another class. Add button to clear maybe?
 }
 // #endregion
 
@@ -211,7 +280,7 @@ function GetTeams() {
 $(function () {
     // #region assign student groups to class
     $target = $('#assignStudentGroupsToClassDiv');
-    $target.append($('<h2/>', { text: 'Klasser till kurs' }));
+
 
     //Choose class (autocomplete)
     var $classInput = $('<input/>', {
@@ -265,30 +334,53 @@ $(function () {
     $($includedClassduration).append('<option value="1">HT</option>');
     $($includedClassduration).append('<option value="2">VT</option>');
 
-    $target.append($classInput); //TODO : change how the class that is chosen is shown
-    $target.append($('<div/>', { id: 'currentClass' }));
-    $target.append($includedClassduration);
-    $target.append($teamId);
-    $target.append($studentGroupInput);
-    $target.append($studentGroupList);
-    $target.append($submitBtn);
+    //$target.append($('<h2/>', { text: 'Klasser till kurs' }));
+    //$target.append($classInput); //TODO : change how the class that is chosen is shown
+    //$target.append($('<div/>', { id: 'currentClass' }));
+    //$target.append($includedClassduration);
+    //$target.append($teamId);
+    //$target.append($studentGroupInput);
+    //$target.append($studentGroupList);
+    //$target.append($submitBtn);
     // #endregion
 
-    //// #region assign classes to student group
-    //var $target2 = $('#assignClassesToStudentGroupDiv');
-    //$target2.append($('<h2/>', { text: 'Kurser till klass' }));
+    // #region assign classes to student group
+    var $target2 = $('#assignClassesToStudentGroupDiv');
+    $target2.append($('<h2/>', { text: 'Tilldela kurser till klass' }));
 
-    //var $classList = $('<div/>', {
-    //    class: 'classList',
-    //    id: 'classList'
-    //});
+    var $classList = $('<div/>', {
+        class: 'classList',
+        id: 'classList'
+    });
 
-    //$target2.append($studentGroupInput);
-    //$target2.append($classInput);
-    //$target2.append($includedClassduration);
-    //$target2.append($teamId);
-    //$target2.append($classList);
+    var $addButton = $('<button/>', {
+        class: 'add',
+        onclick: 'AddClass()',
+        style: 'align-self: center'
+    });
 
+    var $submitBtn2 = $('<button/>', {
+        class: 'buttonSubmit',
+        onclick: 'AssignClassesToStudentGroup()',
+        text: 'Spara',
+        style: 'align-self: center; margin: 5px;'
+    });
+
+    var $clearClassListButton = $('<button/>', {
+        onclick: 'ClearClassList()',
+        text: 'Rensa kurslista',
+        style: 'align-self: center;'
+    })
+
+    $target2.append($studentGroupInput);
+    $target2.append($('<div/>', { id: 'currentStudentGroup' }));
+    $target2.append($classInput);
+    $target2.append($includedClassduration);
+    $target2.append($teamId);
+    $target2.append($addButton);
+    $target2.append($classList);
+    $target2.append($submitBtn2);
+    $target2.append($clearClassListButton);
 
 
     //Inserts all student groups into an array for autocompletion
