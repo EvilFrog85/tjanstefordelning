@@ -460,16 +460,16 @@ function CreateInputCompetence() {
         id: 'competenceButtonContainer'
     });
 
-        var $competenceInput = $('<input/>', {
-            id: 'competenceInput',
-            class: 'inputTextAuto',
-            'data-compId': 0,
-            placeholder: 'Ange kompetens..'
-        });
+    var $competenceInput = $('<input/>', {
+        id: 'competenceInput',
+        class: 'inputTextAuto',
+        'data-compId': 0,
+        placeholder: 'Ange kompetens..'
+    });
 
-        var $competenceQualifiedBox = $('<div/>', {
-            id: 'IsCompetenceQualifiedBox'
-        });
+    var $competenceQualifiedBox = $('<div/>', {
+        id: 'IsCompetenceQualifiedBox'
+    });
 
     var $addCompetenceButton = $('<button/>', {
         id: 'addCompetenceButton',
@@ -514,6 +514,9 @@ function SubmitStudentGroup() {
         data: { Name: name, Starting_Year: year, TeamId: team },
         success: function (inputIsSuccess) {
             console.log(inputIsSuccess);
+            $('#studentGroupName').val('');
+            $('#studentGroupStartingYearDropDown').val(2017);
+            $('#teamIdInputForStudentGroup').val(1);
         }
     });
 }
@@ -749,11 +752,7 @@ function SubmitAuxiliaryAssignment() {
     var description = $('#auxiliaryAssignmentDesc').val();
     var points = $('#auxiliaryAssignmentPoints').val();
     var duration = $('#auxiliaryAssignmentDurationDropDown').val();
-    var mandatory;
-    if ($('#auxiliaryAssignmentMandatory').prop('checked'))
-        mandatory = true;
-    else
-        mandatory = false;
+    var mandatory = $('#auxiliaryAssignmentMandatory').prop('checked');
     var personnel = $('#auxiliaryAssignmentPersonnel').val();
     var assigned = false;
     if (personnel !== "") {
@@ -808,7 +807,15 @@ function GetAuxiliaryAssignmentToEdit(id) {
         type: 'GET',
         url: '/Wizard/GetAuxiliaryAssignmentById/' + id,
         success: function (assignment) {
-            
+            $('#auxiliaryAssignmentName').val();
+            $('#auxiliaryAssignmentDesc').val();
+            $('#auxiliaryAssignmentPoints').val();
+            $('#auxiliaryAssignmentDurationDropDown').val();
+            $('#auxiliaryAssignmentMandatory').prop('checked');
+            $('#auxiliaryAssignmentPersonnel').val();
+            if (personnel !== "") {
+                assigned = true;
+            }
         }
     });
 }
