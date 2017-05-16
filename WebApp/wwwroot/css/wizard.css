@@ -184,7 +184,7 @@
 					top: calc(10% + 5px);
 					right: calc(10% + 10px);
 					z-index: 22;
-				background: url(../img/icons/delete.svg);
+				background: url(../img/icons/x_delete.svg);
 				transition: transform .2s linear;
 			}
 				.closeInnerOverLay:hover{
