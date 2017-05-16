@@ -16,7 +16,7 @@ namespace WebApp.Models.Entities
         public TFContext(DbContextOptions<TFContext> options) : base(options)
         {
         }
-        internal async Task<int> AddNewPersonnel(PersonnelCreateVM viewModel, string id)
+        internal async Task<bool> AddNewPersonnel(PersonnelCreateVM viewModel, string id)
         {
             var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
             var userSignature = CreateSignature(viewModel.FirstName, viewModel.LastName, userId);
@@ -49,63 +49,108 @@ namespace WebApp.Models.Entities
             }
 
             await Personnel.AddAsync(newPersonnel);
+
+            bool success = false;
             try
             {
-
-                await SaveChangesAsync();
+                success = await SaveChangesAsync() > 0;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                Debug.Write(ex.Message);
+                return success;
             }
-            return newPersonnel.Id;
+            return success;
         }
 
         internal string CreateSignature(string firstName, string lastName, int id)
         {
             string signature = firstName.Substring(0, 2) + lastName.Substring(0, 2);
 
-            int dataBaseSignature = Personnel
-                .Where(p => p.UserId == id && p.Signature.Substring(0, 4) == signature).Count();
-
+            var simularSignatures = Personnel
+                .Where(p => p.UserId == id && p.Signature.Substring(0, 4) == signature).Select(p => p.Signature).ToArray();
+            Array.Sort(simularSignatures);
             //Unique signature
-            if (dataBaseSignature == 0)
+            if (simularSignatures.Length == 0)
                 return String.Join("", signature + "01");
-            //Less than 10 simular signature, Generates a new signature with a 0number
-            else if (dataBaseSignature < 10)
-                return String.Join("", signature, 0, dataBaseSignature + 1);
-            //More than 10 signature, Generates a new signature with a number
             else
-                return String.Join("", signature, dataBaseSignature + 1);
+            {
+                //bool generatingSignatures = true;
+                //int noMatch = 0;
+                int counter = 2;
+
+                //while (generatingSignatures)
+                //{
+                var newSignature = String.Join("", signature + "0" + counter);
+                foreach (var item in simularSignatures)
+                {
+                    if (newSignature == item)
+                    {
+                        counter++;
+                        newSignature = String.Join("", signature + "0" + counter);//signature.Remove(4);
+                        //break;
+                    }
+                    //else
+                    //{
+                    //    noMatch++;
+                    //}
+                    //if (noMatch == simularSignatures.Length)
+                    //{
+                    //    return signature;
+                    //}
+                }
+                //noMatch = 0;
+                //}
+                return signature;
+            }
+
+
+
+
+            ////Less than 10 simular signature, Generates a new signature with a 0number
+            //else if (dataBaseSignature < 10)
+            //    return String.Join("", signature, 0, dataBaseSignature + 1);
+            ////More than 10 signature, Generates a new signature with a number
+            //else
+            //    return String.Join("", signature, dataBaseSignature + 1);
 
         }
 
         internal async Task<bool> DeletePersonnel(int id)
         {
-            var personToRemove = await Personnel.SingleOrDefaultAsync(p => p.Id == id);
-            var classesToRemove = IncludedClass.Where(i => i.PersonnelId == personToRemove.Id);
-            var competencesToRemove = Competence.Where(c => c.PersonnelId == personToRemove.Id);
-            var auxToRemove = AuxiliaryAssignment.Where(a => a.PersonnelId == personToRemove.Id);
+            var personToRemove = await Personnel
+                .Include(p => p.Competence)
+                .Include(p => p.AuxiliaryAssignment)
+                .Include(p => p.IncludedClass)
+                .SingleOrDefaultAsync(p => p.Id == id);
+
+            var classesToRemove = personToRemove.IncludedClass;
+            var competencesToRemove = personToRemove.Competence;
+            var auxToRemove = personToRemove.AuxiliaryAssignment;
 
             foreach (var classe in classesToRemove)
             {
                 classe.Assigned = false;
                 classe.PersonnelId = null;
             }
+            foreach (var aux in auxToRemove)
+            {
+                aux.Assigned = false;
+                aux.PersonnelId = null;
+            }
+
             Competence.RemoveRange(competencesToRemove);
-            AuxiliaryAssignment.RemoveRange(auxToRemove);
             Personnel.Remove(personToRemove);
-            bool success = true;
+
+            bool success = false;
             try
             {
-                var wut = await SaveChangesAsync();
+                success = await SaveChangesAsync() > 0;
             }
             catch (Exception ex)
             {
-                string message = ex.Message;
-                success = false;
+                Debug.Write(ex.Message);
             }
-
             return success;
         }
 
@@ -114,25 +159,40 @@ namespace WebApp.Models.Entities
             var personToUpdate = await Personnel
                 .Where(p => p.Id == id)
                 .Include(c => c.Competence)
+                .Include(c => c.Team)
+                .Include(c => c.User)
                 .SingleOrDefaultAsync();
-            
+
             personToUpdate.FirstName = viewModel.FirstName;
             personToUpdate.LastName = viewModel.LastName;
             // TODO - Activate once again when img-upload is functional
             //personToUpdate.ImageUrl = viewModel.ImageUrl;
             personToUpdate.TeamId = viewModel.TeamId;
+            if (personToUpdate.Competence.Count() > 0)
+            {
+                Competence.RemoveRange(personToUpdate.Competence);
+            }
             if (viewModel.Competences != null)
             {
-                foreach (var item in personToUpdate.Competence)
+                var competences = viewModel.Competences.Select(c => new Competence { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray();
+                foreach (var item in competences)
                 {
-                    Competence.Remove(item);
+                    personToUpdate.Competence.Add(item);
                 }
-                personToUpdate.Competence = viewModel.Competences.Select(c => new Competence { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray();
             }
             personToUpdate.AvailablePoints = viewModel.AvailablePoints;
             personToUpdate.Contract = viewModel.Contract;
 
-            var success = await SaveChangesAsync() == 1;
+            bool success = false;
+
+            try
+            {
+                success = await SaveChangesAsync() > 0;
+            }
+            catch (Exception ex)
+            {
+                Debug.Write(ex.Message);
+            }
             return success;
         }
 
@@ -159,19 +219,19 @@ namespace WebApp.Models.Entities
             return await Personnel
                 .Where(p => p.UserId == userId)
                 .Select(p => new PersonnelVM
-            {
-                AssignedPoints = p.AssignedPoints,
-                AvailablePoints = p.AvailablePoints,
-                Competences = p.Competence.Select(c => new CompetenceVM { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray(),
-                Contract = p.Contract,
-                FirstName = p.FirstName,
-                LastName = p.LastName,
-                Signature = p.Signature,
-                TeamName = p.Team.Name,
-                Id = p.Id,
-                ImageUrl = p.ImageUrl,
-                IncludedClasses = p.IncludedClass.Select(i => new IncludedClassVM { ClassName = i.Class.ClassName, Duration = i.Duration }).ToArray()
-            }).ToArrayAsync();
+                {
+                    AssignedPoints = p.AssignedPoints,
+                    AvailablePoints = p.AvailablePoints,
+                    Competences = p.Competence.Select(c => new CompetenceVM { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray(),
+                    Contract = p.Contract,
+                    FirstName = p.FirstName,
+                    LastName = p.LastName,
+                    Signature = p.Signature,
+                    TeamName = p.Team.Name,
+                    Id = p.Id,
+                    ImageUrl = p.ImageUrl,
+                    IncludedClasses = p.IncludedClass.Select(i => new IncludedClassVM { ClassName = i.Class.ClassName, Duration = i.Duration }).ToArray()
+                }).ToArrayAsync();
         }
         internal PersonnelCreateVM GetPersonnelById(int id)
         {
@@ -233,13 +293,31 @@ namespace WebApp.Models.Entities
 
         internal async Task<bool> DeleteTeam(int id)
         {
-            //TODO : try to make less DB calls
-            var teamToRemove = await Team.SingleOrDefaultAsync(c => c.Id == id);
-            await StudentGroup.Where(s => s.TeamId == id).ForEachAsync(s => s.TeamId = null);
-            await IncludedClass.Where(c => c.TeamId == id).ForEachAsync(c => c.TeamId = null);
-            await Personnel.Where(p => p.TeamId == id).ForEachAsync(p => p.TeamId = null);
+            var teamToRemove = await Team
+                .Include(t => t.StudentGroup)
+                .Include(t => t.IncludedClass)
+                .Include(t => t.Personnel)
+                .SingleOrDefaultAsync(c => c.Id == id);
+
+            var studentGroups = teamToRemove.StudentGroup;
+            var includedClasses = teamToRemove.IncludedClass;
+            var personnel = teamToRemove.Personnel;
+
+            foreach (var studentGroup in studentGroups)
+            {
+                studentGroup.TeamId = null;
+            }
+            foreach (var classe in includedClasses)
+            {
+                classe.TeamId = null;
+            }
+            foreach (var person in personnel)
+            {
+                person.TeamId = null;
+            }
+
             Team.Remove(teamToRemove);
-            return await SaveChangesAsync() == 1;
+            return await SaveChangesAsync() > 1;
         }
 
         internal async Task<TeamVM[]> GetAllTeams(string id)
