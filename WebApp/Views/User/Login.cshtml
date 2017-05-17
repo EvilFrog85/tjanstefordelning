@@ -1,4 +1,8 @@
-﻿@model UserLoginVM
+﻿@{
+    Layout = null;
+}
+
+@model UserLoginVM
 <form asp-controller="User" asp-action="Login">
     <label asp-for="UserName"></label>
     <input asp-for="UserName" />

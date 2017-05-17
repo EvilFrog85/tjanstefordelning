@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot/js\WizardScriptLocal.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="wwwroot\img\icons\add.svg" />
     <Content Include="wwwroot\img\icons\delete.svg" />
     <Content Include="wwwroot\img\icons\home.svg" />
@@ -59,6 +63,7 @@
     <Content Include="wwwroot\img\staff_pictures\Img2MnE.jpg" />
     <Content Include="wwwroot\js\ClassAssignment.js" />
     <Content Include="wwwroot\js\Data.js" />
+    <Content Include="wwwroot\js\homeScript.js" />
     <Content Include="wwwroot\js\jquery-3.1.0.js" />
     <Content Include="wwwroot\js\jquery.validate.js" />
     <Content Include="wwwroot\js\jquery.validate.unobtrusive.js" />

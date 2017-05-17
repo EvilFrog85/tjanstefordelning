@@ -194,10 +194,12 @@ namespace WebApp.Models.Entities
             var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
             return await Personnel
                 .Where(p => p.UserId == userId)
+                .Include(p => p.Competence)
+                .Include(p => p.IncludedClass)
                 .Select(p => new PersonnelVM
                 {
                     AssignedPoints = p.AssignedPoints,
-                    AvailablePoints = p.AvailablePoints,
+                    AvailablePoints = p.AvailablePoints * 6,//Hårdkodat värde i nuläget, här är 600 poäng ett helt läsårs lektioner
                     Competences = p.Competence.Select(c => new CompetenceVM { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray(),
                     Contract = p.Contract,
                     FirstName = p.FirstName,
