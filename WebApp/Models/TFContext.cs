@@ -184,22 +184,21 @@ namespace WebApp.Models.Entities
                 Id = p.Id,
                 Signature = p.Signature,
                 TeamName = p.Team.Name// Team.SingleOrDefault(t => t.Id == p.TeamId).Name
-            }).OrderBy(p => p.TeamName).ToArrayAsync();
+            }).OrderBy(p => p.TeamName).ThenBy(p => p.FirstName).ThenBy(p => p.LastName).ToArrayAsync();
 
             return returnValue;
         }
         //Metod som inte hör till Wizarden Nedanför!
-        internal async Task<PersonnelVM[]> GetAllPersonnel(string id)
+        internal async Task<PersonnelVM[]> GetAllPersonnelToOverView(string id)
         {
             var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
             return await Personnel
                 .Where(p => p.UserId == userId)
                 .Include(p => p.Competence)
-                .Include(p => p.IncludedClass)
                 .Select(p => new PersonnelVM
                 {
                     AssignedPoints = p.AssignedPoints,
-                    AvailablePoints = p.AvailablePoints * 6,//Hårdkodat värde i nuläget, här är 600 poäng ett helt läsårs lektioner
+                    AvailablePoints = p.AvailablePoints,
                     Competences = p.Competence.Select(c => new CompetenceVM { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray(),
                     Contract = p.Contract,
                     FirstName = p.FirstName,
@@ -208,8 +207,40 @@ namespace WebApp.Models.Entities
                     TeamName = p.Team.Name,
                     Id = p.Id,
                     ImageUrl = p.ImageUrl,
-                    IncludedClasses = p.IncludedClass.Select(i => new IncludedClassVM { ClassName = i.Class.ClassName, Duration = i.Duration }).ToArray()
                 }).ToArrayAsync();
+        }
+        internal async Task<CompetencesIncludedClassesVM> GetIncludedClassesAndCompetencesByPersonnelId(int id)
+        {
+            var person = await Personnel
+                .Include(p => p.IncludedClass)
+                    .ThenInclude(i => i.Class)
+                .Include(p => p.IncludedClass)
+                    .ThenInclude(i => i.StudentGroup)
+                .Include(p => p.IncludedClass)
+                    .ThenInclude(i => i.Team)
+                .Include(p => p.Competence)
+                    .ThenInclude(c => c.Subject)
+                .SingleOrDefaultAsync(p => p.Id == id);
+
+            var competences = person.Competence.Select(c => new CompetenceVM
+            {
+                Name = c.Subject.Name,
+                Qualified = c.Qualified
+            }).ToArray();
+
+            var classes = person.IncludedClass.Select(p => new IncludedClassVM
+            {
+                ClassName = p.Class.ClassName,
+                Duration = p.Duration,
+                StudentGroupName = p.StudentGroup.Name,
+                TeamName = p.Team.Name
+            }).ToArray();
+
+            return new CompetencesIncludedClassesVM
+            {
+                Competences = competences,
+                IncludedClasses = classes
+            };
         }
         internal PersonnelCreateVM GetPersonnelById(int id)
         {
@@ -311,6 +342,7 @@ namespace WebApp.Models.Entities
                     Name = p.Name,
                     Id = p.Id
                 })
+                .OrderBy(p => p.Name)
                 .ToArrayAsync();
             return teamArray;
         }
@@ -413,7 +445,7 @@ namespace WebApp.Models.Entities
                     TeamName = s.Team.Name,
                     StartingYear = s.StartingYear,
                 });
-            return await studentGroups.ToArrayAsync();
+            return await studentGroups.OrderBy(s => s.TeamName).ThenBy(s => s.Name).ToArrayAsync();
         }
         internal async Task<ClassVM[]> GetAllClasses()
         {
@@ -612,7 +644,7 @@ namespace WebApp.Models.Entities
                     Points = s.Points,
                     Assigned = s.Assigned,
                 });
-            return await AuxiliaryAssignments.ToArrayAsync();
+            return await AuxiliaryAssignments.OrderBy(a => a.Assigned).ThenBy(a => a.Name).ToArrayAsync();
         }
 
         internal AuxiliaryAssignmentCreateVM GetAuxiliaryAssignmentById(int id)

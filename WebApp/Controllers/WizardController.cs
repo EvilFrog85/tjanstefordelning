@@ -78,10 +78,10 @@ namespace WebApp.Controllers
         }
 
         [HttpGet]
-        public async Task<PersonnelVM[]> GetAllPersonnel()
+        public async Task<PersonnelVM[]> GetAllPersonnelToOverView()
         {
             var userId = _userManager.GetUserId(User);
-            return await _context.GetAllPersonnel(userId);
+            return await _context.GetAllPersonnelToOverView(userId);
         }
         [HttpGet]
         public async Task<PersonnelWizardListVM[]> GetAllPersonnelToWizardList()
@@ -214,6 +214,8 @@ namespace WebApp.Controllers
         {
             return _context.GetAuxiliaryAssignmentById(id);
         }
+
+        
 
     }
 }
