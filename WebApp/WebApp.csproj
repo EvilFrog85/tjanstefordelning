@@ -7,6 +7,11 @@
   <ItemGroup>
     <Content Include="wwwroot\img\icons\add.svg" />
     <Content Include="wwwroot\img\icons\delete.svg" />
+    <Content Include="wwwroot\img\icons\home.svg" />
+    <Content Include="wwwroot\img\icons\included_class.svg" />
+    <Content Include="wwwroot\img\icons\magic.svg" />
+    <Content Include="wwwroot\img\icons\personnel.svg" />
+    <Content Include="wwwroot\img\icons\the_bomb.svg" />
     <Content Include="wwwroot\img\icons\x_delete.svg" />
     <Content Include="wwwroot\img\icons\done.svg" />
     <Content Include="wwwroot\img\icons\edit.svg" />
