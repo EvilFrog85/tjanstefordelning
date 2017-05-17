@@ -76,7 +76,6 @@ var classesArray = [];
 var allChosenClasses = [];
 function RemoveClass(classId) {
     $('#' + classId).remove();
-    //TODO : Check findindex
     var index = allChosenClasses.findIndex(function (element) { console.log(element); element.ClassId == classId; });
     console.log(index);
     allChosenClasses.splice(index);

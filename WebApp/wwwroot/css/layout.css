@@ -92,10 +92,51 @@ ul{
 }
 .classToStudentGroup {
     display: flex;
+    justify-content: space-between;
     margin: 10px 0;
 }
 #currentStudentGroup {
     text-align: center;
+}
+
+.assignClassDivs {
+    /*background-color: yellow;*/
+    max-width: 35%;
+    min-width: 35%;
+    min-height: 100px;
+    margin-left: 10%;
+    /*text-align: center;*/
+}
+
+#fullYearDiv {
+    display: flex;
+    flex-direction: row;
+
+}
+
+#containerDiv {
+    display: flex;
+    flex-direction: row;
+}
+
+#semestersDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /*text-align: center;*/
+}
+#semestersDiv h2{
+    text-align: center;
+    color: forestgreen;
+}
+.classToStudentGroup {
+
+    
+}
+.deleteAssignedClassButton {
+    width: 30px;
+    height: 30px;
+    background-color: red;
 }
 /*
 .competenceList, .studentGroupList {
