@@ -35,11 +35,11 @@ namespace WebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Login()
         {
-            //await _signInManager.PasswordSignInAsync("demo", "123", false, false);
+            await _signInManager.PasswordSignInAsync("demo", "123", false, false);
 
-            //return Redirect("/wizard/index");
+            return Redirect("/home/index");
 
-            return View();
+            //return View();
         }
         [HttpPost]
         public async Task<IActionResult> Login(UserLoginVM viewModel)

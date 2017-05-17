@@ -1,4 +1,18 @@
-$(function () {
+$(document).ready(function () {
+    function stickyFooter() {
+        $('main').css({ 'paddingBottom': $('footer').height() });
+        $('#innerFooter').css({ 'lineHeight': $('footer').height() - 20 + 'px' });
+    }
+    stickyFooter();
+    $('#hamburgerBtn').on('click', function () {
+        return $('header nav').stop().slideToggle();
+    });
+    $(window).resize(function () {
+        if ($(window).width() > 768) {
+            $('header nav').removeAttr('style');
+        }
+        stickyFooter();
+    })
     /*
     CreateIncludedClassInput();
     GetCounts();
@@ -8,11 +22,10 @@ $(function () {
     CreateStudentGroupInput();
     CreateAuxiliaryAssignmentInput();
     CreateInputCompetence();
-    var firstTime = true;
     /* Wizard, innerLayOut Controlls */
     // When wizard is opened
-    //$('.wizard').on('click', function () {
-        // Get data for list - first because of possible async-delay
+    $('.wizard').on('click', function () {
+        //Get data for list - first because of possible async-delay
         updateLists();
         $('#overLay').fadeToggle("fast");
         // Hide body-scroll
@@ -20,7 +33,7 @@ $(function () {
         // Show data for team and add description
         $('#teamCrud').show();
         $('#teamCrudDesc').show();
-    //});
+    });
 
     // When wizard is exited
     $('#exitWizard').on('click', function () {
@@ -123,7 +136,7 @@ $(function () {
     var auxiliaryAssignmentFirstVisit = true;
 
     function updateLists() {
-        if (firstTime || submitClickCounter > 0 || teamFirstVisit == true || personnelFirstVisit == true || studentGroupFirstVisit == true || auxiliaryAssignmentFirstVisit == true) {
+        if (submitClickCounter > 0 || teamFirstVisit == true || personnelFirstVisit == true || studentGroupFirstVisit == true || auxiliaryAssignmentFirstVisit == true) {
             //alert("Inne i funktionen");
             var target = $('.wizActive').attr('id');
             target = target.slice(0, -4);
@@ -142,8 +155,7 @@ $(function () {
 
             //alert("Genomför uppdatering");
 
-            if (target == "teamCrud" || firstTime) {
-                firstTime = false;
+            if (target == "teamCrud") {
                 //alert("Uppdaterar team");
                 teamFirstVisit = false;
                 $('#teamCrud table').find('tr:not(:first)').remove();

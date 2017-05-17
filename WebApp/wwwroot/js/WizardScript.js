@@ -212,6 +212,10 @@ function GetAllPersonnel() {
                 select: function (event, ti) {
                     event.preventDefault();
                     $('#auxiliaryAssignmentPersonnel').val(ti.item.label)
+                },
+                focus: function (event, ti) {
+                    event.preventDefault();
+                    $('#auxiliaryAssignmentPersonnel').val(ti.item.label)
                 }
             });
         }
@@ -511,6 +515,10 @@ function CreateInputCompetence() {
         select: function (event, ti) {
             event.preventDefault();
             $('#competenceInput').val(ti.item.label);
+        },
+        focus: function (event, ti) {
+            event.preventDefault();
+            $('#competenceInput').val(ti.item.label)
         }
     });
 
