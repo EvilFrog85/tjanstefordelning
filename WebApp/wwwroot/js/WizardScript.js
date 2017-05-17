@@ -709,117 +709,117 @@ function CreateStudentGroupInput() {
 
 // #region INCLUDEDCLASS - crud
 
-//Included Class CRUD
-var allChosenStudentGroups = [];
+////Included Class CRUD
+//var allChosenStudentGroups = [];
 
-//Included class functions
-function SubmitIncludedClass() {
-    console.log("SubmitIncludedClass");
-    var teamId = $('#includedClassTeamBelongingDropDown').val();
-    var classId = $('#includedClassClassBelongingInputText').val();
-    var duration = $('#includedClassDurationDropDown').val();
-    var assignedTeacher = $('#includedClassAssignedTeacher').prop('checked');
-    //var studentGroupId = $('#');
-    console.log(team);
-    console.log(classBelonging);
-    console.log(duration);
-    console.log(assignedTeacher);
+////Included class functions
+//function SubmitIncludedClass() {
+//    console.log("SubmitIncludedClass");
+//    var teamId = $('#includedClassTeamBelongingDropDown').val();
+//    var classId = $('#includedClassClassBelongingInputText').val();
+//    var duration = $('#includedClassDurationDropDown').val();
+//    var assignedTeacher = $('#includedClassAssignedTeacher').prop('checked');
+//    //var studentGroupId = $('#');
+//    console.log(team);
+//    console.log(classBelonging);
+//    console.log(duration);
+//    console.log(assignedTeacher);
 
-    $.ajax({
-        type: 'POST',
-        url: '/Wizard/NewIncludedClass/',
-        data: { Duration: duration, Assigned: assignedTeacher, TeamId: teamId, ClassId: classIds }, //StudentGroupId: studentGroupId },
-        success: function (result) {
-            console.log(result);
-        }
-    });
-}
+//    $.ajax({
+//        type: 'POST',
+//        url: '/Wizard/NewIncludedClass/',
+//        data: { Duration: duration, Assigned: assignedTeacher, TeamId: teamId, ClassId: classIds }, //StudentGroupId: studentGroupId },
+//        success: function (result) {
+//            console.log(result);
+//        }
+//    });
+//}
 
-//Included classes html injection
-var studentGroupsArray = [];
-function CreateIncludedClassInput() {
-    $target = $('#includedClassCrudForm');
-    studentGroupsArray = [];
-    function PopulateStudentGroupArray() {
-        $.ajax({
-            type: 'GET',
-            url: '/Wizard/GetAllStudentGroups/',
-            success: function (studentGroups) {
-                console.log("GetAllStudentGroups");
-                console.log(studentGroups);
-                studentGroups.forEach(function (studentGroup) {
-                    var newStudentGroup = { label: studentGroup.name, key: studentGroup.value };
-                    studentGroupsArray.push(newStudentGroup);
-                });
-                $studentGroupInput.autocomplete({
-                    source: studentGroupsArray
-                });
-            }
-        });
-    }
+////Included classes html injection
+//var studentGroupsArray = [];
+//function CreateIncludedClassInput() {
+//    $target = $('#includedClassCrudForm');
+//    studentGroupsArray = [];
+//    function PopulateStudentGroupArray() {
+//        $.ajax({
+//            type: 'GET',
+//            url: '/Wizard/GetAllStudentGroups/',
+//            success: function (studentGroups) {
+//                console.log("GetAllStudentGroups");
+//                console.log(studentGroups);
+//                studentGroups.forEach(function (studentGroup) {
+//                    var newStudentGroup = { label: studentGroup.name, key: studentGroup.value };
+//                    studentGroupsArray.push(newStudentGroup);
+//                });
+//                $studentGroupInput.autocomplete({
+//                    source: studentGroupsArray
+//                });
+//            }
+//        });
+//    }
 
-    var $studentGroupList = $('<div/>', {
-        class: 'studentGroupList',
-        id: 'studentGroupList'
-    });
+//    var $studentGroupList = $('<div/>', {
+//        class: 'studentGroupList',
+//        id: 'studentGroupList'
+//    });
 
-    PopulateStudentGroupArray();
+//    PopulateStudentGroupArray();
 
-    var $assigned = $('<input/>', {
-        id: 'includedClassAssignedTeacher',
-        name: 'isTeacherAssigned',
-        type: 'checkbox'
-    });
+//    var $assigned = $('<input/>', {
+//        id: 'includedClassAssignedTeacher',
+//        name: 'isTeacherAssigned',
+//        type: 'checkbox'
+//    });
 
-    var $assignedLabel = $('<label/>', {
-        for: 'isTeacherAssigned',
-        text: 'Kursen har en tilldelad lärare '
-    });
+//    var $assignedLabel = $('<label/>', {
+//        for: 'isTeacherAssigned',
+//        text: 'Kursen har en tilldelad lärare '
+//    });
 
-    //Kopiera jonas lösning :)
-    var $duration = $('<select/>', {
-        id: 'includedClassDurationDropDown',
-        class: 'inputSelect'
-    });
+//    //Kopiera jonas lösning :)
+//    var $duration = $('<select/>', {
+//        id: 'includedClassDurationDropDown',
+//        class: 'inputSelect'
+//    });
 
-    //User id is automatically set
+//    //User id is automatically set
 
-    var $teamBelonging = $('<select/>', {
-        id: 'includedClassTeamBelongingDropDown',
-        class: 'inputSelect'
-    });
+//    var $teamBelonging = $('<select/>', {
+//        id: 'includedClassTeamBelongingDropDown',
+//        class: 'inputSelect'
+//    });
 
-    //Choose class from Class table (autocomplete)
-    var $classBelonging = $('<input/>', {
-        id: 'includedClassClassBelongingInputText',
-        type: 'text',
-        class: 'inputTextAuto',
-        placeholder: 'Kurs'
-    });
+//    //Choose class from Class table (autocomplete)
+//    var $classBelonging = $('<input/>', {
+//        id: 'includedClassClassBelongingInputText',
+//        type: 'text',
+//        class: 'inputTextAuto',
+//        placeholder: 'Kurs'
+//    });
 
-    //PersonnelId should not be set in the wizard 
+//    //PersonnelId should not be set in the wizard 
 
-    //TODO : StudentGroup - should be able to select several, which method? Compare competence
-    var $studentGroupInput = $('<input/>', {
-        id: 'studentGroupInput',
-        type: 'text',
-        placeholder: 'Klassnamn',
-        class: 'inputTextAuto'
-    });
+//    //TODO : StudentGroup - should be able to select several, which method? Compare competence
+//    var $studentGroupInput = $('<input/>', {
+//        id: 'studentGroupInput',
+//        type: 'text',
+//        placeholder: 'Klassnamn',
+//        class: 'inputTextAuto'
+//    });
 
-    var $submitBtn = submitButtonMaker("CreateIncludedClassInput", "Lägg till kurs", "SubmitIncludedClass");
+//    var $submitBtn = submitButtonMaker("CreateIncludedClassInput", "Lägg till kurs", "SubmitIncludedClass");
 
-    $($duration).append('<option value="0" selected="selected">Hela läsåret<option/>');
-    $($duration).append('<option value="1">HT<option/>');
-    $($duration).append('<option value="2">VT<option/>');
+//    $($duration).append('<option value="0" selected="selected">Hela läsåret<option/>');
+//    $($duration).append('<option value="1">HT<option/>');
+//    $($duration).append('<option value="2">VT<option/>');
 
-    $target.append($teamBelonging);
-    $target.append($classBelonging);
-    $target.append($studentGroupInput);
-    $target.append($duration);
-    $target.append($assignedLabel).append($assigned);
-    $target.append($submitBtn);
-}
+//    $target.append($teamBelonging);
+//    $target.append($classBelonging);
+//    $target.append($studentGroupInput);
+//    $target.append($duration);
+//    $target.append($assignedLabel).append($assigned);
+//    $target.append($submitBtn);
+//}
 
 // #endregion
 
@@ -964,6 +964,7 @@ function DeleteAuxiliaryAssignment(id) {
         console.log('Something went wrong');
     });
 }
+
 function GetAuxiliaryAssignmentToEdit(id) {
     $.ajax({
         type: 'GET',
