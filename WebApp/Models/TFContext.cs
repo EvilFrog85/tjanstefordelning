@@ -254,9 +254,14 @@ namespace WebApp.Models.Entities
 
         }
 
-        internal async Task<int> AddNewTeam(TeamCreateVM viewModel, string id)
+        internal async Task<bool> AddNewTeam(TeamCreateVM viewModel, string id)
         {
             var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+            var teamExists = await Team.Where(t => t.UserId == userId).FirstOrDefaultAsync(t => String.Compare(t.Name, viewModel.Name, true) == 0);
+            if (teamExists != null)
+            {
+                return false;
+            }
 
             var teamToAdd = new Team
             {
@@ -265,8 +270,7 @@ namespace WebApp.Models.Entities
             };
 
             this.Team.Add(teamToAdd);
-            await SaveChangesAsync();
-            return teamToAdd.Id;
+            return await SaveChangesAsync() > 0;
         }
 
         internal async Task<bool> DeleteTeam(int id)
@@ -344,9 +348,14 @@ namespace WebApp.Models.Entities
             }).ToArrayAsync();
         }
 
-        internal async Task<int> AddNewStudentGroup(StudentGroupCreateVM viewModel, string id)
+        internal async Task<bool> AddNewStudentGroup(StudentGroupCreateVM viewModel, string id)
         {
             int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+            var studentGroupExists = await StudentGroup.Where(t => t.UserId == userId).FirstOrDefaultAsync(s => String.Compare(s.Name, viewModel.Name, true) == 0);
+            if (studentGroupExists != null)
+            {
+                return false;
+            }
             var studentGroupToAdd = new StudentGroup
             {
                 Name = viewModel.Name,
@@ -355,8 +364,7 @@ namespace WebApp.Models.Entities
                 TeamId = viewModel.TeamId,
             };
             this.StudentGroup.Add(studentGroupToAdd);
-            await SaveChangesAsync();
-            return studentGroupToAdd.Id;
+            return await SaveChangesAsync() > 0;
         }
 
         internal async Task<bool> DeleteStudentGroup(int id)
@@ -376,8 +384,14 @@ namespace WebApp.Models.Entities
             return await SaveChangesAsync() > 0;
         }
 
-        internal async Task<bool> UpdateStudentGroup(StudentGroupCreateVM viewModel, int studentGroupId)
+        internal async Task<bool> UpdateStudentGroup(StudentGroupCreateVM viewModel, int studentGroupId, string id)
         {
+            int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+            var studentGroupExists = await StudentGroup.Where(t => t.UserId == userId).FirstOrDefaultAsync(s => String.Compare(s.Name, viewModel.Name, true) == 0);
+            if (studentGroupExists != null)
+            {
+                return false;
+            }
             var studentGroupToUpdate = StudentGroup.FirstOrDefault(s => s.Id == studentGroupId);
             studentGroupToUpdate.Name = viewModel.Name;
             studentGroupToUpdate.StartingYear = viewModel.Starting_Year;
@@ -435,9 +449,6 @@ namespace WebApp.Models.Entities
             //TODO : Check if class and student group already exists in database
             var filteredClasses = viewModel.ClassData
                 .Where(cd => !IncludedClass.Any(ic => cd.ClassId == ic.ClassId && cd.StudentGroupId == ic.StudentGroupId)).ToArray();
-
-            //var notAlreadyExistingClasses = IncludedClass.Join(viewModel.ClassData, ic => new { ic.ClassId, ic.StudentGroupId }, cd => new { cd.ClassId, cd.StudentGroupId }, (ic, cd) => ic);
-            //var notAlreadyExistingClasses = viewModel.ClassData.Where(cd => !IncludedClass.Select(ic => ic.ClassId).Contains(cd.ClassId) && !IncludedClass.Select(ic => ic.StudentGroupId).Contains(cd.StudentGroupId));
             int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
             var includedClasses = filteredClasses.Select(c => new IncludedClass
             {
@@ -492,16 +503,16 @@ namespace WebApp.Models.Entities
         {
             int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
             //var classes = IncludedClass
-                //.Where(ic => ic.UserId == userId && ic.StudentGroupId == studentGroupId)
-                //.Join(Class, ic => ic, c => c, (ic, c) => new IncludedClassVM
-                //{
-                //    Id = ic.Id,
-                //    Duration = ic.Duration,
-                //    TeamId = ic.TeamId,
-                //    ClassId = ic.ClassId,
-                //    StudentGroupId = ic.StudentGroupId,
+            //.Where(ic => ic.UserId == userId && ic.StudentGroupId == studentGroupId)
+            //.Join(Class, ic => ic, c => c, (ic, c) => new IncludedClassVM
+            //{
+            //    Id = ic.Id,
+            //    Duration = ic.Duration,
+            //    TeamId = ic.TeamId,
+            //    ClassId = ic.ClassId,
+            //    StudentGroupId = ic.StudentGroupId,
 
-                //})ToArray();
+            //})ToArray();
             return null;
         }
 
@@ -538,6 +549,13 @@ namespace WebApp.Models.Entities
         internal async Task<bool> AddNewAuxiliaryAssignment(AuxiliaryAssignmentCreateVM viewModel, string id)
         {
             int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+            var existingAuxAssignment = await AuxiliaryAssignment
+                .Where(aa => aa.UserId == userId)
+                .FirstOrDefaultAsync(aa => String.Compare(aa.Name, viewModel.Name, true) == 0);
+            if (existingAuxAssignment != null)
+            {
+                return false;
+            }
             var AuxiliaryAssignmentToAdd = new AuxiliaryAssignment
             {
                 Name = viewModel.Name,
@@ -557,12 +575,20 @@ namespace WebApp.Models.Entities
         {
             var assignmentToRemove = AuxiliaryAssignment
                 .SingleOrDefault(a => a.Id == id);
-            
+
             AuxiliaryAssignment.Remove(assignmentToRemove);
             return await SaveChangesAsync() > 0;
         }
-        internal async Task<bool> UpdateAuxiliaryAssignment(AuxiliaryAssignmentCreateVM viewModel, int id)
+        internal async Task<bool> UpdateAuxiliaryAssignment(AuxiliaryAssignmentCreateVM viewModel, int id, string userId)
         {
+            int uId = User.FirstOrDefault(u => u.SchoolId == userId).Id;
+            var existingAuxAssignment = await AuxiliaryAssignment
+                .Where(aa => aa.UserId == uId)
+                .FirstOrDefaultAsync(aa => String.Compare(aa.Name, viewModel.Name, true) == 0);
+            if (existingAuxAssignment != null)
+            {
+                return false;
+            }
             var assignmentToUpdate = AuxiliaryAssignment.SingleOrDefault(a => a.Id == id);
 
             assignmentToUpdate.Name = viewModel.Name;
@@ -592,6 +618,7 @@ namespace WebApp.Models.Entities
         internal AuxiliaryAssignmentCreateVM GetAuxiliaryAssignmentById(int id)
         {
             var auxiliaryAssignment = AuxiliaryAssignment
+                .Include(a => a.Personnel)
                 .Where(a => a.Id == id)
                 .Select(a => new AuxiliaryAssignmentCreateVM
                 {

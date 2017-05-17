@@ -65,10 +65,12 @@ $(document).ready(function () {
         $('#' + target + 'Desc').show();
 
         updateLists();
+        console.log(target);
 
         var listLength = $('#' + target + ' table tr:not(:first)');
+        var name = $('#' + target + 'Open').text();
 
-        UpdateCounterInfo(listLength);
+        UpdateCounterInfo(listLength, name);
     });
 
     // Open add/edit data pop-up
@@ -181,7 +183,9 @@ $(document).ready(function () {
                                 value: element.id
                             }));
                         });
-                        UpdateCounterInfo(data);
+                        var name = $('#teamCrudOpen').text();
+
+                        UpdateCounterInfo(data, name);
                     }
                 });
             }
@@ -196,8 +200,9 @@ $(document).ready(function () {
                         data.forEach(function (e) {
                             $('#personnelCrud table').append('<tr><td>' + e.teamName + '</td><td>' + e.firstName + '</td><td>' + e.lastName + '</td><td>' + e.signature + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
                         });
+                        var name = $('#personnelCrudOpen').text();
 
-                        UpdateCounterInfo(data);
+                        UpdateCounterInfo(data, name);
                     }
                 });
             }
@@ -212,7 +217,9 @@ $(document).ready(function () {
                         data.forEach(function (e) {
                             $('#studentGroupCrud table').append('<tr><td>' + e.teamName + '</td><td>' + e.name + '</td><td>' + e.startingYear + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
                         });
-                        UpdateCounterInfo(data);
+                        var name = $('#studentGroupCrudOpen').text();
+
+                        UpdateCounterInfo(data, name);
                     }
                 });
             }
@@ -231,7 +238,9 @@ $(document).ready(function () {
                                 yesOrNo = "Ja";
                             $('#auxiliaryAssignmentCrud table').append('<tr><td>' + e.name + '</td><td>' + e.points + '</td><td>' + yesOrNo + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
                         });
-                        UpdateCounterInfo(data);
+                        var name = $('#auxiliaryAssignmentCrudOpen').text();
+
+                        UpdateCounterInfo(data, name);
                     }
                 });
             }

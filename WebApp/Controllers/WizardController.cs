@@ -42,7 +42,7 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<int> NewTeam(TeamCreateVM viewModel)
+        public async Task<bool> NewTeam(TeamCreateVM viewModel)
         {
             //TODO : Validation
             var userId = _userManager.GetUserId(User);
@@ -125,7 +125,7 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<int> NewStudentGroup(StudentGroupCreateVM viewModel)
+        public async Task<bool> NewStudentGroup(StudentGroupCreateVM viewModel)
         {
             string userId = _userManager.GetUserId(User);
             return await _context.AddNewStudentGroup(viewModel, userId);
@@ -134,8 +134,9 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<bool> UpdateStudentGroup(StudentGroupCreateVM viewModel, int id)
         {
+            string userId = _userManager.GetUserId(User);
             //id is the StudentGroup's id
-            return await _context.UpdateStudentGroup(viewModel, id);
+            return await _context.UpdateStudentGroup(viewModel, id, userId);
         }
         [HttpPost]
         public async Task<bool> DeleteStudentGroup(int id)
@@ -204,7 +205,8 @@ namespace WebApp.Controllers
 
         public async Task<bool> UpdateAuxiliaryAssignment(AuxiliaryAssignmentCreateVM viewModel, int id)
         {
-            return await _context.UpdateAuxiliaryAssignment(viewModel, id);
+            var userId = _userManager.GetUserId(User);
+            return await _context.UpdateAuxiliaryAssignment(viewModel, id, userId);
         }
 
         [HttpGet]
