@@ -229,7 +229,11 @@ function GetAllPersonnel() {
                 source: allPersonnel,
                 select: function (event, ti) {
                     event.preventDefault();
-                    $('#auxiliaryAssignmentPersonnel').val(ti.item.label);
+                    $('#auxiliaryAssignmentPersonnel').val(ti.item.label)
+                },
+                focus: function (event, ti) {
+                    event.preventDefault();
+                    $('#auxiliaryAssignmentPersonnel').val(ti.item.label)
                 }
             });
         }
@@ -543,6 +547,10 @@ function CreateInputCompetence() {
         select: function (event, ti) {
             event.preventDefault();
             $('#competenceInput').val(ti.item.label);
+        },
+        focus: function (event, ti) {
+            event.preventDefault();
+            $('#competenceInput').val(ti.item.label)
         }
     });
 
@@ -857,6 +865,12 @@ function SubmitAuxiliaryAssignment() {
     }).then(function (success) {
         console.log(success);
         if (success) {
+            $('#auxiliaryAssignmentName').val('');
+            $('#auxiliaryAssignmentDesc').val('');
+            $('#auxiliaryAssignmentPoints').val('');
+            $('#auxiliaryAssignmentDurationDropDown').val('');
+            $('#auxiliaryAssignmentMandatory').prop('checked', false);
+            $('#auxiliaryAssignmentPersonnel').val('');
             var auxAssignmentAddMessage = generateFormMessage("Success", "Uppdraget har lagts till.");
             $('#messageBoxAuxiliaryAssignmentCrud').html(auxAssignmentAddMessage);
         } else {

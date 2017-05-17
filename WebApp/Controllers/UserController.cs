@@ -37,9 +37,9 @@ namespace WebApp.Controllers
         {
             await _signInManager.PasswordSignInAsync("demo", "123", false, false);
 
-            return Redirect("/wizard/index");
+            return Redirect("/home/index");
 
-            //Change to return View();
+            //return View();
         }
         [HttpPost]
         public async Task<IActionResult> Login(UserLoginVM viewModel)
