@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot/js\WizardScriptLocal.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="wwwroot\img\icons\add.svg" />
     <Content Include="wwwroot\img\icons\delete.svg" />
     <Content Include="wwwroot\img\icons\x_delete.svg" />

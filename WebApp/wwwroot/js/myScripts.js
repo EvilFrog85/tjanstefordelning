@@ -314,4 +314,11 @@ $(document).ready(function () {
         }
     });
     /* END - Jonas lekplats */
+
+    // #region class to student group
+
+    function CreateAssignClassesToStudentGroupsOverlay() {
+
+    }
+// #endregion
 });

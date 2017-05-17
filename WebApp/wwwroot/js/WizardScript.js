@@ -22,6 +22,7 @@ function generateFormMessage(type, message) {
 
 //Team Crud functions
 
+// #region utils
 //Temporary info-box
 function GetCounts() {
     var countLabels = ["Avdelningar", "Personal", "Tillgänglig personal", "Inkluderade kurser", "Kurser kvar att tilldela"];
@@ -36,6 +37,11 @@ function GetCounts() {
     });
 }
 
+function EmptyAllMessageBoxDivs() {
+    $('.messageBox').empty();
+}
+// #endregion
+
 // #region TEAM-crud
 
 function SubmitTeam() {
@@ -45,12 +51,22 @@ function SubmitTeam() {
     $.ajax({
         type: 'POST',
         url: '/Wizard/NewTeam/',
-        data: { "Name": $newName },
-        success: function (result) {
-            console.log(result);
+        data: { "Name": $newName }
+    }).then(function (success) {
+        console.log(success);
+        if (!success) {
+            var teamAddMessage = generateFormMessage("error", "Arbetslaget fanns redan.");
+            $('#messageBoxTeamCrud').html(teamAddMessage);
+        } else {
+            teamAddMessage = generateFormMessage("Success", "Arbetslaget blev tillagt.");
+            $('#messageBoxTeamCrud').html(teamAddMessage);
         }
+    }, function () {
+        var teamAddMessage = generateFormMessage("error", "Något gick fel.");
+        $('#messageBoxTeamCrud').html(teamAddMessage);
     });
 }
+
 function UpdateTeam(id) {
     submitClickCounter = 1;
     var $newName = $('#teamName').val();
@@ -58,35 +74,37 @@ function UpdateTeam(id) {
     $.ajax({
         type: 'POST',
         url: '/Wizard/UpdateTeam/' + id,
-        data: { "Name": $newName },
-        success: function (result) {
-            $('.innerOverLay').fadeToggle("fast");
-            $('#teamCrud table').find('tr:not(:first)').remove();
-            $('#teamIdInput').empty();
-            $('#teamIdInputForStudentGroup').empty();
-            $('#includedClassTeamBelongingDropDown').empty();
-            $.ajax({
-                type: 'GET',
-                url: '/Wizard/GetAllTeams',
-                success: function (data) {
-                    data.forEach(function (element) {
-                        $('#teamCrud table').append('<tr><td>' + element.name + '</td><td data-item="' + element.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
-                        $('#teamIdInput').append($('<option/>', {
-                            text: element.name,
-                            value: element.id
-                        }));
-                        $('#teamIdInputForStudentGroup').append($('<option/>', {
-                            text: element.name,
-                            value: element.id
-                        }));
-                        $('#includedClassTeamBelongingDropDown').append($('<option/>', {
-                            text: element.name,
-                            value: element.id
-                        }));
-                    });
-                }
-            });
-        }
+        data: { "Name": $newName }
+    }).then(function (result, success) {
+        $('.innerOverLay').fadeToggle("fast");
+        $('#teamCrud table').find('tr:not(:first)').remove();
+        $('#teamIdInput').empty();
+        $('#teamIdInputForStudentGroup').empty();
+        $('#includedClassTeamBelongingDropDown').empty();
+        $.ajax({
+            type: 'GET',
+            url: '/Wizard/GetAllTeams',
+            success: function (data) {
+                data.forEach(function (element) {
+                    $('#teamCrud table').append('<tr><td>' + element.name + '</td><td data-item="' + element.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
+                    $('#teamIdInput').append($('<option/>', {
+                        text: element.name,
+                        value: element.id
+                    }));
+                    $('#teamIdInputForStudentGroup').append($('<option/>', {
+                        text: element.name,
+                        value: element.id
+                    }));
+                    $('#includedClassTeamBelongingDropDown').append($('<option/>', {
+                        text: element.name,
+                        value: element.id
+                    }));
+                });
+            }
+        });
+    }, function () {
+        var teamAddMessage = generateFormMessage("error", "Något gick fel.");
+        $('#messageBoxTeamCrud').html(teamAddMessage);
     });
 }
 
@@ -96,7 +114,7 @@ function GetTeamToEdit(id) {
         url: '/Wizard/GetTeamById/' + id,
         success: function (team) {
             console.log(team);
-            $('#teamName').val(team.name)
+            $('#teamName').val(team.name);
         }
     });
 }
@@ -211,7 +229,7 @@ function GetAllPersonnel() {
                 source: allPersonnel,
                 select: function (event, ti) {
                     event.preventDefault();
-                    $('#auxiliaryAssignmentPersonnel').val(ti.item.label)
+                    $('#auxiliaryAssignmentPersonnel').val(ti.item.label);
                 }
             });
         }
@@ -256,12 +274,12 @@ function AddNewPersonnel() {
             allChosenCompetences = [];
             $('#competenceList').empty();
             $('#messageBoxPersonnelCrud').empty();
-            var personnelAddMessage = generateFormMessage("Success", "Personen blev tillagd.")
+            var personnelAddMessage = generateFormMessage("Success", "Personen blev tillagd.");
             $('#messageBoxPersonnelCrud').append(personnelAddMessage);
         }
     }, function () {
         $('#messageBoxPersonnelCrud').empty();
-        var personnelAddMessage = generateFormMessage("error", "Något gick fel.")
+        var personnelAddMessage = generateFormMessage("error", "Något gick fel.");
         $('#messageBoxPersonnelCrud').append(personnelAddMessage);
     });
 }
@@ -457,25 +475,39 @@ function AddCompetence() {
     var qualified = $('#IsCompetenceQualified').prop('checked');
     var competence = $('#competenceInput').val();
     var subjectId = subjectsArray.indexOf(competence) + 1;
-    var $competenceDiv = $('<div/>', {
-        class: qualified ? 'competence qualified' : 'competence',
-        id: 'comp' + subjectId
-    });
-    var $competenceButton = $('<button/>', {
-        onclick: 'RemoveCompetence("' + subjectId + '")'
-    });
-    var $competenceText = $('<p/>', { text: competence });
+    if (allSubjects.findIndex(function (element) { return element.label == competence; }) !== -1) {
+        var $competenceDiv = $('<div/>', {
+            class: qualified ? 'competence qualified' : 'competence',
+            id: 'comp' + subjectId
+        });
+        var $competenceButton = $('<button/>', {
+            onclick: 'RemoveCompetence("' + subjectId + '")'
+        });
+        var $competenceText = $('<p/>', { text: competence });
+        console.log(allChosenCompetences);
+        var index = allChosenCompetences.findIndex(function (element) { console.log(element); return element.SubjectId == subjectId; });
+        if (index == -1) {
+            allChosenCompetences.push({ "Qualified": qualified, "SubjectId": subjectId });
 
-    //if(not already in the list)
-    allChosenCompetences.push({ "Qualified": qualified, "SubjectId": subjectId });
+            $competenceDiv.append($competenceText);
+            $competenceDiv.append($competenceButton);
 
-    $competenceDiv.append($competenceText);
-    $competenceDiv.append($competenceButton);
+            $('#competenceList')
+                .append($competenceDiv);
 
-    $('#competenceList')
-        .append($competenceDiv);
-
-    $('#competenceInput').val('');
+            $('#competenceInput').val('');
+        } else {
+            $('#messageBoxPersonnelCrud').empty();
+            var personnelAddMessage = generateFormMessage("error", "Denna personal har redan denna kompetens.");
+            $('#messageBoxPersonnelCrud').append(personnelAddMessage);
+            $('#competenceInput').val('');
+        }
+    } else {
+        //TODO : error message
+        $('#messageBoxPersonnelCrud').empty();
+        var personnelAddMessage = generateFormMessage("error", "Välj ett ämne ur listan.");
+        $('#messageBoxPersonnelCrud').append(personnelAddMessage);
+    }
     console.log(allChosenCompetences);
 }
 
@@ -539,13 +571,21 @@ function SubmitStudentGroup() {
     $.ajax({
         type: 'POST',
         url: '/Wizard/NewStudentGroup/',
-        data: { Name: name, Starting_Year: year, TeamId: team },
-        success: function (inputIsSuccess) {
-            console.log(inputIsSuccess);
+        data: { Name: name, Starting_Year: year, TeamId: team }
+    }).then(function (success) {
+        if (success) {
             $('#studentGroupName').val('');
             $('#studentGroupStartingYearDropDown').val(2017);
             $('#teamIdInputForStudentGroup').val(1);
+            var studentGroupAddMessage = generateFormMessage("Success", "Klassen har lagts till.");
+            $('#messageBoxStudentGroupCrud').html(studentGroupAddMessage);
+        } else {
+            studentGroupAddMessage = generateFormMessage("error", "Klassen existerar redan.");
+            $('#messageBoxStudentGroupCrud').html(studentGroupAddMessage);
         }
+    }, function () {
+        var studentGroupAddMessage = generateFormMessage("error", "Något gick fel.");
+        $('#messageBoxStudentGroupCrud').html(studentGroupAddMessage);
     });
 }
 //TODO: Create form for update information (automatically filled in inputs)
@@ -560,18 +600,26 @@ function UpdateStudentGroup(id) {
         url: '/Wizard/UpdateStudentGroup/' + id,
         data: { Name: name, Starting_Year: year, TeamId: team }
     }).then(function (success) {
-        $('#studentGroupCrud table').find('tr:not(:first)').remove();
-        $.ajax({
-            type: 'GET',
-            url: '/Wizard/GetAllStudentGroups',
-            success: function (data) {
-                data.forEach(function (e) {
-                    $('#studentGroupCrud table').append('<tr><td>' + e.teamName + '</td><td>' + e.name + '</td><td>' + e.startingYear + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
-                });
-            }
-        });
-        $('.innerOverLay').fadeToggle("fast");
-    }, function () { console.log('Error') });
+        if (success) {
+            $('#studentGroupCrud table').find('tr:not(:first)').remove();
+            $.ajax({
+                type: 'GET',
+                url: '/Wizard/GetAllStudentGroups',
+                success: function (data) {
+                    data.forEach(function (e) {
+                        $('#studentGroupCrud table').append('<tr><td>' + e.teamName + '</td><td>' + e.name + '</td><td>' + e.startingYear + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
+                    });
+                }
+            });
+            $('.innerOverLay').fadeToggle("fast");
+        } else {
+            var studentGroupAddMessage = generateFormMessage("error", "Något fält är fel ifyllt/klassen existerar redan.");
+            $('#messageBoxStudentGroupCrud').html(studentGroupAddMessage);
+        }
+    }, function () {
+        var studentGroupAddMessage = generateFormMessage("error", "Något gick fel.");
+        $('#messageBoxStudentGroupCrud').html(studentGroupAddMessage);
+    });
 }
 
 function DeleteStudentGroup(studentGroupId) {
@@ -591,7 +639,7 @@ function DeleteStudentGroup(studentGroupId) {
                 });
             }
         });
-    }, function () { console.log('Ta bort Student Group: error') });
+    }, function () { console.log('Ta bort Student Group: error'); });
 }
 
 function GetStudentGroupToEdit(id) {
@@ -782,7 +830,7 @@ function SubmitAuxiliaryAssignment() {
     var personnel = $('#auxiliaryAssignmentPersonnel').val();
     console.log(personnel);
     if (personnel) {
-        var index = allPersonnel.findIndex(function (element) { return element.label == personnel; })
+        var index = allPersonnel.findIndex(function (element) { return element.label == personnel; });
         var personnelId = allPersonnel[index].value;
         console.log('personnelid: ' + personnelId);
     }
@@ -808,9 +856,17 @@ function SubmitAuxiliaryAssignment() {
         data: dataToInsert
     }).then(function (success) {
         console.log(success);
+        if (success) {
+            var auxAssignmentAddMessage = generateFormMessage("Success", "Uppdraget har lagts till.");
+            $('#messageBoxAuxiliaryAssignmentCrud').html(auxAssignmentAddMessage);
+        } else {
+            auxAssignmentAddMessage = generateFormMessage("error", "Uppdraget finns redan.");
+            $('#messageBoxAuxiliaryAssignmentCrud').html(auxAssignmentAddMessage);
+        }
     }, function () {
-        console.log('error');
-    })
+        var auxAssignmentAddMessage = generateFormMessage("error", "Nånting har gått fel...");
+        $('#messageBoxAuxiliaryAssignmentCrud').html(auxAssignmentAddMessage);
+    });
 }
 
 function UpdateAuxiliaryAssignment(id) {
@@ -821,7 +877,7 @@ function UpdateAuxiliaryAssignment(id) {
     var mandatory = $('#auxiliaryAssignmentMandatory').prop('checked');
     var personnel = $('#auxiliaryAssignmentPersonnel').val();
     if (personnel) {
-        var index = allPersonnel.findIndex(function (element) { return element.label == personnel; })
+        var index = allPersonnel.findIndex(function (element) { return element.label == personnel; });
         var personnelId = allPersonnel[index].value;
     }
     var assigned = false;
@@ -844,22 +900,32 @@ function UpdateAuxiliaryAssignment(id) {
         type: 'POST',
         url: '/Wizard/UpdateAuxiliaryAssignment/' + id,
         data: dataToInsert
-    }).then(function (data) {
-        $('#auxiliaryAssignmentCrud table').find('tr:not(:first)').remove();
-        $.ajax({
-            type: 'GET',
-            url: '/Wizard/GetAllAuxiliaryAssignments',
-            success: function (data) {
-                data.forEach(function (e) {
-                    var yesOrNo = "Nej";
-                    if (e.assigned == true)
-                        yesOrNo = "Ja";
-                    $('#auxiliaryAssignmentCrud table').append('<tr><td>' + e.name + '</td><td>' + e.points + '</td><td>' + yesOrNo + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
-                });
-            }
-        });
-        $('.innerOverLay').fadeToggle("fast");
-    }, function () { console.log('error'); });;
+    }).then(function (success) {
+        if (success) {
+            var auxAssignmentAddMessage = generateFormMessage("Success", "Uppdraget har lagts till.");
+            $('#messageBoxAuxiliaryAssignmentCrud').html(auxAssignmentAddMessage);
+            $('#auxiliaryAssignmentCrud table').find('tr:not(:first)').remove();
+            $.ajax({
+                type: 'GET',
+                url: '/Wizard/GetAllAuxiliaryAssignments',
+                success: function (data) {
+                    data.forEach(function (e) {
+                        var yesOrNo = "Nej";
+                        if (e.assigned == true)
+                            yesOrNo = "Ja";
+                        $('#auxiliaryAssignmentCrud table').append('<tr><td>' + e.name + '</td><td>' + e.points + '</td><td>' + yesOrNo + '</td><td data-item="' + e.id + '"><p class="edit"></p><p class="delete"></p></td></tr>');
+                    });
+                }
+            });
+            $('.innerOverLay').fadeToggle("fast");
+        } else {
+            auxAssignmentAddMessage = generateFormMessage("error", "Uppdraget finns redan.");
+            $('#messageBoxAuxiliaryAssignmentCrud').html(auxAssignmentAddMessage);
+        }
+    }, function () {
+        var auxAssignmentAddMessage = generateFormMessage("error", "Nånting har gått fel...");
+        $('#messageBoxAuxiliaryAssignmentCrud').html(auxAssignmentAddMessage);
+    });
 }
 
 function DeleteAuxiliaryAssignment(id) {
@@ -881,7 +947,7 @@ function DeleteAuxiliaryAssignment(id) {
             }
         });
     }, function () {
-        console.log('Something went wrong')
+        console.log('Something went wrong');
     });
 }
 function GetAuxiliaryAssignmentToEdit(id) {
@@ -896,7 +962,7 @@ function GetAuxiliaryAssignmentToEdit(id) {
             $('#auxiliaryAssignmentDurationDropDown').val(assignment.duration);
             $('#auxiliaryAssignmentMandatory').attr('checked', assignment.mandatory);
             if (assignment.personnelId != null) {
-                var index = allPersonnel.findIndex(function (element) { return element.value == assignment.personnelId; })
+                var index = allPersonnel.findIndex(function (element) { return element.value == assignment.personnelId; });
                 var personnelName = allPersonnel[index].label;
                 $('#auxiliaryAssignmentPersonnel').val(personnelName);
             }
