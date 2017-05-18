@@ -498,7 +498,8 @@ $(document).ready(function () {
                 // Hide body-scroll
                 $('html').css('overflow', 'hidden');
                 $('#mainOverLayContent').html($overLayData);
-                $('#mainOverLay').fadeToggle();
+                if ($('#mainOverLay').is(":hidden"))
+                    $('#mainOverLay').fadeToggle();
             }
         });
     }
