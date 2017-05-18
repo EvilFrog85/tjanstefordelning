@@ -241,7 +241,8 @@ namespace WebApp.Models.Entities
             var auxAssignments = person.AuxiliaryAssignment.Select(p => new AuxiliaryAssignmentVM
             {
                 Name = p.Name,
-                Points = p.Points
+                Points = p.Points,
+                Duration = p.Duration
             }).ToArray();
 
             return new CompetencesIncludedClassesVM

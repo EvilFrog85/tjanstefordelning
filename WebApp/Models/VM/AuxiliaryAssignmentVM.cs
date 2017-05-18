@@ -11,5 +11,6 @@ namespace WebApp.Models.VM
         public string Name { get; set; }
         public int Points { get; set; }
         public bool Assigned { get; set; }
+        public int Duration { get; set; }
     }
 }
