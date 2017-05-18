@@ -447,6 +447,8 @@ namespace WebApp.Models.Entities
             int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
             var studentGroups = StudentGroup
                 .Include(s => s.Team)
+                .Include(s => s.IncludedClass)
+                .ThenInclude(i => i.Class)
                 .Where(s => s.UserId == userId).Select(s => new StudentGroupVM
                 {
                     Id = s.Id,
@@ -454,6 +456,10 @@ namespace WebApp.Models.Entities
                     TeamId = s.TeamId,
                     TeamName = s.Team.Name,
                     StartingYear = s.StartingYear,
+                    Classes = s.IncludedClass.Select(ic => new ClassVM
+                    {
+                        Points = ic.Class.Points
+                    }).ToArray()
                 });
             return await studentGroups.OrderBy(s => s.TeamName).ThenBy(s => s.Name).ToArrayAsync();
         }
@@ -495,12 +501,12 @@ namespace WebApp.Models.Entities
             int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
 
             //Check if any classes has been removed
-            
+
             var currentClasses = viewModel.ClassData.Select(cd => cd.ClassId);
             var classesToRemove = IncludedClass
                 .Where(ic => ic.StudentGroupId == studentGroupId)
                 .Where(ic => !currentClasses.Contains(ic.ClassId));
-            
+
             var includedClasses = filteredClasses.Select(c => new IncludedClass
             {
                 Duration = c.Duration,
@@ -553,7 +559,8 @@ namespace WebApp.Models.Entities
                     StudentGroupId = i.StudentGroup.Id,
                     TeamId = i.Team.Id,
                     ClassName = i.Class.ClassName,
-                    PersonnelSignature = i.Personnel.Signature ?? null
+                    PersonnelSignature = i.Personnel.Signature ?? null,
+                    Points = i.Class.Points
                 }).ToArrayAsync();
 
             return includedClasses;
@@ -722,7 +729,7 @@ namespace WebApp.Models.Entities
             }
             return classes.OrderByDescending(c => c.Qualified).ToArray();
         }
-        
+
         internal async Task<bool> RemoveTeacherFromIncludedClass(int id)
         {
             var classe = await IncludedClass

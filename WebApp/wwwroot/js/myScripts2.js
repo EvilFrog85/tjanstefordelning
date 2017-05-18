@@ -340,7 +340,7 @@ $(document).ready(function () {
         }
     });
 
-            
+
     // #region Genereate html for personnel-page
     var isGeneratedPersonnelHtml;
     function generatePersonnelHtml() {
@@ -354,7 +354,7 @@ $(document).ready(function () {
                         if (e.assignedPoints > 0)
                             var assignedPointsPercentage = (e.assignedPoints / 6).toFixed(1);
                         var contractType = contractEnum[e.contract];
-                        $('#personnelMainBox').append('<div class="personnelBox"><div class="personnelBoxTop"><div><img src="/img/staff_pictures/' + e.imageUrl + '.jpg" alt="' + e.firstName + ' ' + e.lastName + '" /></div><div><button class="personnelEditButton" data-id="' + e.id + '" data-name="'+ e.firstName + ' ' + e.lastName +'">Kurser & beh�righet</button><p class="personnelTeamName">' + e.teamName + '</p><p class="personnelContract">' + contractType + '</p></div></div><div class="personnelBoxCenter"><p>' + e.signature + '</p><p>' + e.firstName + ' ' + e.lastName + '</p></div><div class="personnelBoxBottom"><div class="personnelMeterBox"><p>Tj�nstegrad: ' + e.availablePoints + '%</p><div class="personnelAvailableMeter"><span style="width: ' + e.availablePoints + '%;"></span></div></div><div class="personnelMeterBox"><p>Tilldelat: ' + assignedPointsPercentage + '%</p><div class="personnelAssignedMeter"><span style="width: ' + assignedPointsPercentage + '%;"></span></div></div></div><div class="personnelCompetenceBox"></div></div>');
+                        $('#personnelMainBox').append('<div class="personnelBox"><div class="personnelBoxTop"><div><img src="/img/staff_pictures/' + e.imageUrl + '.jpg" alt="' + e.firstName + ' ' + e.lastName + '" /></div><div><button class="personnelEditButton" data-id="' + e.id + '" data-name="' + e.firstName + ' ' + e.lastName + '">Kurser & beh�righet</button><p class="personnelTeamName">' + e.teamName + '</p><p class="personnelContract">' + contractType + '</p></div></div><div class="personnelBoxCenter"><p>' + e.signature + '</p><p>' + e.firstName + ' ' + e.lastName + '</p></div><div class="personnelBoxBottom"><div class="personnelMeterBox"><p>Tj�nstegrad: ' + e.availablePoints + '%</p><div class="personnelAvailableMeter"><span style="width: ' + e.availablePoints + '%;"></span></div></div><div class="personnelMeterBox"><p>Tilldelat: ' + assignedPointsPercentage + '%</p><div class="personnelAssignedMeter"><span style="width: ' + assignedPointsPercentage + '%;"></span></div></div></div><div class="personnelCompetenceBox"></div></div>');
                     });
                 }
             });
@@ -370,20 +370,20 @@ $(document).ready(function () {
             url: '/Wizard/GetPersonInfo/' + id,
             success: function (data) {
                 var isEmpty = true;
-                var $overLayData = '<h2 class="overViewName">'+ name +'</h2>';
+                var $overLayData = '<h2 class="overViewName">' + name + '</h2>';
                 // Print competences
                 $overLayData += '<div class="overViewCompetenceBox">';
                 var obehorig = false;
                 data.competences.forEach(function (c) {
                     isEmpty = false;
-                    if(c.qualified)
+                    if (c.qualified)
                         $overLayData += '<div class="competence qualified"><p>' + c.name + '</p></div>';
                     else {
                         $overLayData += '<div class="competence"><p>' + c.name + '*</p></div>';
                         obehorig = true;
                     }
                 });
-                if(obehorig)
+                if (obehorig)
                     $overLayData += '<p>*Obeh�rig i �mnet.</p>';
                 $overLayData += '</div>';
 
@@ -419,14 +419,14 @@ $(document).ready(function () {
                             }
                         }
                         else if (duration == 1) {
-                            if(i == times)
+                            if (i == times)
                                 $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p class="delete" data-id="' + w.classId + '"></p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
                             else
                                 $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
                             counter++;
                         }
                         else {
-                            if(i == times)
+                            if (i == times)
                                 $overLayData += '<div class="personnelVtBox"><div class="HtVtLeftSide"><p class="delete" data-id="' + w.classId + '"></p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
                             else
                                 $overLayData += '<div class="personnelVtBox"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
@@ -453,7 +453,7 @@ $(document).ready(function () {
                                 counter++;
                             }
                             else {
-                                if(i > 2)
+                                if (i > 2)
                                     $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
                                 else
                                     $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="delete" data-id="' + aux.id + '"></p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
@@ -465,14 +465,14 @@ $(document).ready(function () {
                             }
                         }
                         else if (duration == 1) {
-                            if(i == times)
+                            if (i == times)
                                 $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="delete" data-id="' + aux.id + '"></p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
                             else
                                 $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
                             counter++;
                         }
                         else {
-                            if(i == times)
+                            if (i == times)
                                 $overLayData += '<div class="personnelVtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="delete" data-id="' + aux.id + '"></p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
                             else
                                 $overLayData += '<div class="personnelVtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
@@ -483,7 +483,7 @@ $(document).ready(function () {
                             counter = 0;
                         }
                     }
-                    
+
                 });
                 if (isEmpty)
                     $overLayData += '<p>Ingen information om personen �r tillagd.</p>';
@@ -494,11 +494,11 @@ $(document).ready(function () {
             }
         });
     });
-    
+
     // Remove techer from included_class
     $('#mainOverLayContent').on('click', '.delete', function () {
         var classId = $(this).attr('data-id');
-        
+
         $.ajax({
             type: 'GET',
             url: '/Wizard/RemoveTeacherFromIncludedClass/' + classId,
@@ -507,7 +507,7 @@ $(document).ready(function () {
             }
         });
     });
-    
+
 
     $('#closeMainOverLay').on('click', function () {
         $('#mainOverLay').fadeToggle();
@@ -647,8 +647,8 @@ function RemoveClass(classId) {
             element.remove();
         }
     });
-    allChosenClasses = jQuery.grep(allChosenClasses, function (elem, index) { return elem.ClassId != classId;} );
-    console.log("allChosenClasses");    
+    allChosenClasses = jQuery.grep(allChosenClasses, function (elem, index) { return elem.ClassId != classId; });
+    console.log("allChosenClasses");
     console.log(allChosenClasses);
 }
 
@@ -685,11 +685,12 @@ function AddClassToCurriculum(newClass) {
         var classId = newClass.classId;
         var duration = newClass.duration;
         var teamId = newClass.teamId;
+        var points = newClass.points;
         index = 0;
     } else {
         var className = $('#classInput').val();
         if (className) {
-             index = allClasses.findIndex(function (element) { return element.label == className; });
+            index = allClasses.findIndex(function (element) { return element.label == className; });
             if (index != -1) {
                 var classId = allClasses[index].value;
             } else {
@@ -708,15 +709,17 @@ function AddClassToCurriculum(newClass) {
     //Check that the user has input a valid class
     if (index != -1) {
         //Create the div to contain the included class information needed
+
         var $classDiv = $('<div/>', {
             class: 'classToStudentGroup',
             id: classId,
             'data-duration': duration,
             'data-team-id': teamId,
             //'data-teamname': teamName,
-            text: className,
+            text: points ? className + points : className,
             title: className
         });
+
         if ($classDiv.text().length > 23) {
             $classDiv.text($classDiv.text().substring(0, 24) + "..");
         }
@@ -860,7 +863,7 @@ function GenerateStudentGroups() {
                         }
                         else if (d.duration == 1) {
                             var halfClass = $('<div/>', { class: 'studentGroupHalfClass', id: 'studentGroupHalfClass' + d.id });
-                            
+
                             halfClass
                                 .append($('<p/>', { text: d.className }));
                             if (d.personnelSignature) {
@@ -874,7 +877,7 @@ function GenerateStudentGroups() {
                         }
                         else {
                             var halfClass = $('<div/>', { class: 'studentGroupHalfClass', id: 'studentGroupHalfClass' + d.id });
-                            
+
                             halfClass
                                 .append($('<p/>', { text: d.className }));
                             if (d.personnelSignature) {
