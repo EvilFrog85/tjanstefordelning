@@ -33,7 +33,7 @@ namespace WebApp.Controllers
         {
 
             //await _signInManager.PasswordSignInAsync("boom", "123", false, false);
-            await _signInManager.PasswordSignInAsync("demo", "123", false, false);
+            await _signInManager.PasswordSignInAsync("boom", "123", false, false);
 
             return Redirect("/home/index");
 

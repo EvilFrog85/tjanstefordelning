@@ -354,7 +354,7 @@ $(document).ready(function () {
                         var assignedPointsPercentage = (e.assignedPoints / 6).toFixed(1);
                     console.log(e.assignedPoints + " " + assignedPointsPercentage);
                     var contractType = contractEnum[e.contract];
-                    $('#personnelMainBox').append('<div class="personnelBox"><div class="personnelBoxTop"><div><img src="~/img/staff_pictures/' + e.imageUrl + '.jpg" alt="' + e.firstName + ' ' + e.lastName + '" /></div><div><button class="personnelEditButton" data-id="' + e.id + '">Kurser & behörighet</button><p class="personnelTeamName">' + e.teamName + '</p><p class="personnelContract">' + contractType + '</p></div></div><div class="personnelBoxCenter"><p>' + e.signature + '</p><p>' + e.firstName + ' ' + e.lastName + '</p></div><div class="personnelBoxBottom"><div class="personnelMeterBox"><p>Tjänstegrad: ' + e.availablePoints +'%</p><div class="personnelAvailableMeter"><span style="width: ' + e.availablePoints + '%;"></span></div></div><div class="personnelMeterBox"><p>Tilldelat: ' + assignedPointsPercentage + '%</p><div class="personnelAssignedMeter"><span style="width: ' + assignedPointsPercentage + '%;"></span></div></div></div><div class="personnelCompetenceBox"></div></div>');                    
+                    $('#personnelMainBox').append('<div class="personnelBox"><div class="personnelBoxTop"><div><img src="~/img/staff_pictures/' + e.imageUrl + '.jpg" alt="' + e.firstName + ' ' + e.lastName + '" /></div><div><button class="personnelEditButton" data-id="' + e.id + '">Kurser & behörighet</button><p class="personnelTeamName">' + e.teamName + '</p><p class="personnelContract">' + contractType + '</p></div></div><div class="personnelBoxCenter"><p>' + e.signature + '</p><p>' + e.firstName + ' ' + e.lastName + '</p></div><div class="personnelBoxBottom"><div class="personnelMeterBox"><p>Tjänstegrad: ' + e.availablePoints + '%</p><div class="personnelAvailableMeter"><span style="width: ' + e.availablePoints + '%;"></span></div></div><div class="personnelMeterBox"><p>Tilldelat: ' + assignedPointsPercentage + '%</p><div class="personnelAssignedMeter"><span style="width: ' + assignedPointsPercentage + '%;"></span></div></div></div><div class="personnelCompetenceBox"></div></div>');
                 });
             }
         });
@@ -663,25 +663,89 @@ function GenerateStudentGroups() {
         url: '/Wizard/GetAllStudentGroups',
         success: function (data) {
             data.forEach(function (g) {
-                console.log(g.name);
+                var htBox = $('<div/>', { class: 'htBox', id: 'htBox' + g.name });
+                var vtBox = $('<div/>', { class: 'vtBox', id: 'vtBox' + g.name });
+
+
                 $('#classesMainBox')
                     .append($('<div/>', { class: 'classBox', id: 'classBox' + g.name }));
                 $('#classBox' + g.name)
                     .append($('<h3/>', { text: g.name, class: 'classNameBox' }))
-                    .append($('<button/>', { class: 'classEditButton', text: 'Lägg till kurser' }));
+                    .append($('<button/>', { class: 'classEditButton', text: 'L�gg till kurser' }))
+                    .append($('<div/>', { class: 'allClassesBox', id: 'allClassesBox' + g.name }));
 
-                ajax({
+                $('#allClassesBox' + g.name)
+                    .append($('<div/>', { class: 'allClassesHeader', id: 'allClassesHeader' + g.name }))
+                    .append($('<div>', { class: 'fullSemesterBox', id: 'fullSemesterBox' + g.name }))
+                    .append($('<div>', { class: 'halfSemesterBox', id: 'halfSemesterBox' + g.name }));
+
+                $('#allClassesHeader' + g.name)
+                    .append('<p>HT</p><p>VT</p>');
+
+                //$('#fullSemesterBox' + g.name)
+                //    .append($('<div/>', { class: 'studentGroupClass', id: 'studentGroupClass' + g.name }));
+
+                $('#halfSemesterBox' + g.name)
+                    .append(htBox)
+                    .append(vtBox);
+                $.ajax({
                     type: 'GET',
+                    url: '/Wizard/GetIncludedClassByStudentGroupId/' + g.id,
+                }).then(function (c) {
+                    c.forEach(function (d) {
 
-                })
-                //    .append($('<div/>', { class: 'allClassesBox', id: '#allClassesBox' + g.name }))
-                //    .append($('<div/>', { class: 'allClassesHeader', id: '#allClassesHeader' + g.name }));
-                ////$('#allClassesBox' + g.name)
-                //$('#allClassesHeader' + g.name)
-                //    .append($('<p/>', { text: 'Hello', class: 'allClassesHeader' }));
-                //    .append($('<div/>'), { class: 'fullSemesterBox' });
+                        if (d.className.length > 20) {
+                            d.className = d.className.slice(0, 20);
+                            d.className += '..';
+                        }
 
+                        if (d.duration == 0) {
+                            var group = $('<div/>', { class: 'studentGroupClass', id: 'studentGroupClass' + d.id });
+                            var htFullBox = $('<div/>', { class: 'htFullBox', id: 'htFullBox' + d.id });
+                            var vtFullBox = $('<div/>', { class: 'vtFullBox', id: 'vtFullBox' + d.id });
 
+                            htFullBox
+                                .append($('<p/>', { text: d.className }));
+                            vtFullBox
+                                .append($('<p/>', { text: d.className }));
+                            if (d.personnelSignature) {
+                                vtFullBox
+                                    .append($('<p/>', { text: d.personnelSignature, class: 'personnelSignatureClass' }));
+                            }
+                            group
+                                .append(htFullBox)
+                                .append(vtFullBox);
+                            $('#fullSemesterBox' + g.name).append(group);
+                        }
+                        else if (d.duration == 1) {
+                            var halfClass = $('<div/>', { class: 'studentGroupHalfClass', id: 'studentGroupHalfClass' + d.id });
+                            
+                            halfClass
+                                .append($('<p/>', { text: d.className }));
+                            if (d.personnelSignature) {
+                                halfClass
+                                    .append($('<p/>', { text: d.personnelSignature, class: 'personnelSignatureClass' }));
+                            }
+                            htBox
+                                .append(halfClass);
+                            //$('#halfSemesterBox' + g.name)
+                            //    .append(htBox);
+                        }
+                        else {
+                            var halfClass = $('<div/>', { class: 'studentGroupHalfClass', id: 'studentGroupHalfClass' + d.id });
+                            
+                            halfClass
+                                .append($('<p/>', { text: d.className }));
+                            if (d.personnelSignature) {
+                                halfClass
+                                    .append($('<p/>', { text: d.personnelSignature, class: 'personnelSignatureClass' }));
+                            }
+                            vtBox
+                                .append(halfClass)
+                        }
+
+                    })
+                });
             });
         }
     });
