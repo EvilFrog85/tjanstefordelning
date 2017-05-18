@@ -296,6 +296,7 @@ main {
     .personnelBoxCenter p:first-child {
         color: #00abe5;
         font-size: 12px;
+        padding-right: 5px;
     }
 
     .personnelBoxCenter p {
