@@ -83,7 +83,7 @@ $(document).ready(function () {
         $('#' + target + 'Desc').show();
 
         updateLists();
-        console.log(target);
+        //console.log(target);
 
         var listLength = $('#' + target + ' table tr:not(:first)');
         var name = $('#' + target + 'Open').text();
@@ -481,35 +481,8 @@ $(document).ready(function () {
 
 
     // #endregion
-
     // #region autocomplete
-    function PopulateClassesArray() {
-        allClasses = []; //empty array
-        $.ajax({
-            type: 'GET',
-            url: '/Assignment/GetAllClasses/',
-            success: function (classes) {
-                console.log("GetAllClasses");
-                console.log(classes);
-                classes.forEach(function (cls) {
-                    var newClass = { label: cls.className, value: cls.id };
-                    allClasses.push(newClass);
-                });
-                //$('#classInput').autocomplete({
-                //    source: allClasses,
-                //    select: function (event, listItems) {
-                //        $('#classInput').val(listItems.item.label);
-                //        $('#classInput').attr('data-classid', listItems.item.value);
-                //        return false;
-                //    },
-                //    focus: function (event, ti) {
-                //        event.preventDefault();
-                //        $('#classInput').val(ti.item.label);
-                //    }
-                //});
-            }
-        });
-    }
+
     // #endregion
     // #region html injection
     function CreateAssignClassesToStudentGroupsOverlay(studentGroupId, studentGroupName, teamId) {
@@ -528,6 +501,7 @@ $(document).ready(function () {
         });
 
         PopulateClassesArray();
+        console.log(allClasses);
 
         var $classDuration = $('<select/>', {
             id: 'classDurationDropDown',
@@ -597,13 +571,15 @@ $(document).ready(function () {
                 $('#classInput').val(ti.item.label);
             }
         });
+
+        LoadIncludedClasses(studentGroupId);
     }
     // #endregion
     // #endregion
 });
 
-var allClasses = [];
 var allChosenClasses = [];
+var allClasses = [];
 
 //Removes class from curriculum
 function RemoveClass(classId) {
@@ -613,8 +589,9 @@ function RemoveClass(classId) {
             element.remove();
         }
     });
-    var index = allChosenClasses.findIndex(function (element) { console.log(element); element.ClassId == classId; });
+    var index = allChosenClasses.findIndex(function (element) { element.ClassId == classId; });
     allChosenClasses.splice(index);
+    console.log("allChosenClasses");
     console.log(allChosenClasses);
 }
 
@@ -624,17 +601,14 @@ function SaveAddedClasses() {
     if (studentGroupId && allChosenClasses.length > 0) {
         var classDataToSend = [];
         allChosenClasses.forEach(function (cls) {
-            console.log(cls);
             var newClass = { ClassId: cls.ClassId, Duration: cls.Duration, TeamId: cls.TeamId, StudentGroupId: cls.StudentGroupId };
             classDataToSend.push(newClass);
         });
-        console.log(classDataToSend);
         $.ajax({
             type: 'POST',
             url: '/Assignment/AssignStudentGroups/',
             data: { ClassData: classDataToSend },
             success: function (result) {
-                console.log(result);
                 if (result > 0) {
                     $('#messageBoxAssignClasses').html(generateFormMessage("success", result + " kurs/kurser har blivit tillagda.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
                     $('#currentStudentGroup').empty();
@@ -646,24 +620,42 @@ function SaveAddedClasses() {
     }
 }
 
-function AddClassToCurriculum() {
+function AddClassToCurriculum(newClass) {
     //Get data
-    className = $('#classInput').val();
-    var cls = $('#classInput').val();
-    console.log(cls);
-    if (cls) {
-        var index = allClasses.findIndex(function (element) { return element.label == cls; });
-        var classId = allClasses[index].value;
-        console.log('classId: ' + classId);
+    if (newClass) {
+        var className = newClass.className;
+        var classId = newClass.classId;
+        var duration = newClass.duration;
+        var teamId = newClass.teamId;
+    } else {
+        var className = $('#classInput').val();
+        if (className) {
+            var index = allClasses.findIndex(function (element) { console.log(element); return element.label == className; });
+            if (index != -1) {
+                var classId = allClasses[index].value;
+            } else {
+                $('#messageBoxAssignClasses').html(generateFormMessage("error", "Du måste välja en kurs från listan.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+                return;
+            }
+        }
+        var duration = $('#classDurationDropDown').val();
+        var teamId = $('#addClassButton').attr('data-team-id');
     }
-    var duration = $('#classDurationDropDown').val();
+
+    //Get StudentGroup info from button
     var studentGroupId = $('#addClassButton').attr('data-studentGroupId');
     var studentGroupName = $('#addClassButton').attr('data-studentGroupName');
-    var teamId = $('#addClassButton').attr('data-team-id');
-    console.log(teamId);
 
     //Check that the user has input a valid class
-    if (allClasses.findIndex(function (element) { return element.label == className; }) !== -1) {
+    for (var c in allClasses) {
+        if (c.label == className) {
+            console.log(c);
+        }
+    }
+    console.log(allClasses);
+    console.log(className);
+    console.log(allClasses.findIndex(function (element) { return element.label == this; }, className));
+    if (allClasses.findIndex(function (element) { return element.label == this; }, className) != -1) {
         //Create the div to contain the included class information needed
         var $classDiv = $('<div/>', {
             class: 'classToStudentGroup',
@@ -684,8 +676,8 @@ function AddClassToCurriculum() {
             class: 'deleteAssignedClassButton'
         });
 
-        //Check if the class is in the class list
-        var index = allChosenClasses.findIndex(function (element) { console.log(element); return element.ClassId == classId; });
+        //Check if the class is in the chosen class list
+        var index = allChosenClasses.findIndex(function (element) { return element.ClassId == classId; });
         if (index == -1) {
             allChosenClasses.push({ "ClassName": className, "ClassId": classId, 'Duration': duration, 'TeamId': teamId, 'StudentGroupId': studentGroupId });
             $classDiv.append($classButton);
@@ -703,10 +695,51 @@ function AddClassToCurriculum() {
             $('#classInput').val('');
         }
     } else {
-        $('#messageBoxAssignClasses').html(generateFormMessage("error", "Du måste välja en kurs från listan.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
-        //$('#assignedClasses').html(generateFormMessage("error", "Du måste välja en klass och eller kurser att lägga till."));
+        //$('#messageBoxAssignClasses').html(generateFormMessage("error", "Du måste välja en kurs från listan.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+        $('#messageBoxAssignClasses').html(generateFormMessage("error", "Du måste välja en klass från listan."));
     }
-    console.log(allChosenClasses);
 }
 
+function LoadIncludedClasses(studentGroupId) {
+    $.ajax({
+        type: 'GET',
+        url: '/Wizard/GetIncludedClassByStudentGroupId/' + studentGroupId,
+    }).then(function (includedClasses) {
+        if (includedClasses) {
+            includedClasses.forEach(function (elem, ind) {
+                AddClassToCurriculum(elem);
+            });
+        } else {
+            $('#messageBoxAssignClasses').html(generateFormMessage("error", "Not success.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+        }
+    }, function () {
+        $('#messageBoxAssignClasses').html(generateFormMessage("error", "Nånting gick fel.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+    });
+}
+
+function PopulateClassesArray() {
+    allClasses = []; //empty array
+    $.ajax({
+        type: 'GET',
+        url: '/Assignment/GetAllClasses/',
+        success: function (classes) {
+            classes.forEach(function (cls) {
+                var newClass = { label: cls.className, value: cls.id };
+                allClasses.push(newClass);
+            });
+            //$('#classInput').autocomplete({
+            //    source: allClasses,
+            //    select: function (event, listItems) {
+            //        $('#classInput').val(listItems.item.label);
+            //        $('#classInput').attr('data-classid', listItems.item.value);
+            //        return false;
+            //    },
+            //    focus: function (event, ti) {
+            //        event.preventDefault();
+            //        $('#classInput').val(ti.item.label);
+            //    }
+            //});
+        }
+    });
+}
 //TODO : Load classes for a studentgroup

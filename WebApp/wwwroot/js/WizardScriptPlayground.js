@@ -741,10 +741,10 @@ function GetTeamById(id) {
     });
 }
 
-function GetIncludedClassById(id) {
+function (id) {
     $.ajax({
-        type: 'POST',
-        url: '/Wizard/GetIncludedClassById/' + id,
+        type: 'GET',
+        url: '/Wizard/GetIncludedClassByStudentGroupId/' + id,
         success: function (inputIsSuccess) {
             console.log(inputIsSuccess);
         }
