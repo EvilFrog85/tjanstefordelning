@@ -226,9 +226,9 @@ namespace WebApp.Controllers
             return await _context.AssignClassToTeacher(pid, cid);
         }
         [HttpPost]
-        internal async Task<bool> RemoveTeacherFromIncludedClass(int cid)
+        internal async Task<bool> RemoveTeacherFromIncludedClass(int id)
         {
-            return await _context.RemoveTeacherFromIncludedClass(cid);
+            return await _context.RemoveTeacherFromIncludedClass(id);
         }
         [HttpGet]
         internal async Task<ClassToPersonVM[]> GetAllUnassignedClassesByPersonnelId(int id)

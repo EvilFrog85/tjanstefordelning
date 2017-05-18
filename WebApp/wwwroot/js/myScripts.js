@@ -40,7 +40,7 @@ $(document).ready(function () {
         }
 
         else if (target == "navBomb") {
-            alert("Vet du verkligen vad du gÃ¶r nu?");
+            alert("Vet du verkligen vad du gör nu?");
         }
     });
     /*
@@ -175,7 +175,7 @@ $(document).ready(function () {
                     return;
             }
 
-            //alert("GenomfÃ¶r uppdatering");
+            //alert("Genomför uppdatering");
 
             if (target == "teamCrud") {
                 //alert("Uppdaterar team");
@@ -291,7 +291,7 @@ $(document).ready(function () {
                 GetAllSubjects();
 
             GetPersonToEdit(itemId);
-            // Byter ut spar-knappen mot en uppdatera-knapp och ändrar funktionen som kallas. Kom ihåg att byta tillbaka efteråt / när "Add new" Ã¶ppnas.
+            // Byter ut spar-knappen mot en uppdatera-knapp och ändrar funktionen som kallas. Kom ihåg att byta tillbaka efteråt / när "Add new" öppnas.
             // ImgUrl uppdateras inte i nuläget..
             $('#addPersonnelButton').attr('onclick', 'EditPersonById(' + itemId + ')');
             $('#addPersonnelButton').text('Uppdatera');
@@ -366,25 +366,30 @@ $(document).ready(function () {
     $('#personnelMainBox').on('click', '.personnelEditButton', function () {
         var id = $(this).attr('data-id');
         var name = $(this).attr('data-name');
+
+        generatePersonnelEditBox(id, name);
+    });
+
+    function generatePersonnelEditBox(id, name) {
         $.ajax({
             type: 'GET',
             url: '/Wizard/GetPersonInfo/' + id,
             success: function (data) {
                 var isEmpty = true;
-                var $overLayData = '<h2 class="overViewName">'+ name +'</h2>';
+                var $overLayData = '<h2 class="overViewName" title="'+ name +'">' + name + '</h2>';
                 // Print competences
                 $overLayData += '<div class="overViewCompetenceBox">';
                 var obehorig = false;
                 data.competences.forEach(function (c) {
                     isEmpty = false;
-                    if(c.qualified)
+                    if (c.qualified)
                         $overLayData += '<div class="competence qualified"><p>' + c.name + '</p></div>';
                     else {
                         $overLayData += '<div class="competence"><p>' + c.name + '*</p></div>';
                         obehorig = true;
                     }
                 });
-                if(obehorig)
+                if (obehorig)
                     $overLayData += '<p>*Obehörig i ämnet.</p>';
                 $overLayData += '</div>';
 
@@ -411,7 +416,7 @@ $(document).ready(function () {
                                 if (i > 2)
                                     $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
                                 else
-                                    $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p class="delete" data-id="' + w.classId + '"></p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                                    $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p class="delete" data-pid="'+ id +'" data-name="'+ name +'" data-type="pers" data-id="' + w.classId + '"></p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
                                 counter++;
                                 if (i == times) {
                                     $overLayData += '<div class="personnelVtBox"></div>';
@@ -420,15 +425,15 @@ $(document).ready(function () {
                             }
                         }
                         else if (duration == 1) {
-                             if(i == times)
-                                $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p class="delete" data-id="' + w.classId + '"></p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                            if (i == times)
+                                $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p class="delete" data-type="pers" data-pid="' + id + '" data-name="' + name +'" data-id="' + w.classId + '"></p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
                             else
                                 $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
                             counter++;
                         }
                         else {
-                            if(i == times)
-                                $overLayData += '<div class="personnelVtBox"><div class="HtVtLeftSide"><p class="delete" data-id="' + w.classId + '"></p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                            if (i == times)
+                                $overLayData += '<div class="personnelVtBox"><div class="HtVtLeftSide"><p class="delete" data-type="pers" data-pid="' + id + '" data-name="' + name +'" data-id="' + w.classId + '"></p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
                             else
                                 $overLayData += '<div class="personnelVtBox"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
                             counter++;
@@ -439,7 +444,7 @@ $(document).ready(function () {
                         }
                     }
                 });
-
+                // Print aux assignments
                 data.auxAssignments.forEach(function (aux) {
                     isEmpty = false;
                     var times = aux.points / 50;
@@ -454,27 +459,27 @@ $(document).ready(function () {
                                 counter++;
                             }
                             else {
-                                if(i > 2)
+                                if (i > 2)
                                     $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
                                 else
-                                    $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="delete" data-id="' + aux.id + '"></p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                                    $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="delete" data-pid="' + id + '" data-name="' + name +'" data-type="aux" data-id="' + aux.id + '"></p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
                                 counter++;
                                 if (i == times) {
-                                     $overLayData += '<div class="personnelVtBox personnelAuxColor"></div>';
+                                    $overLayData += '<div class="personnelVtBox personnelAuxColor"></div>';
                                     counter++;
                                 }
                             }
                         }
                         else if (duration == 1) {
-                            if(i == times)
-                                $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="delete" data-id="' + aux.id + '"></p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                            if (i == times)
+                                $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="delete" data-pid="' + id + '" data-name="' + name +'" data-type="aux" data-id="' + aux.id + '"></p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
                             else
                                 $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
                             counter++;
                         }
                         else {
-                            if(i == times)
-                                $overLayData += '<div class="personnelVtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="delete" data-id="' + aux.id + '"></p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                            if (i == times)
+                                $overLayData += '<div class="personnelVtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="delete" data-pid="' + id + '" data-name="' + name +'" data-type="aux" data-id="' + aux.id + '"></p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
                             else
                                 $overLayData += '<div class="personnelVtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
                             counter++;
@@ -493,20 +498,30 @@ $(document).ready(function () {
                 $('#mainOverLay').fadeToggle();
             }
         });
-    });
+    }
 
     // Remove techer from included_class
     $('#mainOverLayContent').on('click', '.delete', function () {
         var classId = $(this).attr('data-id');
-        
-        $.ajax({
-            type: 'GET',
-            url: '/Wizard/RemoveTeacherFromIncludedClass/' + classId,
-            success: function (data) {
+        var type = $(this).attr('data-type');
+        var name = $(this).attr('data-name');
+        var pid = $(this).attr('data-pid');
 
-            }
-        });
+        if (type == "pers"){
+            $.ajax({
+                type: 'POST',
+                url: '/Wizard/RemoveTeacherFromIncludedClass/' + classId,
+                success: function () {
+                    generatePersonnelEditBox(pid, name);
+                }
+            });
+        }
+        else if (type == "aux") {
+            // TODO - Fixa delete för auxiliary_assignment
+        }
+
     });
+
 
     $('#closeMainOverLay').on('click', function () {
         $('#mainOverLay').fadeToggle();
@@ -588,7 +603,7 @@ $(document).ready(function () {
         $($classDuration).append('<option value="1">HT</option>');
         $($classDuration).append('<option value="2">VT</option>');
 
-        //TODO : kursen läses Ã¶ver fler än 2 terminer lÃ¶s om du vill
+        //TODO : kursen läses över fler än 2 terminer lös om du vill
 
         //lots of divs
         var $semestersDiv = $('<div/>', { id: 'semestersDiv' }).append('<h2>Vald klass: ' + studentGroupName + '</h2>');
