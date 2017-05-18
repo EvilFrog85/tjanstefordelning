@@ -239,7 +239,8 @@ namespace WebApp.Models.Entities
             var auxAssignments = person.AuxiliaryAssignment.Select(p => new AuxiliaryAssignmentVM
             {
                 Name = p.Name,
-                Points = p.Points
+                Points = p.Points,
+                Duration = p.Duration
             }).ToArray();
 
             return new CompetencesIncludedClassesVM
@@ -484,11 +485,20 @@ namespace WebApp.Models.Entities
 
         internal async Task<int> AssignClassesToStudentGroupAsync(ClassesToStudentGroupVM viewModel, string id)
         {
-
-            //TODO : Check if class and student group already exists in database
+            //get student group id
+            int? studentGroupId = viewModel.ClassData.First().StudentGroupId;
+            //Filter out classes that already is inserted in the database
             var filteredClasses = viewModel.ClassData
-                .Where(cd => !IncludedClass.Any(ic => cd.ClassId == ic.ClassId && cd.StudentGroupId == ic.StudentGroupId)).ToArray();
+                .Where(cd => !IncludedClass.Where(ic => ic.StudentGroupId == studentGroupId).Any(ic => cd.ClassId == ic.ClassId)).ToArray();
             int userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
+
+            //Check if any classes has been removed
+            
+            var currentClasses = viewModel.ClassData.Select(cd => cd.ClassId);
+            var classesToRemove = IncludedClass
+                .Where(ic => ic.StudentGroupId == studentGroupId)
+                .Where(ic => !currentClasses.Contains(ic.ClassId));
+            
             var includedClasses = filteredClasses.Select(c => new IncludedClass
             {
                 Duration = c.Duration,
@@ -501,8 +511,14 @@ namespace WebApp.Models.Entities
             {
                 await IncludedClass.AddAsync(ic);
             }
-            int numberOfClassesAdded = await SaveChangesAsync();
-            return numberOfClassesAdded;
+
+            foreach (var ic in classesToRemove)
+            {
+                IncludedClass.Remove(ic);
+            }
+
+            int numberOfRowsAffected = await SaveChangesAsync();
+            return numberOfRowsAffected;
         }
 
         internal async Task<IncludedClassCreateVM[]> GetAllIncludedClasses(string id)

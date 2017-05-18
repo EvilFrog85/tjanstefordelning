@@ -83,6 +83,7 @@ namespace WebApp.Controllers
             var userId = _userManager.GetUserId(User);
             return await _context.GetAllPersonnelToOverView(userId);
         }
+
         [HttpGet]
         public async Task<PersonnelWizardListVM[]> GetAllPersonnelToWizardList()
         {

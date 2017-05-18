@@ -280,6 +280,7 @@ function AddNewPersonnel() {
             $('#messageBoxPersonnelCrud').empty();
             var personnelAddMessage = generateFormMessage("Success", "Personen blev tillagd.");
             $('#messageBoxPersonnelCrud').append(personnelAddMessage);
+            isGeneratedPersonnelHtml = false;
         }
     }, function () {
         $('#messageBoxPersonnelCrud').empty();
@@ -324,6 +325,7 @@ function EditPersonById(id) {
 
                 }
             });
+            isGeneratedPersonnelHtml = false;
         }
     });
 }
