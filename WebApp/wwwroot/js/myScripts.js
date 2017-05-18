@@ -1,17 +1,44 @@
 $(document).ready(function () {
-    function stickyFooter() {
-        $('main').css({ 'paddingBottom': $('footer').height() });
-        $('#innerFooter').css({ 'lineHeight': $('footer').height() - 20 + 'px' });
-    }
-    stickyFooter();
-    $('#hamburgerBtn').on('click', function () {
-        return $('header nav').stop().slideToggle();
-    });
-    $(window).resize(function () {
-        if ($(window).width() > 768) {
-            $('header nav').removeAttr('style');
+    $('.navItem').on('click', function () {
+        var target = $(this).attr('id');
+        var active = $('.mainNavActive').attr('id');
+
+        if (target == "navHome" && active != target) {
+            $('.navItem').removeClass('mainNavActive');
+            $('#navHome').addClass('mainNavActive');
+            $('.mainBoxItem').hide();
+            $('#homeMainBox').fadeToggle();
         }
-        stickyFooter();
+
+        // When wizard is opened
+        else if (target == "navWizard") {
+            //Get data for list - first because of possible async-delay
+            updateLists();
+            $('#overLay').fadeToggle("fast");
+            // Hide body-scroll
+            $('html').css('overflow', 'hidden');
+            // Show data for team and add description
+            $('#teamCrud').show();
+            $('#teamCrudDesc').show();
+        }
+
+        else if (target == "navClass" && active != target) {
+            $('.navItem').removeClass('mainNavActive');
+            $('#navClass').addClass('mainNavActive');
+            $('.mainBoxItem').hide();
+            $('#classesMainBox').fadeToggle();
+        }
+
+        else if (target == "navPersonnel" && active != target) {
+            $('.navItem').removeClass('mainNavActive');
+            $('#navPersonnel').addClass('mainNavActive');
+            $('.mainBoxItem').hide();
+            $('#personnelMainBox').fadeToggle();
+        }
+
+        else if (target == "navBomb") {
+            alert("Vet du verkligen vad du gör nu?");
+        }
     });
     /*
     CreateIncludedClassInput();
@@ -24,17 +51,6 @@ $(document).ready(function () {
     CreateInputCompetence();
     CreateAssignClassesToStudentGroupsOverlay();
     /* Wizard, innerLayOut Controlls */
-    // When wizard is opened
-    $('.wizard').on('click', function () {
-        //Get data for list - first because of possible async-delay
-        updateLists();
-        $('#overLay').fadeToggle("fast");
-        // Hide body-scroll
-        $('html').css('overflow', 'hidden');
-        // Show data for team and add description
-        $('#teamCrud').show();
-        $('#teamCrudDesc').show();
-    });
 
     // When wizard is exited
     $('#exitWizard').on('click', function () {
@@ -357,18 +373,18 @@ $(document).ready(function () {
                     var newClass = { label: cls.className, value: cls.id };
                     allClasses.push(newClass);
                 });
-                $('#classInput').autocomplete({
-                    source: allClasses,
-                    select: function (event, listItems) {
-                        $('#classInput').val(listItems.item.label);
-                        $('#classInput').attr('data-classid', listItems.item.value);
-                        return false;
-                    },
-                    focus: function (event, ti) {
-                        event.preventDefault();
-                        $('#classInput').val(ti.item.label);
-                    }
-                });
+                //$('#classInput').autocomplete({
+                //    source: allClasses,
+                //    select: function (event, listItems) {
+                //        $('#classInput').val(listItems.item.label);
+                //        $('#classInput').attr('data-classid', listItems.item.value);
+                //        return false;
+                //    },
+                //    focus: function (event, ti) {
+                //        event.preventDefault();
+                //        $('#classInput').val(ti.item.label);
+                //    }
+                //});
             }
         });
     }
@@ -414,15 +430,11 @@ $(document).ready(function () {
             onclick: 'SaveAddedClasses()',
             text: 'Spara',
             style: 'align-self: center'
-
         });
 
         $($classDuration).append('<option value="0" selected="selected">Hela läsåret</option>');
         $($classDuration).append('<option value="1">HT</option>');
         $($classDuration).append('<option value="2">VT</option>');
-        //$($classDuration).append('<option value="4">4</option>');
-        //$($classDuration).append('<option value="5">5</option>');
-        //$($classDuration).append('<option value="6">6</option>');
 
         //TODO : kursen läses över fler än 2 terminer lös om du vill
 
@@ -439,7 +451,6 @@ $(document).ready(function () {
         $semestersDiv
             .append($headline)
             .append($classInput)
-            //.append('<label style="margin-left:10%" for="classDurationDropDown">Antal terminer kursen läses över</label>')
             .append($classDuration)
             .append($submitBtn)
             .append($fullYearDiv)
@@ -448,8 +459,23 @@ $(document).ready(function () {
             .append($('<div/>', { id: 'messageBoxAssignClasses' }));
 
         $('#overlayAssignClasses').append($semestersDiv);
-    }
 
+        //delay for how fast the list will update when user stops typing
+        $('#classInput').autocomplete({ delay: 500 });
+        //Set up autocomplete
+        $('#classInput').autocomplete({
+            source: allClasses,
+            select: function (event, listItems) {
+                $('#classInput').val(listItems.item.label);
+                $('#classInput').attr('data-classid', listItems.item.value);
+                return false;
+            },
+            focus: function (event, ti) {
+                event.preventDefault();
+                $('#classInput').val(ti.item.label);
+            }
+        });
+    }
     // #endregion
     // #endregion
 });
@@ -457,6 +483,7 @@ $(document).ready(function () {
 var allClasses = [];
 var allChosenClasses = [];
 
+//Removes class from curriculum
 function RemoveClass(classId) {
     var res = $('.classToStudentGroup');
     res.each(function (index, element) {
@@ -469,12 +496,9 @@ function RemoveClass(classId) {
     console.log(allChosenClasses);
 }
 
+//Called when classes should be saved to database
 function SaveAddedClasses() {
-    console.log('HÄR BÖRJAR SKITEN');
-    console.log(allChosenClasses);
     var studentGroupId = $('#addClassButton').attr('data-studentGroupId');
-
-
     if (studentGroupId && allChosenClasses.length > 0) {
         var classDataToSend = [];
         allChosenClasses.forEach(function (cls) {
@@ -543,8 +567,6 @@ function AddClassToCurriculum() {
         if (index == -1) {
             allChosenClasses.push({ "ClassName": className, "ClassId": classId, 'Duration': duration, 'TeamId': teamId, 'StudentGroupId': studentGroupId });
             $classDiv.append($classButton);
-            //$classDiv.append($classText);
-
             if (duration == 0) {
                 $classDiv.appendTo('#fullYearHTDiv, #fullYearVTDiv');
             } else if (duration == 1) {
@@ -564,3 +586,5 @@ function AddClassToCurriculum() {
     }
     console.log(allChosenClasses);
 }
+
+//TODO : Load classes for a studentgroup
