@@ -64,6 +64,8 @@ $(document).ready(function () {
         $('#wizardBoxItemDesc div').hide();
         $('#overLay').fadeToggle("fast");
         $('html').css('overflow', 'auto');
+        isGeneratedPersonnelHtml = false;
+        generatePersonnelHtml();
     });
 
     // When menu-item in wizard is pushed
@@ -346,6 +348,7 @@ $(document).ready(function () {
     var isGeneratedPersonnelHtml;
     function generatePersonnelHtml() {
         if (!isGeneratedPersonnelHtml) {
+            $('#personnelMainBox').empty();
             $.ajax({
                 type: 'GET',
                 url: '/Wizard/GetAllPersonnelToOverView',
@@ -355,7 +358,7 @@ $(document).ready(function () {
                         if (e.assignedPoints > 0)
                             var assignedPointsPercentage = (e.assignedPoints / 6).toFixed(1);
                         var contractType = contractEnum[e.contract];
-                        $('#personnelMainBox').append('<div class="personnelBox"><div class="personnelBoxTop"><div><img src="/img/staff_pictures/' + e.imageUrl + '.jpg" alt="' + e.firstName + ' ' + e.lastName + '" /></div><div><button class="personnelEditButton" data-id="' + e.id + '" data-name="'+ e.firstName + ' ' + e.lastName +'">Kurser & behörighet</button><p class="personnelTeamName">' + e.teamName + '</p><p class="personnelContract">' + contractType + '</p></div></div><div class="personnelBoxCenter"><p>' + e.signature + '</p><p>' + e.firstName + ' ' + e.lastName + '</p></div><div class="personnelBoxBottom"><div class="personnelMeterBox"><p>Tjänstegrad: ' + e.availablePoints + '%</p><div class="personnelAvailableMeter"><span style="width: ' + e.availablePoints + '%;"></span></div></div><div class="personnelMeterBox"><p>Tilldelat: ' + assignedPointsPercentage + '%</p><div class="personnelAssignedMeter"><span style="width: ' + assignedPointsPercentage + '%;"></span></div></div></div><div class="personnelCompetenceBox"></div></div>');
+                        $('#personnelMainBox').append('<div class="personnelBox"><div class="personnelBoxTop"><div><img src="/img/staff_pictures/' + e.imageUrl + '.jpg" alt="' + e.firstName + ' ' + e.lastName + '" /></div><div><button class="personnelEditButton" data-id="' + e.id + '" data-name="' + e.firstName + ' ' + e.lastName + '">Kurser & behörighet</button><p class="personnelTeamName">' + e.teamName + '</p><p class="personnelContract">' + contractType + '</p></div></div><div class="personnelBoxCenter"><p>' + e.signature + '</p><p>' + e.firstName + ' ' + e.lastName + '</p></div><div class="personnelBoxBottom"><div class="personnelMeterBox"><p>Tjänstegrad: ' + e.availablePoints + '%</p><div class="personnelAvailableMeter"><span style="width: ' + e.availablePoints + '%;"></span></div></div><div class="personnelMeterBox"><p>Tilldelat: ' + assignedPointsPercentage + '%</p><div class="personnelAssignedMeter"><span style="width: ' + assignedPointsPercentage + '%;"></span></div></div></div><div class="personnelCompetenceBox"></div></div>');
                     });
                 }
             });
@@ -376,7 +379,7 @@ $(document).ready(function () {
             url: '/Wizard/GetPersonInfo/' + id,
             success: function (data) {
                 var isEmpty = true;
-                var $overLayData = '<h2 class="overViewName" title="'+ name +'">' + name + '</h2>';
+                var $overLayData = '<h2 class="overViewName">' + name + '</h2>';
                 // Print competences
                 $overLayData += '<div class="overViewCompetenceBox">';
                 var obehorig = false;
@@ -557,6 +560,18 @@ $(document).ready(function () {
     // #endregion
 
     // #region html injection
+    $('#classesMainBox').on('click', '.classEditButton', function () {
+        var id = $(this).attr('data-sgid');
+        var name = $(this).attr('data-sgname');
+        var teamId = $(this).attr('data-teamid');
+
+
+
+
+        $('#mainOverLayContent').html($overLayData);
+        $('#mainOverLay').fadeToggle();
+    });
+
     function CreateAssignClassesToStudentGroupsOverlay(studentGroupId, studentGroupName, teamId) {
         var $target = $('#overlayAssignClasses');
         var studentGroupName = "Te17a";//studentGroupName;
@@ -660,8 +675,8 @@ function RemoveClass(classId) {
             element.remove();
         }
     });
-    allChosenClasses = jQuery.grep(allChosenClasses, function (elem, index) { return elem.ClassId != classId;} );
-    console.log("allChosenClasses");    
+    allChosenClasses = jQuery.grep(allChosenClasses, function (elem, index) { return elem.ClassId != classId; });
+    console.log("allChosenClasses");
     console.log(allChosenClasses);
 }
 
@@ -694,7 +709,7 @@ function AddClassToCurriculum(newClass) {
     //Get data
     var index;
     if (newClass) {
-        var className = newClass.className;
+        var className = newClass.className + " (" + newClass.points + ")";
         var classId = newClass.classId;
         var duration = newClass.duration;
         var teamId = newClass.teamId;
@@ -702,7 +717,7 @@ function AddClassToCurriculum(newClass) {
     } else {
         var className = $('#classInput').val();
         if (className) {
-             index = allClasses.findIndex(function (element) { return element.label == className; });
+            index = allClasses.findIndex(function (element) { return element.label == className; });
             if (index != -1) {
                 var classId = allClasses[index].value;
             } else {
@@ -788,21 +803,9 @@ function PopulateClassesArray() {
         url: '/Assignment/GetAllClasses/',
         success: function (classes) {
             classes.forEach(function (cls) {
-                var newClass = { label: cls.className, value: cls.id };
+                var newClass = { label: cls.className + " (" + cls.points + ")", value: cls.id };
                 allClasses.push(newClass);
             });
-            //$('#classInput').autocomplete({
-            //    source: allClasses,
-            //    select: function (event, listItems) {
-            //        $('#classInput').val(listItems.item.label);
-            //        $('#classInput').attr('data-classid', listItems.item.value);
-            //        return false;
-            //    },
-            //    focus: function (event, ti) {
-            //        event.preventDefault();
-            //        $('#classInput').val(ti.item.label);
-            //    }
-            //});
         }
     });
 }
