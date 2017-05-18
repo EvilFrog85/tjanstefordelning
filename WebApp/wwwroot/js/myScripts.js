@@ -27,6 +27,7 @@ $(document).ready(function () {
             $('#navClass').addClass('mainNavActive');
             $('.mainBoxItem').hide();
             $('#classesMainBox').fadeToggle();
+            GenerateStudentGroups();
         }
 
         else if (target == "navPersonnel" && active != target) {
@@ -341,7 +342,7 @@ $(document).ready(function () {
         }
     });
 
-
+            
     // #region Genereate html for personnel-page
     var isGeneratedPersonnelHtml;
     function generatePersonnelHtml() {
@@ -391,55 +392,101 @@ $(document).ready(function () {
 
                 var headersBool = true;
                 // Print available work
+                var counter = 0;
                 data.includedClasses.forEach(function (w) {
                     isEmpty = false;
                     if (headersBool)
                         $overLayData += '<div class="personnelHtVtHeader"><p>HT</p><p>VT</p></div>';
                     headersBool = false;
                     var times = w.points / 50;
-                    $overLayData += '<div class="personnelHtVt">';
+                    counter = 0;
                     for (var i = 1; i <= times; i++) {
+                        if (counter % 2 == 0) {
+                            $overLayData += '<div class="personnelHtVt">';
+                        }
                         if (w.duration == 0) {
-                            if (i % 2 == 0)
-                                $overLayData += '<div class="personnelVtBox"><div class="HtVtLeftSide"><p>' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                            if (i % 2 == 0) {
+                                $overLayData += '<div class="personnelVtBox"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                                counter++;
+                            }
                             else {
-                                $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p>' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
-                                if (i == times)
+                                if (i > 2)
+                                    $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                                else
+                                    $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p class="delete" data-id="' + w.classId + '"></p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                                counter++;
+                                if (i == times) {
                                     $overLayData += '<div class="personnelVtBox"></div>';
+                                    counter++;
+                                }
                             }
                         }
                         else if (duration == 1) {
-                            $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p>' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                            if(i == times)
+                                $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p class="delete" data-id="' + w.classId + '"></p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                            else
+                                $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                            counter++;
                         }
                         else {
-                            $overLayData += '<div class="personnelVtBox"><div class="HtVtLeftSide"><p>' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                            if(i == times)
+                                $overLayData += '<div class="personnelVtBox"><div class="HtVtLeftSide"><p class="delete" data-id="' + w.classId + '"></p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                            else
+                                $overLayData += '<div class="personnelVtBox"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                            counter++;
+                        }
+                        if (counter % 2 == 0 || i == times) {
+                            $overLayData += '</div>';
+                            counter = 0;
                         }
                     }
-                    $overLayData += '</div>';
                 });
 
                 data.auxAssignments.forEach(function (aux) {
                     isEmpty = false;
                     var times = aux.points / 50;
-                    $overLayData += '<div class="personnelHtVt">';
+                    counter = 0;
                     for (var i = 1; i <= times; i++) {
+                        if (counter % 2 == 0) {
+                            $overLayData += '<div class="personnelHtVt">';
+                        }
                         if (aux.duration == 0) {
-                            if (i % 2 == 0)
-                                $overLayData += '<div class="personnelVtBox personnelAuxColor"><div class="HtVtLeftSide"><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                            if (i % 2 == 0) {
+                                $overLayData += '<div class="personnelVtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                                counter++;
+                            }
                             else {
-                                $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
-                                if (i == times)
+                                if(i > 2)
+                                    $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                                else
+                                    $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="delete" data-id="' + aux.id + '"></p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                                counter++;
+                                if (i == times) {
                                     $overLayData += '<div class="personnelVtBox personnelAuxColor"></div>';
+                                    counter++;
+                                }
                             }
                         }
                         else if (duration == 1) {
-                            $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                            if(i == times)
+                                $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="delete" data-id="' + aux.id + '"></p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                            else
+                                $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                            counter++;
                         }
                         else {
-                            $overLayData += '<div class="personnelVtBox personnelAuxColor"><div class="HtVtLeftSide"><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                            if(i == times)
+                                $overLayData += '<div class="personnelVtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="delete" data-id="' + aux.id + '"></p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                            else
+                                $overLayData += '<div class="personnelVtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                            counter++;
+                        }
+                        if (counter % 2 == 0 || i == times) {
+                            $overLayData += '</div>';
+                            counter = 0;
                         }
                     }
-                    $overLayData += '</div>';
+                    
                 });
                 if (isEmpty)
                     $overLayData += '<p>Ingen information om personen är tillagd.</p>';
@@ -450,6 +497,20 @@ $(document).ready(function () {
             }
         });
     });
+
+    // Remove techer from included_class
+    $('#mainOverLayContent').on('click', '.delete', function () {
+        var classId = $(this).attr('data-id');
+        
+        $.ajax({
+            type: 'GET',
+            url: '/Wizard/RemoveTeacherFromIncludedClass/' + classId,
+            success: function (data) {
+
+            }
+        });
+    });
+    
 
     $('#closeMainOverLay').on('click', function () {
         $('#mainOverLay').fadeToggle();
@@ -727,12 +788,110 @@ function PopulateClassesArray() {
         type: 'GET',
         url: '/Assignment/GetAllClasses/',
         success: function (classes) {
-            console.log(classes);
             classes.forEach(function (cls) {
                 var newClass = { label: cls.className + " (" + cls.points + ")", value: cls.id };
                 allClasses.push(newClass);
             });
         }
     });
-    console.log(allClasses);
+}
+//TODO : Load classes for a studentgroup
+//TODO : Load classes for a studentgroup
+
+//SOFIA
+function GenerateStudentGroups() {
+
+    $.ajax({
+        type: 'GET',
+        url: '/Wizard/GetAllStudentGroups',
+        success: function (data) {
+            data.forEach(function (g) {
+                var htBox = $('<div/>', { class: 'htBox', id: 'htBox' + g.name });
+                var vtBox = $('<div/>', { class: 'vtBox', id: 'vtBox' + g.name });
+
+
+                $('#classesMainBox')
+                    .append($('<div/>', { class: 'classBox', id: 'classBox' + g.name }));
+                $('#classBox' + g.name)
+                    .append($('<h3/>', { text: g.name, class: 'classNameBox' }))
+                    .append($('<button/>', { class: 'classEditButton', text: 'Lägg till kurser' }))
+                    .append($('<div/>', { class: 'allClassesBox', id: 'allClassesBox' + g.name }));
+
+                $('#allClassesBox' + g.name)
+                    .append($('<div/>', { class: 'allClassesHeader', id: 'allClassesHeader' + g.name }))
+                    .append($('<div>', { class: 'fullSemesterBox', id: 'fullSemesterBox' + g.name }))
+                    .append($('<div>', { class: 'halfSemesterBox', id: 'halfSemesterBox' + g.name }));
+
+                $('#allClassesHeader' + g.name)
+                    .append('<p>HT</p><p>VT</p>');
+
+                //$('#fullSemesterBox' + g.name)
+                //    .append($('<div/>', { class: 'studentGroupClass', id: 'studentGroupClass' + g.name }));
+
+                $('#halfSemesterBox' + g.name)
+                    .append(htBox)
+                    .append(vtBox);
+                $.ajax({
+                    type: 'GET',
+                    url: '/Wizard/GetIncludedClassByStudentGroupId/' + g.id,
+                }).then(function (c) {
+                    c.forEach(function (d) {
+
+                        if (d.className.length > 20) {
+                            d.className = d.className.slice(0, 20);
+                            d.className += '..';
+                        }
+
+                        if (d.duration == 0) {
+                            var group = $('<div/>', { class: 'studentGroupClass', id: 'studentGroupClass' + d.id });
+                            var htFullBox = $('<div/>', { class: 'htFullBox', id: 'htFullBox' + d.id });
+                            var vtFullBox = $('<div/>', { class: 'vtFullBox', id: 'vtFullBox' + d.id });
+
+                            htFullBox
+                                .append($('<p/>', { text: d.className }));
+                            vtFullBox
+                                .append($('<p/>', { text: d.className }));
+                            if (d.personnelSignature) {
+                                vtFullBox
+                                    .append($('<p/>', { text: d.personnelSignature, class: 'personnelSignatureClass' }));
+                            }
+                            group
+                                .append(htFullBox)
+                                .append(vtFullBox);
+                            $('#fullSemesterBox' + g.name).append(group);
+                        }
+                        else if (d.duration == 1) {
+                            var halfClass = $('<div/>', { class: 'studentGroupHalfClass', id: 'studentGroupHalfClass' + d.id });
+                            
+                            halfClass
+                                .append($('<p/>', { text: d.className }));
+                            if (d.personnelSignature) {
+                                halfClass
+                                    .append($('<p/>', { text: d.personnelSignature, class: 'personnelSignatureClass' }));
+                            }
+                            htBox
+                                .append(halfClass);
+                            //$('#halfSemesterBox' + g.name)
+                            //    .append(htBox);
+                        }
+                        else {
+                            var halfClass = $('<div/>', { class: 'studentGroupHalfClass', id: 'studentGroupHalfClass' + d.id });
+                            
+                            halfClass
+                                .append($('<p/>', { text: d.className }));
+                            if (d.personnelSignature) {
+                                halfClass
+                                    .append($('<p/>', { text: d.personnelSignature, class: 'personnelSignatureClass' }));
+                            }
+                            vtBox
+                                .append(halfClass)
+                        }
+
+                    })
+                });
+            });
+        }
+    });
+
+
 }
