@@ -27,6 +27,7 @@ $(document).ready(function () {
             $('#navClass').addClass('mainNavActive');
             $('.mainBoxItem').hide();
             $('#classesMainBox').fadeToggle();
+            GenerateStudentGroups();
         }
 
         else if (target == "navPersonnel" && active != target) {
@@ -588,3 +589,37 @@ function AddClassToCurriculum() {
 }
 
 //TODO : Load classes for a studentgroup
+
+//SOFIA
+function GenerateStudentGroups() {
+
+    $.ajax({
+        type: 'GET',
+        url: '/Wizard/GetAllStudentGroups',
+        success: function (data) {
+            data.forEach(function (g) {
+                console.log(g.name);
+                $('#classesMainBox')
+                    .append($('<div/>', { class: 'classBox', id: 'classBox' + g.name }));
+                $('#classBox' + g.name)
+                    .append($('<h3/>', { text: g.name, class: 'classNameBox' }))
+                    .append($('<button/>', { class: 'classEditButton', text: 'Lägg till kurser' }));
+
+                ajax({
+                    type: 'GET',
+
+                })
+                //    .append($('<div/>', { class: 'allClassesBox', id: '#allClassesBox' + g.name }))
+                //    .append($('<div/>', { class: 'allClassesHeader', id: '#allClassesHeader' + g.name }));
+                ////$('#allClassesBox' + g.name)
+                //$('#allClassesHeader' + g.name)
+                //    .append($('<p/>', { text: 'Hello', class: 'allClassesHeader' }));
+                //    .append($('<div/>'), { class: 'fullSemesterBox' });
+
+
+            });
+        }
+    });
+
+
+}
