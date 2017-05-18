@@ -31,6 +31,7 @@ $(document).ready(function () {
         }
 
         else if (target == "navPersonnel" && active != target) {
+            generatePersonnelHtml();
             $('.navItem').removeClass('mainNavActive');
             $('#navPersonnel').addClass('mainNavActive');
             $('.mainBoxItem').hide();
@@ -289,8 +290,8 @@ $(document).ready(function () {
                 GetAllSubjects();
 
             GetPersonToEdit(itemId);
-            // Byter ut spar-knappen mot en uppdatera-knapp och √§ndrar funktionen som kallas. Kom ih√•g att byta tillbaka efter√•t / n√§r "Add new" √∂ppnas.
-            // ImgUrl uppdateras inte i nul√§get..
+            // Byter ut spar-knappen mot en uppdatera-knapp och ‰ndrar funktionen som kallas. Kom ihÂg att byta tillbaka efterÂt / n‰r "Add new" √∂ppnas.
+            // ImgUrl uppdateras inte i nul‰get..
             $('#addPersonnelButton').attr('onclick', 'EditPersonById(' + itemId + ')');
             $('#addPersonnelButton').text('Uppdatera');
         }
@@ -339,26 +340,120 @@ $(document).ready(function () {
         }
     });
 
-    generatePersonnelHtml();
-
+            
     // #region Genereate html for personnel-page
+    var isGeneratedPersonnelHtml;
     function generatePersonnelHtml() {
+        if (!isGeneratedPersonnelHtml) {
+            $.ajax({
+                type: 'GET',
+                url: '/Wizard/GetAllPersonnelToOverView',
+                success: function (data) {
+                    data.forEach(function (e) {
+                        var assignedPointsPercentage = 0;
+                        if (e.assignedPoints > 0)
+                            var assignedPointsPercentage = (e.assignedPoints / 6).toFixed(1);
+                        var contractType = contractEnum[e.contract];
+                        $('#personnelMainBox').append('<div class="personnelBox"><div class="personnelBoxTop"><div><img src="/img/staff_pictures/' + e.imageUrl + '.jpg" alt="' + e.firstName + ' ' + e.lastName + '" /></div><div><button class="personnelEditButton" data-id="' + e.id + '" data-name="'+ e.firstName + ' ' + e.lastName +'">Kurser & behˆrighet</button><p class="personnelTeamName">' + e.teamName + '</p><p class="personnelContract">' + contractType + '</p></div></div><div class="personnelBoxCenter"><p>' + e.signature + '</p><p>' + e.firstName + ' ' + e.lastName + '</p></div><div class="personnelBoxBottom"><div class="personnelMeterBox"><p>Tj‰nstegrad: ' + e.availablePoints + '%</p><div class="personnelAvailableMeter"><span style="width: ' + e.availablePoints + '%;"></span></div></div><div class="personnelMeterBox"><p>Tilldelat: ' + assignedPointsPercentage + '%</p><div class="personnelAssignedMeter"><span style="width: ' + assignedPointsPercentage + '%;"></span></div></div></div><div class="personnelCompetenceBox"></div></div>');
+                    });
+                }
+            });
+            isGeneratedPersonnelHtml = true;
+        }
+    }
 
+    $('#personnelMainBox').on('click', '.personnelEditButton', function () {
+        var id = $(this).attr('data-id');
+        var name = $(this).attr('data-name');
         $.ajax({
             type: 'GET',
-            url: '/Wizard/GetAllPersonnelToOverView',
+            url: '/Wizard/GetPersonInfo/' + id,
             success: function (data) {
-                data.forEach(function (e) {
-                    var assignedPointsPercentage = 0;
-                    if (e.assignedPoints > 0)
-                        var assignedPointsPercentage = (e.assignedPoints / 6).toFixed(1);
-                    console.log(e.assignedPoints + " " + assignedPointsPercentage);
-                    var contractType = contractEnum[e.contract];
-                    $('#personnelMainBox').append('<div class="personnelBox"><div class="personnelBoxTop"><div><img src="~/img/staff_pictures/' + e.imageUrl + '.jpg" alt="' + e.firstName + ' ' + e.lastName + '" /></div><div><button class="personnelEditButton" data-id="' + e.id + '">Kurser & beh√∂righet</button><p class="personnelTeamName">' + e.teamName + '</p><p class="personnelContract">' + contractType + '</p></div></div><div class="personnelBoxCenter"><p>' + e.signature + '</p><p>' + e.firstName + ' ' + e.lastName + '</p></div><div class="personnelBoxBottom"><div class="personnelMeterBox"><p>Tj√§nstegrad: ' + e.availablePoints + '%</p><div class="personnelAvailableMeter"><span style="width: ' + e.availablePoints + '%;"></span></div></div><div class="personnelMeterBox"><p>Tilldelat: ' + assignedPointsPercentage + '%</p><div class="personnelAssignedMeter"><span style="width: ' + assignedPointsPercentage + '%;"></span></div></div></div><div class="personnelCompetenceBox"></div></div>');
+                var isEmpty = true;
+                var $overLayData = '<h2 class="overViewName">'+ name +'</h2>';
+                // Print competences
+                $overLayData += '<div class="overViewCompetenceBox">';
+                var obehorig = false;
+                data.competences.forEach(function (c) {
+                    isEmpty = false;
+                    if(c.qualified)
+                        $overLayData += '<div class="competence qualified"><p>' + c.name + '</p></div>';
+                    else {
+                        $overLayData += '<div class="competence"><p>' + c.name + '*</p></div>';
+                        obehorig = true;
+                    }
                 });
+                if(obehorig)
+                    $overLayData += '<p>*Obehˆrig i ‰mnet.</p>';
+                $overLayData += '</div>';
+
+                var headersBool = true;
+                // Print available work
+                data.includedClasses.forEach(function (w) {
+                    isEmpty = false;
+                    if (headersBool)
+                        $overLayData += '<div class="personnelHtVtHeader"><p>HT</p><p>VT</p></div>';
+                    headersBool = false;
+                    var times = w.points / 50;
+                    $overLayData += '<div class="personnelHtVt">';
+                    for (var i = 1; i <= times; i++) {
+                        if (w.duration == 0) {
+                            if (i % 2 == 0)
+                                $overLayData += '<div class="personnelVtBox"><div class="HtVtLeftSide"><p>' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                            else{
+                                $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p>' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                                if (i == times)
+                                    $overLayData += '<div class="personnelVtBox"></div>';
+                            }
+                        }
+                        else if (duration == 1) {
+                            $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p>' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                        }
+                        else {
+                            $overLayData += '<div class="personnelVtBox"><div class="HtVtLeftSide"><p>' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                        }
+                    }
+                    $overLayData += '</div>';
+                });
+
+                data.auxAssignments.forEach(function (aux) {
+                    isEmpty = false;
+                    var times = aux.points / 50;
+                    $overLayData += '<div class="personnelHtVt">';
+                    for (var i = 1; i <= times; i++) {
+                        if (aux.duration == 0) {
+                            if (i % 2 == 0)
+                                $overLayData += '<div class="personnelVtBox personnelAuxColor"><div class="HtVtLeftSide"><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                            else {
+                                $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                                if (i == times)
+                                    $overLayData += '<div class="personnelVtBox personnelAuxColor"></div>';
+                            }
+                        }
+                        else if (duration == 1) {
+                            $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                        }
+                        else {
+                            $overLayData += '<div class="personnelVtBox personnelAuxColor"><div class="HtVtLeftSide"><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                        }
+                    }
+                    $overLayData += '</div>';
+                });
+                if (isEmpty)
+                    $overLayData += '<p>Ingen information om personen ‰r tillagd.</p>';
+                // Hide body-scroll
+                $('html').css('overflow', 'hidden');
+                $('#mainOverLayContent').html($overLayData);
+                $('#mainOverLay').fadeToggle();
             }
         });
-    }
+    });
+
+    $('#closeMainOverLay').on('click', function () {
+        $('#mainOverLay').fadeToggle();
+        // Show body-scroll again
+        $('html').css('overflow', 'auto');
+    });
     // #endregion
 
     /* END - Jonas lekplats */
@@ -386,14 +481,7 @@ $(document).ready(function () {
         return null;
     }
     // #endregion
-    // #region Adding and removing classes "buttons".
 
-
-
-    // #endregion
-    // #region autocomplete
-
-    // #endregion
     // #region html injection
     function CreateAssignClassesToStudentGroupsOverlay(studentGroupId, studentGroupName, teamId) {
         var $target = $('#overlayAssignClasses');
@@ -442,7 +530,7 @@ $(document).ready(function () {
         $($classDuration).append('<option value="1">HT</option>');
         $($classDuration).append('<option value="2">VT</option>');
 
-        //TODO : kursen l√§ses √∂ver fler √§n 2 terminer l√∂s om du vill
+        //TODO : kursen l‰ses √∂ver fler ‰n 2 terminer l√∂s om du vill
 
         //lots of divs
         var $semestersDiv = $('<div/>', { id: 'semestersDiv' }).append('<h2>Vald klass: ' + studentGroupName + '</h2>');
@@ -499,9 +587,8 @@ function RemoveClass(classId) {
             element.remove();
         }
     });
-    var index = allChosenClasses.findIndex(function (element) { element.ClassId == classId; });
-    allChosenClasses.splice(index);
-    console.log("allChosenClasses");
+    allChosenClasses = jQuery.grep(allChosenClasses, function (elem, index) { return elem.ClassId != classId;} );
+    console.log("allChosenClasses");    
     console.log(allChosenClasses);
 }
 
@@ -532,15 +619,17 @@ function SaveAddedClasses() {
 
 function AddClassToCurriculum(newClass) {
     //Get data
+    var index;
     if (newClass) {
         var className = newClass.className;
         var classId = newClass.classId;
         var duration = newClass.duration;
         var teamId = newClass.teamId;
+        index = 0;
     } else {
         var className = $('#classInput').val();
         if (className) {
-            var index = allClasses.findIndex(function (element) { console.log(element); return element.label == className; });
+             index = allClasses.findIndex(function (element) { return element.label == className; });
             if (index != -1) {
                 var classId = allClasses[index].value;
             } else {
@@ -557,15 +646,7 @@ function AddClassToCurriculum(newClass) {
     var studentGroupName = $('#addClassButton').attr('data-studentGroupName');
 
     //Check that the user has input a valid class
-    for (var c in allClasses) {
-        if (c.label == className) {
-            console.log(c);
-        }
-    }
-    console.log(allClasses);
-    console.log(className);
-    console.log(allClasses.findIndex(function (element) { return element.label == this; }, className));
-    if (allClasses.findIndex(function (element) { return element.label == this; }, className) != -1) {
+    if (index != -1) {
         //Create the div to contain the included class information needed
         var $classDiv = $('<div/>', {
             class: 'classToStudentGroup',

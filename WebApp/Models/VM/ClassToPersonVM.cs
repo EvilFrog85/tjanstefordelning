@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace WebApp.Models.VM
 {
-    public class AuxiliaryAssignmentVM
+    public class ClassToPersonVM
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string ClassName { get; set; }
         public int Points { get; set; }
-        public bool Assigned { get; set; }
-        public int Duration { get; set; }
+        public bool Qualified { get; set; }
+        public int SubjectId { get; set; }
     }
 }
