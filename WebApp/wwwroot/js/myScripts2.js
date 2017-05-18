@@ -39,7 +39,7 @@ $(document).ready(function () {
         }
 
         else if (target == "navBomb") {
-            alert("Vet du verkligen vad du gÃ¶r nu?");
+            alert("Vet du verkligen vad du gör nu?");
         }
     });
     /*
@@ -174,7 +174,7 @@ $(document).ready(function () {
                     return;
             }
 
-            //alert("GenomfÃ¶r uppdatering");
+            //alert("Genomför uppdatering");
 
             if (target == "teamCrud") {
                 //alert("Uppdaterar team");
@@ -290,8 +290,8 @@ $(document).ready(function () {
                 GetAllSubjects();
 
             GetPersonToEdit(itemId);
-            // Byter ut spar-knappen mot en uppdatera-knapp och ändrar funktionen som kallas. Kom ihåg att byta tillbaka efteråt / när "Add new" Ã¶ppnas.
-            // ImgUrl uppdateras inte i nuläget..
+            // Byter ut spar-knappen mot en uppdatera-knapp och �ndrar funktionen som kallas. Kom ih�g att byta tillbaka efter�t / n�r "Add new" öppnas.
+            // ImgUrl uppdateras inte i nul�get..
             $('#addPersonnelButton').attr('onclick', 'EditPersonById(' + itemId + ')');
             $('#addPersonnelButton').text('Uppdatera');
         }
@@ -354,7 +354,7 @@ $(document).ready(function () {
                         if (e.assignedPoints > 0)
                             var assignedPointsPercentage = (e.assignedPoints / 6).toFixed(1);
                         var contractType = contractEnum[e.contract];
-                        $('#personnelMainBox').append('<div class="personnelBox"><div class="personnelBoxTop"><div><img src="/img/staff_pictures/' + e.imageUrl + '.jpg" alt="' + e.firstName + ' ' + e.lastName + '" /></div><div><button class="personnelEditButton" data-id="' + e.id + '" data-name="'+ e.firstName + ' ' + e.lastName +'">Kurser & behörighet</button><p class="personnelTeamName">' + e.teamName + '</p><p class="personnelContract">' + contractType + '</p></div></div><div class="personnelBoxCenter"><p>' + e.signature + '</p><p>' + e.firstName + ' ' + e.lastName + '</p></div><div class="personnelBoxBottom"><div class="personnelMeterBox"><p>Tjänstegrad: ' + e.availablePoints + '%</p><div class="personnelAvailableMeter"><span style="width: ' + e.availablePoints + '%;"></span></div></div><div class="personnelMeterBox"><p>Tilldelat: ' + assignedPointsPercentage + '%</p><div class="personnelAssignedMeter"><span style="width: ' + assignedPointsPercentage + '%;"></span></div></div></div><div class="personnelCompetenceBox"></div></div>');
+                        $('#personnelMainBox').append('<div class="personnelBox"><div class="personnelBoxTop"><div><img src="/img/staff_pictures/' + e.imageUrl + '.jpg" alt="' + e.firstName + ' ' + e.lastName + '" /></div><div><button class="personnelEditButton" data-id="' + e.id + '" data-name="'+ e.firstName + ' ' + e.lastName +'">Kurser & beh�righet</button><p class="personnelTeamName">' + e.teamName + '</p><p class="personnelContract">' + contractType + '</p></div></div><div class="personnelBoxCenter"><p>' + e.signature + '</p><p>' + e.firstName + ' ' + e.lastName + '</p></div><div class="personnelBoxBottom"><div class="personnelMeterBox"><p>Tj�nstegrad: ' + e.availablePoints + '%</p><div class="personnelAvailableMeter"><span style="width: ' + e.availablePoints + '%;"></span></div></div><div class="personnelMeterBox"><p>Tilldelat: ' + assignedPointsPercentage + '%</p><div class="personnelAssignedMeter"><span style="width: ' + assignedPointsPercentage + '%;"></span></div></div></div><div class="personnelCompetenceBox"></div></div>');
                     });
                 }
             });
@@ -384,7 +384,7 @@ $(document).ready(function () {
                     }
                 });
                 if(obehorig)
-                    $overLayData += '<p>*Obehörig i ämnet.</p>';
+                    $overLayData += '<p>*Obeh�rig i �mnet.</p>';
                 $overLayData += '</div>';
 
                 var headersBool = true;
@@ -419,7 +419,7 @@ $(document).ready(function () {
                             }
                         }
                         else if (duration == 1) {
-                             if(i == times)
+                            if(i == times)
                                 $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p class="delete" data-id="' + w.classId + '"></p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
                             else
                                 $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
@@ -459,7 +459,7 @@ $(document).ready(function () {
                                     $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="delete" data-id="' + aux.id + '"></p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
                                 counter++;
                                 if (i == times) {
-                                     $overLayData += '<div class="personnelVtBox personnelAuxColor"></div>';
+                                    $overLayData += '<div class="personnelVtBox personnelAuxColor"></div>';
                                     counter++;
                                 }
                             }
@@ -483,9 +483,10 @@ $(document).ready(function () {
                             counter = 0;
                         }
                     }
+                    
                 });
                 if (isEmpty)
-                    $overLayData += '<p>Ingen information om personen är tillagd.</p>';
+                    $overLayData += '<p>Ingen information om personen �r tillagd.</p>';
                 // Hide body-scroll
                 $('html').css('overflow', 'hidden');
                 $('#mainOverLayContent').html($overLayData);
@@ -493,7 +494,7 @@ $(document).ready(function () {
             }
         });
     });
-
+    
     // Remove techer from included_class
     $('#mainOverLayContent').on('click', '.delete', function () {
         var classId = $(this).attr('data-id');
@@ -502,10 +503,11 @@ $(document).ready(function () {
             type: 'GET',
             url: '/Wizard/RemoveTeacherFromIncludedClass/' + classId,
             success: function (data) {
-
+                // TODO - fixa meddelande och uppdatera data
             }
         });
     });
+    
 
     $('#closeMainOverLay').on('click', function () {
         $('#mainOverLay').fadeToggle();
@@ -557,6 +559,7 @@ $(document).ready(function () {
         });
 
         PopulateClassesArray();
+        console.log(allClasses);
 
         var $classDuration = $('<select/>', {
             id: 'classDurationDropDown',
@@ -587,7 +590,7 @@ $(document).ready(function () {
         $($classDuration).append('<option value="1">HT</option>');
         $($classDuration).append('<option value="2">VT</option>');
 
-        //TODO : kursen läses Ã¶ver fler än 2 terminer lÃ¶s om du vill
+        //TODO : kursen l�ses över fler �n 2 terminer lös om du vill
 
         //lots of divs
         var $semestersDiv = $('<div/>', { id: 'semestersDiv' }).append('<h2>Vald klass: ' + studentGroupName + '</h2>');
@@ -809,7 +812,7 @@ function GenerateStudentGroups() {
                     .append($('<div/>', { class: 'classBox', id: 'classBox' + g.name }));
                 $('#classBox' + g.name)
                     .append($('<h3/>', { text: g.name, class: 'classNameBox' }))
-                    .append($('<button/>', { class: 'classEditButton', text: 'Lägg till kurser' }))
+                    .append($('<button/>', { class: 'classEditButton', text: 'L�gg till kurser' }))
                     .append($('<div/>', { class: 'allClassesBox', id: 'allClassesBox' + g.name }));
 
                 $('#allClassesBox' + g.name)
