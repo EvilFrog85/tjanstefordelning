@@ -30,6 +30,7 @@ $(document).ready(function () {
         }
 
         else if (target == "navPersonnel" && active != target) {
+            generatePersonnelHtml();
             $('.navItem').removeClass('mainNavActive');
             $('#navPersonnel').addClass('mainNavActive');
             $('.mainBoxItem').hide();
@@ -338,26 +339,120 @@ $(document).ready(function () {
         }
     });
 
-    generatePersonnelHtml();
-
+            
     // #region Genereate html for personnel-page
+    var isGeneratedPersonnelHtml;
     function generatePersonnelHtml() {
+        if (!isGeneratedPersonnelHtml) {
+            $.ajax({
+                type: 'GET',
+                url: '/Wizard/GetAllPersonnelToOverView',
+                success: function (data) {
+                    data.forEach(function (e) {
+                        var assignedPointsPercentage = 0;
+                        if (e.assignedPoints > 0)
+                            var assignedPointsPercentage = (e.assignedPoints / 6).toFixed(1);
+                        var contractType = contractEnum[e.contract];
+                        $('#personnelMainBox').append('<div class="personnelBox"><div class="personnelBoxTop"><div><img src="/img/staff_pictures/' + e.imageUrl + '.jpg" alt="' + e.firstName + ' ' + e.lastName + '" /></div><div><button class="personnelEditButton" data-id="' + e.id + '" data-name="'+ e.firstName + ' ' + e.lastName +'">Kurser & behörighet</button><p class="personnelTeamName">' + e.teamName + '</p><p class="personnelContract">' + contractType + '</p></div></div><div class="personnelBoxCenter"><p>' + e.signature + '</p><p>' + e.firstName + ' ' + e.lastName + '</p></div><div class="personnelBoxBottom"><div class="personnelMeterBox"><p>Tjänstegrad: ' + e.availablePoints + '%</p><div class="personnelAvailableMeter"><span style="width: ' + e.availablePoints + '%;"></span></div></div><div class="personnelMeterBox"><p>Tilldelat: ' + assignedPointsPercentage + '%</p><div class="personnelAssignedMeter"><span style="width: ' + assignedPointsPercentage + '%;"></span></div></div></div><div class="personnelCompetenceBox"></div></div>');
+                    });
+                }
+            });
+            isGeneratedPersonnelHtml = true;
+        }
+    }
 
+    $('#personnelMainBox').on('click', '.personnelEditButton', function () {
+        var id = $(this).attr('data-id');
+        var name = $(this).attr('data-name');
         $.ajax({
             type: 'GET',
-            url: '/Wizard/GetAllPersonnelToOverView',
+            url: '/Wizard/GetPersonInfo/' + id,
             success: function (data) {
-                data.forEach(function (e) {
-                    var assignedPointsPercentage = 0;
-                    if (e.assignedPoints > 0)
-                        var assignedPointsPercentage = (e.assignedPoints / 6).toFixed(1);
-                    console.log(e.assignedPoints + " " + assignedPointsPercentage);
-                    var contractType = contractEnum[e.contract];
-                    $('#personnelMainBox').append('<div class="personnelBox"><div class="personnelBoxTop"><div><img src="~/img/staff_pictures/' + e.imageUrl + '.jpg" alt="' + e.firstName + ' ' + e.lastName + '" /></div><div><button class="personnelEditButton" data-id="' + e.id + '">Kurser & behÃ¶righet</button><p class="personnelTeamName">' + e.teamName + '</p><p class="personnelContract">' + contractType + '</p></div></div><div class="personnelBoxCenter"><p>' + e.signature + '</p><p>' + e.firstName + ' ' + e.lastName + '</p></div><div class="personnelBoxBottom"><div class="personnelMeterBox"><p>Tjänstegrad: ' + e.availablePoints +'%</p><div class="personnelAvailableMeter"><span style="width: ' + e.availablePoints + '%;"></span></div></div><div class="personnelMeterBox"><p>Tilldelat: ' + assignedPointsPercentage + '%</p><div class="personnelAssignedMeter"><span style="width: ' + assignedPointsPercentage + '%;"></span></div></div></div><div class="personnelCompetenceBox"></div></div>');                    
+                var isEmpty = true;
+                var $overLayData = '<h2 class="overViewName">'+ name +'</h2>';
+                // Print competences
+                $overLayData += '<div class="overViewCompetenceBox">';
+                var obehorig = false;
+                data.competences.forEach(function (c) {
+                    isEmpty = false;
+                    if(c.qualified)
+                        $overLayData += '<div class="competence qualified"><p>' + c.name + '</p></div>';
+                    else {
+                        $overLayData += '<div class="competence"><p>' + c.name + '*</p></div>';
+                        obehorig = true;
+                    }
                 });
+                if(obehorig)
+                    $overLayData += '<p>*Obehörig i ämnet.</p>';
+                $overLayData += '</div>';
+
+                var headersBool = true;
+                // Print available work
+                data.includedClasses.forEach(function (w) {
+                    isEmpty = false;
+                    if (headersBool)
+                        $overLayData += '<div class="personnelHtVtHeader"><p>HT</p><p>VT</p></div>';
+                    headersBool = false;
+                    var times = w.points / 50;
+                    $overLayData += '<div class="personnelHtVt">';
+                    for (var i = 1; i <= times; i++) {
+                        if (w.duration == 0) {
+                            if (i % 2 == 0)
+                                $overLayData += '<div class="personnelVtBox"><div class="HtVtLeftSide"><p>' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                            else{
+                                $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p>' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                                if (i == times)
+                                    $overLayData += '<div class="personnelVtBox"></div>';
+                            }
+                        }
+                        else if (duration == 1) {
+                            $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p>' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                        }
+                        else {
+                            $overLayData += '<div class="personnelVtBox"><div class="HtVtLeftSide"><p>' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                        }
+                    }
+                    $overLayData += '</div>';
+                });
+
+                data.auxAssignments.forEach(function (aux) {
+                    isEmpty = false;
+                    var times = aux.points / 50;
+                    $overLayData += '<div class="personnelHtVt">';
+                    for (var i = 1; i <= times; i++) {
+                        if (aux.duration == 0) {
+                            if (i % 2 == 0)
+                                $overLayData += '<div class="personnelVtBox personnelAuxColor"><div class="HtVtLeftSide"><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                            else {
+                                $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                                if (i == times)
+                                    $overLayData += '<div class="personnelVtBox personnelAuxColor"></div>';
+                            }
+                        }
+                        else if (duration == 1) {
+                            $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                        }
+                        else {
+                            $overLayData += '<div class="personnelVtBox personnelAuxColor"><div class="HtVtLeftSide"><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                        }
+                    }
+                    $overLayData += '</div>';
+                });
+                if (isEmpty)
+                    $overLayData += '<p>Ingen information om personen är tillagd.</p>';
+                // Hide body-scroll
+                $('html').css('overflow', 'hidden');
+                $('#mainOverLayContent').html($overLayData);
+                $('#mainOverLay').fadeToggle();
             }
         });
-    }
+    });
+
+    $('#closeMainOverLay').on('click', function () {
+        $('#mainOverLay').fadeToggle();
+        // Show body-scroll again
+        $('html').css('overflow', 'auto');
+    });
     // #endregion
 
     /* END - Jonas lekplats */
