@@ -27,6 +27,7 @@ $(document).ready(function () {
             $('#navClass').addClass('mainNavActive');
             $('.mainBoxItem').hide();
             $('#classesMainBox').fadeToggle();
+            GenerateStudentGroups();
         }
 
         else if (target == "navPersonnel" && active != target) {
@@ -57,7 +58,7 @@ $(document).ready(function () {
     $('#exitWizard').on('click', function () {
         // Reset active tab
         $('.wizActive').removeClass('wizActive');
-        $('#teamCrudOpen').addClass('wizActive');//TODO FrÂga jonas
+        $('#teamCrudOpen').addClass('wizActive');//TODO Fr√•ga jonas
         $('.wizardDataBox').hide();
         $('#wizardBoxItemDesc div').hide();
         $('#overLay').fadeToggle("fast");
@@ -121,19 +122,19 @@ $(document).ready(function () {
             GetAllSubjects();
         if (target == "personnelCrud") {
             $('#addPersonnelButton').attr('onclick', 'AddNewPersonnel()');
-            $('#addPersonnelButton').text('L‰gg till personal');
+            $('#addPersonnelButton').text('L√§gg till personal');
         }
         if (target == "teamCrud") {
             $('#addTeamButton').attr('onclick', 'SubmitTeam()');
-            $('#addTeamButton').text('L‰gg till arbetslag');
+            $('#addTeamButton').text('L√§gg till arbetslag');
         }
         if (target == "studentGroupCrud") {
             $('#addStudentGroupButton').attr('onclick', 'SubmitStudentGroup()');
-            $('#addStudentGroupButton').text('L‰gg till klass');
+            $('#addStudentGroupButton').text('L√§gg till klass');
         }
         if (target == "auxiliaryAssignmentCrud") {
             $('#addAuxiliaryAssignmentButton').attr('onclick', 'SubmitAuxiliaryAssignment()');
-            $('#addAuxiliaryAssignmentButton').text('L‰gg till uppdrag');
+            $('#addAuxiliaryAssignmentButton').text('L√§gg till uppdrag');
         }
         target = target + "Form";
         $('.innerOverLay').fadeToggle("fast");
@@ -461,14 +462,14 @@ $(document).ready(function () {
     // #region utils
     var contractEnum = [
         'Tillsvidare',
-        'Tidsbegr‰nsad',
-        'Projektanst‰llning',
-        'Fast anst‰llning',
-        '÷vrig'
+        'Tidsbegr√§nsad',
+        'Projektanst√§llning',
+        'Fast anst√§llning',
+        '√ñvrig'
     ];
 
     var durationEnum = {
-        'Hela l‰sÂret': 0,
+        'Hela l√§s√•ret': 0,
         'HT': 1,
         'VT': 2
     };
@@ -510,7 +511,7 @@ $(document).ready(function () {
             class: 'buttonSubmit',
             id: 'addClassButton',
             onclick: 'AddClassToCurriculum()',
-            text: 'L‰gg till',
+            text: 'L√§gg till',
             style: 'align-self: center',
             'data-studentGroupId': studentGroupId,
             'data-studentGroupName': studentGroupName,
@@ -525,7 +526,7 @@ $(document).ready(function () {
             style: 'align-self: center'
         });
 
-        $($classDuration).append('<option value="0" selected="selected">Hela l‰sÂret</option>');
+        $($classDuration).append('<option value="0" selected="selected">Hela l√§s√•ret</option>');
         $($classDuration).append('<option value="1">HT</option>');
         $($classDuration).append('<option value="2">VT</option>');
 
@@ -632,7 +633,7 @@ function AddClassToCurriculum(newClass) {
             if (index != -1) {
                 var classId = allClasses[index].value;
             } else {
-                $('#messageBoxAssignClasses').html(generateFormMessage("error", "Du mÂste v‰lja en kurs frÂn listan.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+                $('#messageBoxAssignClasses').html(generateFormMessage("error", "Du m√•ste v√§lja en kurs fr√•n listan.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
                 return;
             }
         }
@@ -685,8 +686,8 @@ function AddClassToCurriculum(newClass) {
             $('#classInput').val('');
         }
     } else {
-        //$('#messageBoxAssignClasses').html(generateFormMessage("error", "Du mÂste v‰lja en kurs frÂn listan.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
-        $('#messageBoxAssignClasses').html(generateFormMessage("error", "Du mÂste v‰lja en klass frÂn listan."));
+        //$('#messageBoxAssignClasses').html(generateFormMessage("error", "Du m√•ste v√§lja en kurs fr√•n listan.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+        $('#messageBoxAssignClasses').html(generateFormMessage("error", "Du m√•ste v√§lja en klass fr√•n listan."));
     }
 }
 
@@ -703,7 +704,7 @@ function LoadIncludedClasses(studentGroupId) {
             $('#messageBoxAssignClasses').html(generateFormMessage("error", "Not success.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
         }
     }, function () {
-        $('#messageBoxAssignClasses').html(generateFormMessage("error", "NÂnting gick fel.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+        $('#messageBoxAssignClasses').html(generateFormMessage("error", "N√•nting gick fel.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
     });
 }
 
@@ -731,4 +732,104 @@ function PopulateClassesArray() {
             //});
         }
     });
+}
+//TODO : Load classes for a studentgroup
+//TODO : Load classes for a studentgroup
+
+//SOFIA
+function GenerateStudentGroups() {
+
+    $.ajax({
+        type: 'GET',
+        url: '/Wizard/GetAllStudentGroups',
+        success: function (data) {
+            data.forEach(function (g) {
+                var htBox = $('<div/>', { class: 'htBox', id: 'htBox' + g.name });
+                var vtBox = $('<div/>', { class: 'vtBox', id: 'vtBox' + g.name });
+
+
+                $('#classesMainBox')
+                    .append($('<div/>', { class: 'classBox', id: 'classBox' + g.name }));
+                $('#classBox' + g.name)
+                    .append($('<h3/>', { text: g.name, class: 'classNameBox' }))
+                    .append($('<button/>', { class: 'classEditButton', text: 'L‰gg till kurser' }))
+                    .append($('<div/>', { class: 'allClassesBox', id: 'allClassesBox' + g.name }));
+
+                $('#allClassesBox' + g.name)
+                    .append($('<div/>', { class: 'allClassesHeader', id: 'allClassesHeader' + g.name }))
+                    .append($('<div>', { class: 'fullSemesterBox', id: 'fullSemesterBox' + g.name }))
+                    .append($('<div>', { class: 'halfSemesterBox', id: 'halfSemesterBox' + g.name }));
+
+                $('#allClassesHeader' + g.name)
+                    .append('<p>HT</p><p>VT</p>');
+
+                //$('#fullSemesterBox' + g.name)
+                //    .append($('<div/>', { class: 'studentGroupClass', id: 'studentGroupClass' + g.name }));
+
+                $('#halfSemesterBox' + g.name)
+                    .append(htBox)
+                    .append(vtBox);
+                $.ajax({
+                    type: 'GET',
+                    url: '/Wizard/GetIncludedClassByStudentGroupId/' + g.id,
+                }).then(function (c) {
+                    c.forEach(function (d) {
+
+                        if (d.className.length > 20) {
+                            d.className = d.className.slice(0, 20);
+                            d.className += '..';
+                        }
+
+                        if (d.duration == 0) {
+                            var group = $('<div/>', { class: 'studentGroupClass', id: 'studentGroupClass' + d.id });
+                            var htFullBox = $('<div/>', { class: 'htFullBox', id: 'htFullBox' + d.id });
+                            var vtFullBox = $('<div/>', { class: 'vtFullBox', id: 'vtFullBox' + d.id });
+
+                            htFullBox
+                                .append($('<p/>', { text: d.className }));
+                            vtFullBox
+                                .append($('<p/>', { text: d.className }));
+                            if (d.personnelSignature) {
+                                vtFullBox
+                                    .append($('<p/>', { text: d.personnelSignature, class: 'personnelSignatureClass' }));
+                            }
+                            group
+                                .append(htFullBox)
+                                .append(vtFullBox);
+                            $('#fullSemesterBox' + g.name).append(group);
+                        }
+                        else if (d.duration == 1) {
+                            var halfClass = $('<div/>', { class: 'studentGroupHalfClass', id: 'studentGroupHalfClass' + d.id });
+                            
+                            halfClass
+                                .append($('<p/>', { text: d.className }));
+                            if (d.personnelSignature) {
+                                halfClass
+                                    .append($('<p/>', { text: d.personnelSignature, class: 'personnelSignatureClass' }));
+                            }
+                            htBox
+                                .append(halfClass);
+                            //$('#halfSemesterBox' + g.name)
+                            //    .append(htBox);
+                        }
+                        else {
+                            var halfClass = $('<div/>', { class: 'studentGroupHalfClass', id: 'studentGroupHalfClass' + d.id });
+                            
+                            halfClass
+                                .append($('<p/>', { text: d.className }));
+                            if (d.personnelSignature) {
+                                halfClass
+                                    .append($('<p/>', { text: d.personnelSignature, class: 'personnelSignatureClass' }));
+                            }
+                            vtBox
+                                .append(halfClass)
+                        }
+
+                    })
+                });
+            });
+        }
+    });
+
+
 }
