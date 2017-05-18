@@ -15,5 +15,7 @@ namespace WebApp.Models.VM
         public int? PersonnelId { get; set; }
         public int? StudentGroupId { get; set; }
         public string ClassName { get; set; }
+        public string StudentGroupName { get; set; }
+        public string TeamName { get; set; }
     }
 }

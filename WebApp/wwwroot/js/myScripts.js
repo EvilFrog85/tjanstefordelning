@@ -12,7 +12,7 @@ $(document).ready(function () {
             $('header nav').removeAttr('style');
         }
         stickyFooter();
-    })
+    });
     /*
     CreateIncludedClassInput();
     GetCounts();
@@ -22,6 +22,7 @@ $(document).ready(function () {
     CreateStudentGroupInput();
     CreateAuxiliaryAssignmentInput();
     CreateInputCompetence();
+    CreateAssignClassesToStudentGroupsOverlay();
     /* Wizard, innerLayOut Controlls */
     // When wizard is opened
     $('.wizard').on('click', function () {
@@ -323,9 +324,251 @@ $(document).ready(function () {
     /* END - Jonas lekplats */
 
     // #region class to student group
-
-    function CreateAssignClassesToStudentGroupsOverlay() {
-
+    // #region utils
+    var durationEnum = {
+        'Hela läsåret': 0,
+        'HT': 1,
+        'VT': 2
+    };
+    function string_of_enum(e, value) {
+        for (var k in e) {
+            if (e[k] == value)
+                return k;
+        }
+        return null;
     }
-// #endregion
+    // #endregion
+    // #region Adding and removing classes "buttons".
+
+
+
+    // #endregion
+
+    // #region autocomplete
+    function PopulateClassesArray() {
+        allClasses = []; //empty array
+        $.ajax({
+            type: 'GET',
+            url: '/Assignment/GetAllClasses/',
+            success: function (classes) {
+                console.log("GetAllClasses");
+                console.log(classes);
+                classes.forEach(function (cls) {
+                    var newClass = { label: cls.className, value: cls.id };
+                    allClasses.push(newClass);
+                });
+                //$('#classInput').autocomplete({
+                //    source: allClasses,
+                //    select: function (event, listItems) {
+                //        $('#classInput').val(listItems.item.label);
+                //        $('#classInput').attr('data-classid', listItems.item.value);
+                //        return false;
+                //    },
+                //    focus: function (event, ti) {
+                //        event.preventDefault();
+                //        $('#classInput').val(ti.item.label);
+                //    }
+                //});
+            }
+        });
+    }
+    // #endregion
+    // #region html injection
+    function CreateAssignClassesToStudentGroupsOverlay(studentGroupId, studentGroupName, teamId) {
+        var $target = $('#overlayAssignClasses');
+        var studentGroupName = "Te17a";//studentGroupName;
+        var teamId = 4;//teamId;
+        var studentGroupId = 2;//studentGroupId
+
+        var $headline = $('<h2/>', { id: 'currentClassHeadline' });
+
+        var $classInput = $('<input/>', {
+            id: 'classInput',
+            type: 'text',
+            placeholder: 'Kurs',
+            class: 'inputTextAuto'
+        });
+
+        PopulateClassesArray();
+
+        var $classDuration = $('<select/>', {
+            id: 'classDurationDropDown',
+            name: 'classDurationDropDown',
+            class: 'inputSelect'
+        });
+
+        var $submitBtn = $('<button/>', {
+            class: 'buttonSubmit',
+            id: 'addClassButton',
+            onclick: 'AddClassToCurriculum()',
+            text: 'Lägg till',
+            style: 'align-self: center',
+            'data-studentGroupId': studentGroupId,
+            'data-studentGroupName': studentGroupName,
+            'data-team-id': teamId
+        });
+
+        var $submitBtn2 = $('<button/>', {
+            class: 'buttonSubmit',
+            id: 'saveAddedClassesButton',
+            onclick: 'SaveAddedClasses()',
+            text: 'Spara',
+            style: 'align-self: center'
+        });
+
+        $($classDuration).append('<option value="0" selected="selected">Hela läsåret</option>');
+        $($classDuration).append('<option value="1">HT</option>');
+        $($classDuration).append('<option value="2">VT</option>');
+
+        //TODO : kursen läses över fler än 2 terminer lös om du vill
+
+        //lots of divs
+        var $semestersDiv = $('<div/>', { id: 'semestersDiv' }).append('<h2>Vald klass: ' + studentGroupName + '</h2>');
+        var $fullYearDiv = $('<div/>', { id: 'fullYearDiv' });
+        var $container = $('<div/>', { id: 'containerDiv' })
+            .append($('<div/>', { class: 'assignClassDivs', id: 'HTDiv' }))
+            .append($('<div/>', { class: 'assignClassDivs', id: 'VTDiv' }));
+        var $fullYearHTDiv = $('<div/>', { class: 'assignClassDivs', id: 'fullYearHTDiv' }).append($('<h2/>', { text: 'HT' }));
+        var $fullyearVTDiv = $('<div/>', { class: 'assignClassDivs', id: 'fullYearVTDiv' }).append($('<h2/>', { text: 'VT' }));
+        $fullYearDiv.append($fullYearHTDiv).append($fullyearVTDiv);
+
+        $semestersDiv
+            .append($headline)
+            .append($classInput)
+            .append($classDuration)
+            .append($submitBtn)
+            .append($fullYearDiv)
+            .append($container)
+            .append($submitBtn2)
+            .append($('<div/>', { id: 'messageBoxAssignClasses' }));
+
+        $('#overlayAssignClasses').append($semestersDiv);
+
+        //delay for how fast the list will update when user stops typing
+        $('#classInput').autocomplete({ delay: 500 });
+        //Set up autocomplete
+        $('#classInput').autocomplete({
+            source: allClasses,
+            select: function (event, listItems) {
+                $('#classInput').val(listItems.item.label);
+                $('#classInput').attr('data-classid', listItems.item.value);
+                return false;
+            },
+            focus: function (event, ti) {
+                event.preventDefault();
+                $('#classInput').val(ti.item.label);
+            }
+        });
+    }
+    // #endregion
+    // #endregion
 });
+
+var allClasses = [];
+var allChosenClasses = [];
+
+//Removes class from curriculum
+function RemoveClass(classId) {
+    var res = $('.classToStudentGroup');
+    res.each(function (index, element) {
+        if (element.id == classId) {
+            element.remove();
+        }
+    });
+    var index = allChosenClasses.findIndex(function (element) { console.log(element); element.ClassId == classId; });
+    allChosenClasses.splice(index);
+    console.log(allChosenClasses);
+}
+
+//Called when classes should be saved to database
+function SaveAddedClasses() {
+    var studentGroupId = $('#addClassButton').attr('data-studentGroupId');
+    if (studentGroupId && allChosenClasses.length > 0) {
+        var classDataToSend = [];
+        allChosenClasses.forEach(function (cls) {
+            console.log(cls);
+            var newClass = { ClassId: cls.ClassId, Duration: cls.Duration, TeamId: cls.TeamId, StudentGroupId: cls.StudentGroupId };
+            classDataToSend.push(newClass);
+        });
+        console.log(classDataToSend);
+        $.ajax({
+            type: 'POST',
+            url: '/Assignment/AssignStudentGroups/',
+            data: { ClassData: classDataToSend },
+            success: function (result) {
+                console.log(result);
+                if (result > 0) {
+                    $('#messageBoxAssignClasses').html(generateFormMessage("success", result + " kurs/kurser har blivit tillagda.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+                    $('#currentStudentGroup').empty();
+                } else {
+                    $('#messageBoxAssignClasses').html(generateFormMessage("error", "Inga kurser har blivit tillagda.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+                }
+            }
+        });
+    }
+}
+
+function AddClassToCurriculum() {
+    //Get data
+    className = $('#classInput').val();
+    var cls = $('#classInput').val();
+    console.log(cls);
+    if (cls) {
+        var index = allClasses.findIndex(function (element) { return element.label == cls; });
+        var classId = allClasses[index].value;
+        console.log('classId: ' + classId);
+    }
+    var duration = $('#classDurationDropDown').val();
+    var studentGroupId = $('#addClassButton').attr('data-studentGroupId');
+    var studentGroupName = $('#addClassButton').attr('data-studentGroupName');
+    var teamId = $('#addClassButton').attr('data-team-id');
+    console.log(teamId);
+
+    //Check that the user has input a valid class
+    if (allClasses.findIndex(function (element) { return element.label == className; }) !== -1) {
+        //Create the div to contain the included class information needed
+        var $classDiv = $('<div/>', {
+            class: 'classToStudentGroup',
+            id: classId,
+            'data-duration': duration,
+            'data-team-id': teamId,
+            //'data-teamname': teamName,
+            text: className,
+            title: className
+        });
+        if ($classDiv.text().length > 23) {
+            $classDiv.text($classDiv.text().substring(0, 24) + "..");
+        }
+        //Add a delete button
+        var $classButton = $('<button/>', {
+            text: 'X',
+            onclick: 'RemoveClass("' + classId + '")',
+            class: 'deleteAssignedClassButton'
+        });
+
+        //Check if the class is in the class list
+        var index = allChosenClasses.findIndex(function (element) { console.log(element); return element.ClassId == classId; });
+        if (index == -1) {
+            allChosenClasses.push({ "ClassName": className, "ClassId": classId, 'Duration': duration, 'TeamId': teamId, 'StudentGroupId': studentGroupId });
+            $classDiv.append($classButton);
+            if (duration == 0) {
+                $classDiv.appendTo('#fullYearHTDiv, #fullYearVTDiv');
+            } else if (duration == 1) {
+                $('#HTDiv').append($classDiv);
+            } else if (duration == 2) {
+                $('#VTDiv').append($classDiv);
+            }
+            $('#classInput').val('');
+        } else {
+            $('#messageBoxAssignClasses').html(generateFormMessage("error", "Kursen finns redan i listan.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+            //$('#assignedClasses').html(generateFormMessage("error", "Kursen finns redan i listan."));
+            $('#classInput').val('');
+        }
+    } else {
+        $('#messageBoxAssignClasses').html(generateFormMessage("error", "Du måste välja en kurs från listan.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+        //$('#assignedClasses').html(generateFormMessage("error", "Du måste välja en klass och eller kurser att lägga till."));
+    }
+    console.log(allChosenClasses);
+}
+
+//TODO : Load classes for a studentgroup
