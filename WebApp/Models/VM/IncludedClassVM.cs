@@ -17,5 +17,6 @@ namespace WebApp.Models.VM
         public string ClassName { get; set; }
         public string StudentGroupName { get; set; }
         public string TeamName { get; set; }
+        public int Points { get; set; }
     }
 }

@@ -220,6 +220,7 @@ namespace WebApp.Models.Entities
                     .ThenInclude(i => i.Team)
                 .Include(p => p.Competence)
                     .ThenInclude(c => c.Subject)
+                .Include(p => p.AuxiliaryAssignment)
                 .SingleOrDefaultAsync(p => p.Id == id);
 
             var competences = person.Competence.Select(c => new CompetenceVM
@@ -233,13 +234,21 @@ namespace WebApp.Models.Entities
                 ClassName = p.Class.ClassName,
                 Duration = p.Duration,
                 StudentGroupName = p.StudentGroup.Name,
-                TeamName = p.Team.Name
+                TeamName = p.Team.Name,
+                Points = p.Class.Points
+            }).ToArray();
+
+            var auxAssignments = person.AuxiliaryAssignment.Select(p => new AuxiliaryAssignmentVM
+            {
+                Name = p.Name,
+                Points = p.Points
             }).ToArray();
 
             return new CompetencesIncludedClassesVM
             {
                 Competences = competences,
-                IncludedClasses = classes
+                IncludedClasses = classes,
+                AuxAssignments = auxAssignments
             };
         }
         internal PersonnelCreateVM GetPersonnelById(int id)
