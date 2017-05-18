@@ -26,6 +26,7 @@ $(document).ready(function () {
             $('.navItem').removeClass('mainNavActive');
             $('#navClass').addClass('mainNavActive');
             $('.mainBoxItem').hide();
+            $('#classesMainBox').empty();
             $('#classesMainBox').fadeToggle();
             GenerateStudentGroups();
         }
