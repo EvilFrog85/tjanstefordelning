@@ -68,6 +68,7 @@
     <Content Include="wwwroot\js\jquery.validate.js" />
     <Content Include="wwwroot\js\jquery.validate.unobtrusive.js" />
     <Content Include="wwwroot\js\myScripts.js" />
+    <Content Include="wwwroot\js\myScripts2.js" />
     <Content Include="wwwroot\js\WizardScriptPlayground.js">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
