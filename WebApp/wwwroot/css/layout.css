@@ -478,15 +478,11 @@ p.chatTimeStamp {
 
 
 /* Personnel page style */
-.personnelHtVtHeader{
+.personnelHtVtHeader {
     overflow: auto;
 }
     .overViewName {
-        border-bottom: 2px solid #000;
         margin: 10px 0 20px 0;
-        display: inline-block;
-        line-height: 0.9;
-        text-shadow: 2px 2px white, 2px -2px white, -2px 2px white, -2px -2px white;
     } 
     .overViewCompetenceBox .competence{
         margin-right: 5px;
@@ -512,6 +508,21 @@ p.chatTimeStamp {
         display: flex;
         justify-content: space-between;
     }
+        .personnelHtVt .delete {
+            float: left;
+            background-color: transparent;
+            transition: transform .2s linear;
+        }
+        .personnelHtVt .delete:hover {
+            cursor: pointer;
+            transform: scale(0.9);
+        }
+        .deleteFakeBox{
+            width: 30px;
+            height: 30px;
+            float: left;
+            text-align: center;
+        }
     .personnelVtBox, .personnelHtBox {
         width: 45%;
         padding: 3px;
@@ -522,8 +533,10 @@ p.chatTimeStamp {
         border: 1px solid #000;
     }
 
-        .HtVtLeftSide {
-
+        .HtVtLeftSide p:last-child{
+            white-space: nowrap;
+            overflow: hidden;
+            line-height: 30px;
         }
 
         .HtVtRightSide {

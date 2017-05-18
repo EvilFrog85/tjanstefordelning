@@ -229,6 +229,7 @@ namespace WebApp.Models.Entities
 
             var classes = person.IncludedClass.Select(p => new IncludedClassVM
             {
+                ClassId = p.Id,
                 ClassName = p.Class.ClassName,
                 Duration = p.Duration,
                 StudentGroupName = p.StudentGroup.Name,
@@ -238,6 +239,7 @@ namespace WebApp.Models.Entities
 
             var auxAssignments = person.AuxiliaryAssignment.Select(p => new AuxiliaryAssignmentVM
             {
+                Id = p.Id,
                 Name = p.Name,
                 Points = p.Points,
                 Duration = p.Duration

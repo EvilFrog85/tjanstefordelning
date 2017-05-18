@@ -388,55 +388,101 @@ $(document).ready(function () {
 
                 var headersBool = true;
                 // Print available work
+                var counter = 0;
                 data.includedClasses.forEach(function (w) {
                     isEmpty = false;
                     if (headersBool)
                         $overLayData += '<div class="personnelHtVtHeader"><p>HT</p><p>VT</p></div>';
                     headersBool = false;
                     var times = w.points / 50;
-                    $overLayData += '<div class="personnelHtVt">';
+                    counter = 0;
                     for (var i = 1; i <= times; i++) {
+                        if (counter % 2 == 0) {
+                            $overLayData += '<div class="personnelHtVt">';
+                        }
                         if (w.duration == 0) {
-                            if (i % 2 == 0)
-                                $overLayData += '<div class="personnelVtBox"><div class="HtVtLeftSide"><p>' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
-                            else{
-                                $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p>' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
-                                if (i == times)
+                            if (i % 2 == 0) {
+                                $overLayData += '<div class="personnelVtBox"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                                counter++;
+                            }
+                            else {
+                                if (i > 2)
+                                    $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                                else
+                                    $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p class="delete" data-id="' + w.classId + '"></p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                                counter++;
+                                if (i == times) {
                                     $overLayData += '<div class="personnelVtBox"></div>';
+                                    counter++;
+                                }
                             }
                         }
                         else if (duration == 1) {
-                            $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p>' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                            if(i == times)
+                                $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p class="delete" data-id="' + w.classId + '"></p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                            else
+                                $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                            counter++;
                         }
                         else {
-                            $overLayData += '<div class="personnelVtBox"><div class="HtVtLeftSide"><p>' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                            if(i == times)
+                                $overLayData += '<div class="personnelVtBox"><div class="HtVtLeftSide"><p class="delete" data-id="' + w.classId + '"></p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                            else
+                                $overLayData += '<div class="personnelVtBox"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
+                            counter++;
+                        }
+                        if (counter % 2 == 0 || i == times) {
+                            $overLayData += '</div>';
+                            counter = 0;
                         }
                     }
-                    $overLayData += '</div>';
                 });
 
                 data.auxAssignments.forEach(function (aux) {
                     isEmpty = false;
                     var times = aux.points / 50;
-                    $overLayData += '<div class="personnelHtVt">';
+                    counter = 0;
                     for (var i = 1; i <= times; i++) {
+                        if (counter % 2 == 0) {
+                            $overLayData += '<div class="personnelHtVt">';
+                        }
                         if (aux.duration == 0) {
-                            if (i % 2 == 0)
-                                $overLayData += '<div class="personnelVtBox personnelAuxColor"><div class="HtVtLeftSide"><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                            if (i % 2 == 0) {
+                                $overLayData += '<div class="personnelVtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                                counter++;
+                            }
                             else {
-                                $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
-                                if (i == times)
+                                if(i > 2)
+                                    $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                                else
+                                    $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="delete" data-id="' + aux.id + '"></p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                                counter++;
+                                if (i == times) {
                                     $overLayData += '<div class="personnelVtBox personnelAuxColor"></div>';
+                                    counter++;
+                                }
                             }
                         }
                         else if (duration == 1) {
-                            $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                            if(i == times)
+                                $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="delete" data-id="' + aux.id + '"></p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                            else
+                                $overLayData += '<div class="personnelHtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                            counter++;
                         }
                         else {
-                            $overLayData += '<div class="personnelVtBox personnelAuxColor"><div class="HtVtLeftSide"><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                            if(i == times)
+                                $overLayData += '<div class="personnelVtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="delete" data-id="' + aux.id + '"></p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                            else
+                                $overLayData += '<div class="personnelVtBox personnelAuxColor"><div class="HtVtLeftSide"><p class="deleteFakeBox">-</p><p>' + aux.name + ' (' + aux.points + ')</p></div></div>';
+                            counter++;
+                        }
+                        if (counter % 2 == 0 || i == times) {
+                            $overLayData += '</div>';
+                            counter = 0;
                         }
                     }
-                    $overLayData += '</div>';
+                    
                 });
                 if (isEmpty)
                     $overLayData += '<p>Ingen information om personen är tillagd.</p>';
@@ -447,6 +493,20 @@ $(document).ready(function () {
             }
         });
     });
+
+    // Remove techer from included_class
+    $('#mainOverLayContent').on('click', '.delete', function () {
+        var classId = $(this).attr('data-id');
+        
+        $.ajax({
+            type: 'GET',
+            url: '/Wizard/RemoveTeacherFromIncludedClass/' + classId,
+            success: function (data) {
+
+            }
+        });
+    });
+    
 
     $('#closeMainOverLay').on('click', function () {
         $('#mainOverLay').fadeToggle();
