@@ -27,6 +27,7 @@ $(document).ready(function () {
             $('#navClass').addClass('mainNavActive');
             $('.mainBoxItem').hide();
             $('#classesMainBox').fadeToggle();
+            GenerateStudentGroups();
         }
 
         else if (target == "navPersonnel" && active != target) {
@@ -289,8 +290,8 @@ $(document).ready(function () {
                 GetAllSubjects();
 
             GetPersonToEdit(itemId);
-            // Byter ut spar-knappen mot en uppdatera-knapp och √§ndrar funktionen som kallas. Kom ih√•g att byta tillbaka efter√•t / n√§r "Add new" √∂ppnas.
-            // ImgUrl uppdateras inte i nul√§get..
+            // Byter ut spar-knappen mot en uppdatera-knapp och ‰ndrar funktionen som kallas. Kom ihÂg att byta tillbaka efterÂt / n‰r "Add new" √∂ppnas.
+            // ImgUrl uppdateras inte i nul‰get..
             $('#addPersonnelButton').attr('onclick', 'EditPersonById(' + itemId + ')');
             $('#addPersonnelButton').text('Uppdatera');
         }
@@ -353,7 +354,7 @@ $(document).ready(function () {
                         if (e.assignedPoints > 0)
                             var assignedPointsPercentage = (e.assignedPoints / 6).toFixed(1);
                         var contractType = contractEnum[e.contract];
-                        $('#personnelMainBox').append('<div class="personnelBox"><div class="personnelBoxTop"><div><img src="/img/staff_pictures/' + e.imageUrl + '.jpg" alt="' + e.firstName + ' ' + e.lastName + '" /></div><div><button class="personnelEditButton" data-id="' + e.id + '" data-name="'+ e.firstName + ' ' + e.lastName +'">Kurser & beh√∂righet</button><p class="personnelTeamName">' + e.teamName + '</p><p class="personnelContract">' + contractType + '</p></div></div><div class="personnelBoxCenter"><p>' + e.signature + '</p><p>' + e.firstName + ' ' + e.lastName + '</p></div><div class="personnelBoxBottom"><div class="personnelMeterBox"><p>Tj√§nstegrad: ' + e.availablePoints + '%</p><div class="personnelAvailableMeter"><span style="width: ' + e.availablePoints + '%;"></span></div></div><div class="personnelMeterBox"><p>Tilldelat: ' + assignedPointsPercentage + '%</p><div class="personnelAssignedMeter"><span style="width: ' + assignedPointsPercentage + '%;"></span></div></div></div><div class="personnelCompetenceBox"></div></div>');
+                        $('#personnelMainBox').append('<div class="personnelBox"><div class="personnelBoxTop"><div><img src="/img/staff_pictures/' + e.imageUrl + '.jpg" alt="' + e.firstName + ' ' + e.lastName + '" /></div><div><button class="personnelEditButton" data-id="' + e.id + '" data-name="'+ e.firstName + ' ' + e.lastName +'">Kurser & behˆrighet</button><p class="personnelTeamName">' + e.teamName + '</p><p class="personnelContract">' + contractType + '</p></div></div><div class="personnelBoxCenter"><p>' + e.signature + '</p><p>' + e.firstName + ' ' + e.lastName + '</p></div><div class="personnelBoxBottom"><div class="personnelMeterBox"><p>Tj‰nstegrad: ' + e.availablePoints + '%</p><div class="personnelAvailableMeter"><span style="width: ' + e.availablePoints + '%;"></span></div></div><div class="personnelMeterBox"><p>Tilldelat: ' + assignedPointsPercentage + '%</p><div class="personnelAssignedMeter"><span style="width: ' + assignedPointsPercentage + '%;"></span></div></div></div><div class="personnelCompetenceBox"></div></div>');
                     });
                 }
             });
@@ -383,7 +384,7 @@ $(document).ready(function () {
                     }
                 });
                 if(obehorig)
-                    $overLayData += '<p>*Obeh√∂rig i √§mnet.</p>';
+                    $overLayData += '<p>*Obehˆrig i ‰mnet.</p>';
                 $overLayData += '</div>';
 
                 var headersBool = true;
@@ -485,7 +486,7 @@ $(document).ready(function () {
                     
                 });
                 if (isEmpty)
-                    $overLayData += '<p>Ingen information om personen √§r tillagd.</p>';
+                    $overLayData += '<p>Ingen information om personen ‰r tillagd.</p>';
                 // Hide body-scroll
                 $('html').css('overflow', 'hidden');
                 $('#mainOverLayContent').html($overLayData);
@@ -540,14 +541,7 @@ $(document).ready(function () {
         return null;
     }
     // #endregion
-    // #region Adding and removing classes "buttons".
 
-
-
-    // #endregion
-    // #region autocomplete
-
-    // #endregion
     // #region html injection
     function CreateAssignClassesToStudentGroupsOverlay(studentGroupId, studentGroupName, teamId) {
         var $target = $('#overlayAssignClasses');
@@ -596,7 +590,7 @@ $(document).ready(function () {
         $($classDuration).append('<option value="1">HT</option>');
         $($classDuration).append('<option value="2">VT</option>');
 
-        //TODO : kursen l√§ses √∂ver fler √§n 2 terminer l√∂s om du vill
+        //TODO : kursen l‰ses √∂ver fler ‰n 2 terminer l√∂s om du vill
 
         //lots of divs
         var $semestersDiv = $('<div/>', { id: 'semestersDiv' }).append('<h2>Vald klass: ' + studentGroupName + '</h2>');
@@ -653,9 +647,8 @@ function RemoveClass(classId) {
             element.remove();
         }
     });
-    var index = allChosenClasses.findIndex(function (element) { element.ClassId == classId; });
-    allChosenClasses.splice(index);
-    console.log("allChosenClasses");
+    allChosenClasses = jQuery.grep(allChosenClasses, function (elem, index) { return elem.ClassId != classId;} );
+    console.log("allChosenClasses");    
     console.log(allChosenClasses);
 }
 
@@ -686,15 +679,17 @@ function SaveAddedClasses() {
 
 function AddClassToCurriculum(newClass) {
     //Get data
+    var index;
     if (newClass) {
         var className = newClass.className;
         var classId = newClass.classId;
         var duration = newClass.duration;
         var teamId = newClass.teamId;
+        index = 0;
     } else {
         var className = $('#classInput').val();
         if (className) {
-            var index = allClasses.findIndex(function (element) { console.log(element); return element.label == className; });
+             index = allClasses.findIndex(function (element) { return element.label == className; });
             if (index != -1) {
                 var classId = allClasses[index].value;
             } else {
@@ -711,15 +706,7 @@ function AddClassToCurriculum(newClass) {
     var studentGroupName = $('#addClassButton').attr('data-studentGroupName');
 
     //Check that the user has input a valid class
-    for (var c in allClasses) {
-        if (c.label == className) {
-            console.log(c);
-        }
-    }
-    console.log(allClasses);
-    console.log(className);
-    console.log(allClasses.findIndex(function (element) { return element.label == this; }, className));
-    if (allClasses.findIndex(function (element) { return element.label == this; }, className) != -1) {
+    if (index != -1) {
         //Create the div to contain the included class information needed
         var $classDiv = $('<div/>', {
             class: 'classToStudentGroup',
@@ -807,3 +794,102 @@ function PopulateClassesArray() {
     });
 }
 //TODO : Load classes for a studentgroup
+//TODO : Load classes for a studentgroup
+
+//SOFIA
+function GenerateStudentGroups() {
+
+    $.ajax({
+        type: 'GET',
+        url: '/Wizard/GetAllStudentGroups',
+        success: function (data) {
+            data.forEach(function (g) {
+                var htBox = $('<div/>', { class: 'htBox', id: 'htBox' + g.name });
+                var vtBox = $('<div/>', { class: 'vtBox', id: 'vtBox' + g.name });
+
+
+                $('#classesMainBox')
+                    .append($('<div/>', { class: 'classBox', id: 'classBox' + g.name }));
+                $('#classBox' + g.name)
+                    .append($('<h3/>', { text: g.name, class: 'classNameBox' }))
+                    .append($('<button/>', { class: 'classEditButton', text: 'L‰gg till kurser' }))
+                    .append($('<div/>', { class: 'allClassesBox', id: 'allClassesBox' + g.name }));
+
+                $('#allClassesBox' + g.name)
+                    .append($('<div/>', { class: 'allClassesHeader', id: 'allClassesHeader' + g.name }))
+                    .append($('<div>', { class: 'fullSemesterBox', id: 'fullSemesterBox' + g.name }))
+                    .append($('<div>', { class: 'halfSemesterBox', id: 'halfSemesterBox' + g.name }));
+
+                $('#allClassesHeader' + g.name)
+                    .append('<p>HT</p><p>VT</p>');
+
+                //$('#fullSemesterBox' + g.name)
+                //    .append($('<div/>', { class: 'studentGroupClass', id: 'studentGroupClass' + g.name }));
+
+                $('#halfSemesterBox' + g.name)
+                    .append(htBox)
+                    .append(vtBox);
+                $.ajax({
+                    type: 'GET',
+                    url: '/Wizard/GetIncludedClassByStudentGroupId/' + g.id,
+                }).then(function (c) {
+                    c.forEach(function (d) {
+
+                        if (d.className.length > 20) {
+                            d.className = d.className.slice(0, 20);
+                            d.className += '..';
+                        }
+
+                        if (d.duration == 0) {
+                            var group = $('<div/>', { class: 'studentGroupClass', id: 'studentGroupClass' + d.id });
+                            var htFullBox = $('<div/>', { class: 'htFullBox', id: 'htFullBox' + d.id });
+                            var vtFullBox = $('<div/>', { class: 'vtFullBox', id: 'vtFullBox' + d.id });
+
+                            htFullBox
+                                .append($('<p/>', { text: d.className }));
+                            vtFullBox
+                                .append($('<p/>', { text: d.className }));
+                            if (d.personnelSignature) {
+                                vtFullBox
+                                    .append($('<p/>', { text: d.personnelSignature, class: 'personnelSignatureClass' }));
+                            }
+                            group
+                                .append(htFullBox)
+                                .append(vtFullBox);
+                            $('#fullSemesterBox' + g.name).append(group);
+                        }
+                        else if (d.duration == 1) {
+                            var halfClass = $('<div/>', { class: 'studentGroupHalfClass', id: 'studentGroupHalfClass' + d.id });
+                            
+                            halfClass
+                                .append($('<p/>', { text: d.className }));
+                            if (d.personnelSignature) {
+                                halfClass
+                                    .append($('<p/>', { text: d.personnelSignature, class: 'personnelSignatureClass' }));
+                            }
+                            htBox
+                                .append(halfClass);
+                            //$('#halfSemesterBox' + g.name)
+                            //    .append(htBox);
+                        }
+                        else {
+                            var halfClass = $('<div/>', { class: 'studentGroupHalfClass', id: 'studentGroupHalfClass' + d.id });
+                            
+                            halfClass
+                                .append($('<p/>', { text: d.className }));
+                            if (d.personnelSignature) {
+                                halfClass
+                                    .append($('<p/>', { text: d.personnelSignature, class: 'personnelSignatureClass' }));
+                            }
+                            vtBox
+                                .append(halfClass)
+                        }
+
+                    })
+                });
+            });
+        }
+    });
+
+
+}

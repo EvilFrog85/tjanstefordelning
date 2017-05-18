@@ -23,6 +23,7 @@ namespace WebApp.Models.VM
         public int? PersonnelId { get; set; }
         //Which student group that is taking the class
         public int? StudentGroupId { get; set; }
+        public string ClassName { get; set; }
 
 
     }
