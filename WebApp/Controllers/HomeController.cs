@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
+using WebApp.Models.VM;
 
 namespace WebApp.Controllers
 {
@@ -20,8 +21,9 @@ namespace WebApp.Controllers
 
         public IActionResult Index()
         {
-            _logger.LogInformation("Home/Index was called");
             return View();
         }
+
+        
     }
 }
