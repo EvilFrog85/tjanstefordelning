@@ -2,28 +2,390 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>PageTitle - @ViewBag.Title</title>
+    <title>Tjänstefördelning</title>
 </head>
 <body>
+    <div id="mainOverLay">
+        <div id="mainOverLayBox">
+            <div id="mainOverLayContent">
+                <div id="closeMainOverLay"></div>
+                <p>hej</p>
+            </div>
+        </div>
+    </div>
+
     <div id="layout">
         <header>
-            <div id="innerHeader">
-                <div id="hamburgerBtn">
-                    <div></div>
-                    <div></div>
-                    <div></div>
+            <div id="logo">
+                <p>Grupp 5</p>
+            </div>
+            <nav>
+                <div class="navItem mainNavActive" id="navHome">
+                    <img src="~/img/icons/home.svg" alt="Startsida" />
+                    <p>Startsida</p>
                 </div>
-                <nav>
-                    <a asp-controller="Home" asp-action="Index">Home</a>
-                    <a href="#">Link 2</a>
-                    <a href="#">Link 3</a>
-                    <a href="#">Link 4</a>
-                    <div class="wizard" style="display: inline-block;"></div>
-                </nav>
+                <div class="navItem" id="navWizard">
+                    <img src="~/img/icons/magic.svg" alt="Redigering" />
+                    <p>Redigering</p>
+                </div>
+                <div class="navItem" id="navClass">
+                    <img src="~/img/icons/included_class.svg" alt="Koppla kurser" />
+                    <p>Koppla kurser</p>
+                </div>
+                <div class="navItem" id="navPersonnel">
+                    <img src="~/img/icons/personnel.svg" alt="Koppla personal" />
+                    <p>Koppla personal</p>
+                </div>
+                <div class="navItem" id="navBomb">
+                    <img src="~/img/icons/the_bomb.svg" alt="The Bomb" />
+                    <p>Drop it</p>
+                </div>
+            </nav>
+            <div id="footer">
+                &copy; 2017
             </div>
         </header>
         <main>
             <section>
+                <div class="mainBoxItem" id="homeMainBox">
+                    <div id="header">
+                        <div id="headerContainer">
+                            <h1>Tjänstefördelning</h1>
+                            <h2 id="subHeadline">Det fördelaktiga verktyget</h2>
+                        </div>
+                    </div>
+                    <div id="mainCounterBox">
+                        <div id="mainCounterStats">
+                            <p>Personal: <span>27</span></p>
+                            <p>Klasser: <span>16</span></p>
+                            <p>Kurser: <span>142</span></p>
+                            <p>Uppdrag: <span>41</span></p>
+                        </div>
+                        <div id="mainCounter">
+                            <p>Kurser att tilldela: <span>122</span></p>
+                            <p>Tillgänglig personal: <span>455%</span></p>
+                            <p>Tjänster att tilldela: <span>18</span></p>
+
+                        </div>
+                    </div>
+                    <div id="homeFlexboxBox">
+                        <div id="news">
+                            <h3>Nyheter</h3>
+                            <ul>
+                                <li>
+                                    <h4>Alexander har skaffat hatt!</h4>
+                                    <p>Enligt rykten en vit fedora-hatt med svart band.</p>
+                                    <a href="#">Läs mer</a>
+                                </li>
+                                <li>
+                                    <h4>Nominerade till duglighetspriset</h4>
+                                    <p>Vi kanske får pris för utomordentligt tillräcklig produkt.</p>
+                                    <a href="#">Läs mer</a>
+                                </li>
+                                <li>
+                                    <h4>En boll, ett nät och två raster..</h4>
+                                    <p>Niklas och Mats startar Academy minipingisförening.</p>
+                                    <a href="#">Läs mer</a>
+                                </li>
+                                <li>
+                                    <h4>Pub quiz med Håkan</h4>
+                                    <p>Håkan bjuder laget runt om något får full pott.</p>
+                                    <a href="#">Läs mer</a>
+                                </li>
+                                <li>
+                                    <h4>WarmKitten vs. Pattzor</h4>
+                                    <p>while(<span style="color: #a7d7ff; font-weight: bold;">MFF</span>){ Console.WriteLine("Oki Doki"); }</p>
+                                    <a href="#">Läs mer</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div id="help">
+                            <div id="chatHeader">
+                                <h3>Support</h3>
+                                <p>Lämna meddelande till supporten här:</p>
+                            </div>
+                            <div id="chatBox">
+                                <p class="chatTimeStamp">25 okt - 12:34</p>
+                                <p><span class="userMessage">Du: </span>Hejsan, hur kopplar jag kurser?</p>
+                                <p class="chatTimeStamp">24 dec - 15:00</p>
+                                <p><span class="operatorMessage">David: </span>Du klickar på "Koppla kurser".</p>
+                            </div>
+                            <div id="chatForm">
+                                <textarea placeholder="Skriv ditt meddelande här.."></textarea>
+                                <button>Skicka</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OBS! Kom ihåg i JS att lägga limit på 24 tecken för kursnamn. Avsluta med .. om förkortat -->
+			    <div id="classesMainBox" class="mainBoxItem" style="display: none;">
+                    <div class="classBox">
+                        <h3 class="classNameBox">Te16a</h3>
+                        <button class="classEditButton" data-sgid="" data-sgname="" data-teamid="">Lägg till kurser</button>
+                        <div class="allClassesBox">
+                            <div class="allClassesHeader">
+                                <p>HT</p>
+                                <p>VT</p>
+                            </div>
+                            <div class="fullSemesterBox">
+                                <div class="studentGroupClass">
+                                    <div class="htFullBox">
+                                        <p title="Engelska 6">Engelska 6</p>
+                                    </div>
+                                    <div class="vtFullBox">
+                                        <p title="Engelska 6">Engelska 6</p>
+                                        <p class="personnelSignatureClass">BjGr01</p>
+                                    </div>
+                                </div>
+                                <div class="studentGroupClass">
+                                    <div class="htFullBox">
+                                        <p title="Svenska 2">Svenska 2</p>
+                                    </div>
+                                    <div class="vtFullBox">
+                                        <p title="Svenska 2">Svenska 2</p>
+                                        <p class="personnelSignatureClass">SoKa01</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="halfSemesterBox">
+                                <div class="htBox">
+                                    <div class="studentGroupHalfClass">
+                                        <p title="Historia 1a">Specialisering av naturve..</p>
+                                        <p class="personnelSignatureClass">SoKa01</p>
+                                    </div>
+                                    <div class="studentGroupHalfClass">
+                                        <p title="Religion 1a">Religion 1a</p>
+                                        <p class="personnelSignatureClass">JoJi01</p>
+                                    </div>
+                                </div>
+                                <div class="vtBox">
+                                    <div class="studentGroupHalfClass">
+                                        <p title="Naturkunskap 1a1">Naturkunskap 1a1</p>
+                                        <p class="personnelSignatureClass">JoJi01</p>
+                                    </div>
+                                    <div class="studentGroupHalfClass">
+                                        <p title="Naturkunskap 1a2">Naturkunskap 1a2</p>
+                                        <p class="personnelSignatureClass">BjGr01</p>
+                                    </div>
+                                    <div class="studentGroupHalfClass">
+                                        <p title="Naturkunskap 1a2">Naturkunskap 1a2</p>
+                                        <p class="personnelSignatureClass">BjGr01</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="classBox">
+                        <h3 class="classNameBox" data-sgid="" data-sgname="" data-teamid="">Te14a</h3>
+                        <button class="classEditButton">Lägg till kurser</button>
+                        <div class="allClassesBox">
+                            <div class="allClassesHeader">
+                                <p>HT</p>
+                                <p>VT</p>
+                            </div>
+                            <div class="fullSemesterBox">
+                                <div class="studentGroupClass">
+                                    <div class="htFullBox">
+                                        <p title="Engelska 6">Engelska 6</p>
+                                    </div>
+                                    <div class="vtFullBox">
+                                        <p title="Engelskasd ads asd asd asda 6">Engelska 6</p>
+                                        <p class="personnelSignatureClass">BjGr01</p>
+                                    </div>
+                                </div>
+                                <div class="studentGroupClass">
+                                    <div class="htFullBox">
+                                        <p title="Svenska 2">Svenska 2</p>
+                                    </div>
+                                    <div class="vtFullBox">
+                                        <p title="Svenska 2">Svenska 2</p>
+                                        <p class="personnelSignatureClass">SoKa01</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="halfSemesterBox">
+                                <div class="htBox">
+                                    <div class="studentGroupHalfClass">
+                                        <p title="Historia 1a">Historia 1a</p>
+                                        <p class="personnelSignatureClass">SoKa01</p>
+                                    </div>
+                                    <div class="studentGroupHalfClass">
+                                        <p title="Religion 1a">Religion 1a</p>
+                                        <p class="personnelSignatureClass">JoJi01</p>
+                                    </div>
+                                </div>
+                                <div class="vtBox">
+                                    <div class="studentGroupHalfClass">
+                                        <p title="Naturkunskap 1a1">Naturkunskap 1a1</p>
+                                        <p class="personnelSignatureClass">JoJi01</p>
+                                    </div>
+                                    <div class="studentGroupHalfClass">
+                                        <p title="Naturkunskap 1a2">Naturkunskap 1a2</p>
+                                        <p class="personnelSignatureClass">BjGr01</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="classBox">
+                        <h3 class="classNameBox" data-sgid="" data-sgname="" data-teamid="">SM16a</h3>
+                        <button class="classEditButton">Lägg till kurser</button>
+                        <div class="allClassesBox">
+                            <div class="allClassesHeader">
+                                <p>HT</p>
+                                <p>VT</p>
+                            </div>
+                            <div class="fullSemesterBox">
+                                <div class="studentGroupClass">
+                                    <div class="htFullBox">
+                                        <p title="Engelska 6">Engelska 6</p>
+                                    </div>
+                                    <div class="vtFullBox">
+                                        <p title="Engelskasd ads asd asd asda 6">Engelska 6</p>
+                                        <p class="personnelSignatureClass">BjGr01</p>
+                                    </div>
+                                </div>
+                                <div class="studentGroupClass">
+                                    <div class="htFullBox">
+                                        <p title="Svenska 2">Svenska 2</p>
+                                    </div>
+                                    <div class="vtFullBox">
+                                        <p title="Svenska 2">Svenska 2</p>
+                                        <p class="personnelSignatureClass">SoKa01</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="halfSemesterBox">
+                                <div class="htBox">
+                                    <div class="studentGroupHalfClass">
+                                        <p title="Historia 1a">Historia 1a</p>
+                                        <p class="personnelSignatureClass">SoKa01</p>
+                                    </div>
+                                    <div class="studentGroupHalfClass">
+                                        <p title="Religion 1a">Religion 1a</p>
+                                        <p class="personnelSignatureClass">JoJi01</p>
+                                    </div>
+                                </div>
+                                <div class="vtBox">
+                                    <div class="studentGroupHalfClass">
+                                        <p title="Naturkunskap 1a1">Naturkunskap 1a1</p>
+                                        <p class="personnelSignatureClass">JoJi01</p>
+                                    </div>
+                                    <div class="studentGroupHalfClass">
+                                        <p title="Naturkunskap 1a2">Naturkunskap 1a2</p>
+                                        <p class="personnelSignatureClass">BjGr01</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mainBoxItem" id="personnelMainBox" style="display: none;">
+                    <div class="personnelBox">
+                        <div class="personnelBoxTop">
+                            <div>
+                                <img src="~/img/staff_pictures/Img1LiQ.jpg" alt="Pelle Karlsson" />
+                            </div>
+                            <div>
+                                <button class="personnelEditButton" data-id="3">Kurser & behörighet</button>
+                                <p class="personnelTeamName">Tekniklaget</p>
+                                <p class="personnelContract">Heltid</p>
+                            </div>
+                        </div>
+                        <div class="personnelBoxCenter">
+                            <p>SaMc01</p>
+                            <p>Samuel McSamsam</p>
+                        </div>
+                        <div class="personnelBoxBottom">
+                            <div class="personnelMeterBox">
+                                <p>Tjänstegrad: 80%</p>
+                                <div class="personnelAvailableMeter">
+                                    <span style="width: 80%;"></span>
+                                </div>
+                            </div>
+                            <div class="personnelMeterBox">
+                                <p>Tilldelat: 40%</p>
+                                <div class="personnelAssignedMeter">
+                                    <span style="width: 40%;"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="personnelCompetenceBox">
+                        </div>
+                    </div>
+
+                    <div class="personnelBox">
+                        <div class="personnelBoxTop">
+                            <div>
+                                <img src="~/img/staff_pictures/Img1LiQ.jpg" alt="Pelle Karlsson" />
+                            </div>
+                            <div>
+                                <button class="personnelEditButton" data-id="3">Kurser & behörighet</button>
+                                <p class="personnelTeamName">Tekniklaget</p>
+                                <p class="personnelContract">Heltid</p>
+                            </div>
+                        </div>
+                        <div class="personnelBoxCenter">
+                            <p>SaMc01</p>
+                            <p>Samuel McSamsam</p>
+                        </div>
+                        <div class="personnelBoxBottom">
+                            <div class="personnelMeterBox">
+                                <p>Tjänstegrad: 80%</p>
+                                <div class="personnelAvailableMeter">
+                                    <span style="width: 80%;"></span>
+                                </div>
+                            </div>
+                            <div class="personnelMeterBox">
+                                <p>Tilldelat: 40%</p>
+                                <div class="personnelAssignedMeter">
+                                    <span style="width: 40%;"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="personnelCompetenceBox">
+                        </div>
+                    </div>
+
+                    <div class="personnelBox">
+                        <div class="personnelBoxTop">
+                            <div>
+                                <img src="~/img/staff_pictures/Img1LiQ.jpg" alt="Pelle Karlsson" />
+                            </div>
+                            <div>
+                                <button class="personnelEditButton" data-id="3">Kurser & behörighet</button>
+                                <p class="personnelTeamName">Tekniklaget</p>
+                                <p class="personnelContract">Heltid</p>
+                            </div>
+                        </div>
+                        <div class="personnelBoxCenter">
+                            <p>SaMc01</p>
+                            <p>Samuel McSamsam</p>
+                        </div>
+                        <div class="personnelBoxBottom">
+                            <div class="personnelMeterBox">
+                                <p>Tjänstegrad: 80%</p>
+                                <div class="personnelAvailableMeter">
+                                    <span style="width: 80%;"></span>
+                                </div>
+                            </div>
+                            <div class="personnelMeterBox">
+                                <p>Tilldelat: 40%</p>
+                                <div class="personnelAssignedMeter">
+                                    <span style="width: 40%;"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="personnelCompetenceBox">
+                        </div>
+                    </div>
+                </div>
+                
                 @RenderBody()
                 @* Wizardens html! *@
                 <div id="overLay">
@@ -135,11 +497,6 @@
                 @* Wizardens html slut! *@
             </section>
         </main>
-        <footer>
-            <div id="innerFooter">
-                <p>&copy; 2017</p>
-            </div>
-        </footer>
     </div>
 
     <link href="~/css/layout.css" property="stylesheet" rel="stylesheet" />

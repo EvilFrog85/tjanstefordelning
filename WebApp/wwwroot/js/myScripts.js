@@ -1,17 +1,44 @@
 $(document).ready(function () {
-    function stickyFooter() {
-        $('main').css({ 'paddingBottom': $('footer').height() });
-        $('#innerFooter').css({ 'lineHeight': $('footer').height() - 20 + 'px' });
-    }
-    stickyFooter();
-    $('#hamburgerBtn').on('click', function () {
-        return $('header nav').stop().slideToggle();
-    });
-    $(window).resize(function () {
-        if ($(window).width() > 768) {
-            $('header nav').removeAttr('style');
+    $('.navItem').on('click', function () {
+        var target = $(this).attr('id');
+        var active = $('.mainNavActive').attr('id');
+
+        if (target == "navHome" && active != target) {
+            $('.navItem').removeClass('mainNavActive');
+            $('#navHome').addClass('mainNavActive');
+            $('.mainBoxItem').hide();
+            $('#homeMainBox').fadeToggle();
         }
-        stickyFooter();
+
+        // When wizard is opened
+        else if (target == "navWizard") {
+            //Get data for list - first because of possible async-delay
+            updateLists();
+            $('#overLay').fadeToggle("fast");
+            // Hide body-scroll
+            $('html').css('overflow', 'hidden');
+            // Show data for team and add description
+            $('#teamCrud').show();
+            $('#teamCrudDesc').show();
+        }
+
+        else if (target == "navClass" && active != target) {
+            $('.navItem').removeClass('mainNavActive');
+            $('#navClass').addClass('mainNavActive');
+            $('.mainBoxItem').hide();
+            $('#classesMainBox').fadeToggle();
+        }
+
+        else if (target == "navPersonnel" && active != target) {
+            $('.navItem').removeClass('mainNavActive');
+            $('#navPersonnel').addClass('mainNavActive');
+            $('.mainBoxItem').hide();
+            $('#personnelMainBox').fadeToggle();
+        }
+
+        else if (target == "navBomb") {
+            alert("Vet du verkligen vad du gör nu?");
+        }
     });
     /*
     CreateIncludedClassInput();
@@ -24,17 +51,6 @@ $(document).ready(function () {
     CreateInputCompetence();
     CreateAssignClassesToStudentGroupsOverlay();
     /* Wizard, innerLayOut Controlls */
-    // When wizard is opened
-    $('.wizard').on('click', function () {
-        //Get data for list - first because of possible async-delay
-        updateLists();
-        $('#overLay').fadeToggle("fast");
-        // Hide body-scroll
-        $('html').css('overflow', 'hidden');
-        // Show data for team and add description
-        $('#teamCrud').show();
-        $('#teamCrudDesc').show();
-    });
 
     // When wizard is exited
     $('#exitWizard').on('click', function () {
