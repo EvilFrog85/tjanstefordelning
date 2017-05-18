@@ -511,12 +511,13 @@ $(document).ready(function () {
         var name = $(this).attr('data-name');
         var pid = $(this).attr('data-pid');
 
-        if (type == "pers"){
+        if (type == "pers") {
             $.ajax({
                 type: 'POST',
                 url: '/Wizard/RemoveTeacherFromIncludedClass/' + classId,
                 success: function () {
                     generatePersonnelEditBox(pid, name);
+                    // TODO - Update list behind pop-up. Assigned points not updated when classes are removed from techers.
                 }
             });
         }
@@ -534,6 +535,14 @@ $(document).ready(function () {
     });
     // #endregion
 
+
+    /* Dummy chatbox */
+    $('#chatForm button').on('click', function () {
+        var message = $('#chatForm textarea').val();
+        var dt = new Date();
+        var time = dt.getHours() + ":" + dt.getMinutes();
+        $('#chatBox').append('<p class="chatTimeStamp">19 maj - ' + time + '</p><p><span class="userMessage">Du:</span>' + message + '</p>');
+    });
     /* END - Jonas lekplats */
 
     // #region class to student group
