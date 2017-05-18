@@ -165,10 +165,10 @@ namespace WebApp.Controllers
             
         }
 
-        [HttpPost]
-        public IncludedClassVM GetIncludedClassById(int id)
+        [HttpGet]
+        public async Task<IncludedClassVM[]> GetIncludedClassByStudentGroupId(int id)
         {
-            return _context.GetIncludedClassById(id);
+            return await _context.GetIncludedClassByStudentGroupId(id);
         }
 
         //TODO : Move to different controller?
@@ -214,8 +214,11 @@ namespace WebApp.Controllers
         {
             return _context.GetAuxiliaryAssignmentById(id);
         }
-
-        
+        [HttpGet]
+        public async Task<CompetencesIncludedClassesVM> GetPersonInfo(int id)
+        {
+            return await _context.GetIncludedClassesAndCompetencesByPersonnelId(id);
+        }
 
     }
 }

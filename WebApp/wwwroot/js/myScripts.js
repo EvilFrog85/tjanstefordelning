@@ -38,7 +38,7 @@ $(document).ready(function () {
         }
 
         else if (target == "navBomb") {
-            alert("Vet du verkligen vad du g�r nu?");
+            alert("Vet du verkligen vad du gör nu?");
         }
     });
     /*
@@ -57,7 +57,7 @@ $(document).ready(function () {
     $('#exitWizard').on('click', function () {
         // Reset active tab
         $('.wizActive').removeClass('wizActive');
-        $('#teamCrudOpen').addClass('wizActive');//TODO Fr�ga jonas
+        $('#teamCrudOpen').addClass('wizActive');//TODO Fråga jonas
         $('.wizardDataBox').hide();
         $('#wizardBoxItemDesc div').hide();
         $('#overLay').fadeToggle("fast");
@@ -83,7 +83,7 @@ $(document).ready(function () {
         $('#' + target + 'Desc').show();
 
         updateLists();
-        console.log(target);
+        //console.log(target);
 
         var listLength = $('#' + target + ' table tr:not(:first)');
         var name = $('#' + target + 'Open').text();
@@ -121,19 +121,19 @@ $(document).ready(function () {
             GetAllSubjects();
         if (target == "personnelCrud") {
             $('#addPersonnelButton').attr('onclick', 'AddNewPersonnel()');
-            $('#addPersonnelButton').text('L�gg till personal');
+            $('#addPersonnelButton').text('Lägg till personal');
         }
         if (target == "teamCrud") {
             $('#addTeamButton').attr('onclick', 'SubmitTeam()');
-            $('#addTeamButton').text('L�gg till arbetslag');
+            $('#addTeamButton').text('Lägg till arbetslag');
         }
         if (target == "studentGroupCrud") {
             $('#addStudentGroupButton').attr('onclick', 'SubmitStudentGroup()');
-            $('#addStudentGroupButton').text('L�gg till klass');
+            $('#addStudentGroupButton').text('Lägg till klass');
         }
         if (target == "auxiliaryAssignmentCrud") {
             $('#addAuxiliaryAssignmentButton').attr('onclick', 'SubmitAuxiliaryAssignment()');
-            $('#addAuxiliaryAssignmentButton').text('L�gg till uppdrag');
+            $('#addAuxiliaryAssignmentButton').text('Lägg till uppdrag');
         }
         target = target + "Form";
         $('.innerOverLay').fadeToggle("fast");
@@ -173,7 +173,7 @@ $(document).ready(function () {
                     return;
             }
 
-            //alert("Genomf�r uppdatering");
+            //alert("Genomför uppdatering");
 
             if (target == "teamCrud") {
                 //alert("Uppdaterar team");
@@ -289,8 +289,8 @@ $(document).ready(function () {
                 GetAllSubjects();
 
             GetPersonToEdit(itemId);
-            // Byter ut spar-knappen mot en uppdatera-knapp och �ndrar funktionen som kallas. Kom ih�g att byta tillbaka efter�t / n�r "Add new" �ppnas.
-            // ImgUrl uppdateras inte i nul�get..
+            // Byter ut spar-knappen mot en uppdatera-knapp och ändrar funktionen som kallas. Kom ihåg att byta tillbaka efteråt / när "Add new" öppnas.
+            // ImgUrl uppdateras inte i nuläget..
             $('#addPersonnelButton').attr('onclick', 'EditPersonById(' + itemId + ')');
             $('#addPersonnelButton').text('Uppdatera');
         }
@@ -338,12 +338,43 @@ $(document).ready(function () {
                 return;
         }
     });
+
+    generatePersonnelHtml();
+
+    // #region Genereate html for personnel-page
+    function generatePersonnelHtml() {
+
+        $.ajax({
+            type: 'GET',
+            url: '/Wizard/GetAllPersonnelToOverView',
+            success: function (data) {
+                data.forEach(function (e) {
+                    var assignedPointsPercentage = 0;
+                    if (e.assignedPoints > 0)
+                        var assignedPointsPercentage = (e.assignedPoints / 6).toFixed(1);
+                    console.log(e.assignedPoints + " " + assignedPointsPercentage);
+                    var contractType = contractEnum[e.contract];
+                    $('#personnelMainBox').append('<div class="personnelBox"><div class="personnelBoxTop"><div><img src="~/img/staff_pictures/' + e.imageUrl + '.jpg" alt="' + e.firstName + ' ' + e.lastName + '" /></div><div><button class="personnelEditButton" data-id="' + e.id + '">Kurser & behörighet</button><p class="personnelTeamName">' + e.teamName + '</p><p class="personnelContract">' + contractType + '</p></div></div><div class="personnelBoxCenter"><p>' + e.signature + '</p><p>' + e.firstName + ' ' + e.lastName + '</p></div><div class="personnelBoxBottom"><div class="personnelMeterBox"><p>Tjänstegrad: ' + e.availablePoints +'%</p><div class="personnelAvailableMeter"><span style="width: ' + e.availablePoints + '%;"></span></div></div><div class="personnelMeterBox"><p>Tilldelat: ' + assignedPointsPercentage + '%</p><div class="personnelAssignedMeter"><span style="width: ' + assignedPointsPercentage + '%;"></span></div></div></div><div class="personnelCompetenceBox"></div></div>');                    
+                });
+            }
+        });
+    }
+    // #endregion
+
     /* END - Jonas lekplats */
 
     // #region class to student group
     // #region utils
+    var contractEnum = [
+        'Tillsvidare',
+        'Tidsbegränsad',
+        'Projektanställning',
+        'Fast anställning',
+        'Övrig'
+    ];
+
     var durationEnum = {
-        'Hela l�s�ret': 0,
+        'Hela läsåret': 0,
         'HT': 1,
         'VT': 2
     };
@@ -360,35 +391,8 @@ $(document).ready(function () {
 
 
     // #endregion
-
     // #region autocomplete
-    function PopulateClassesArray() {
-        allClasses = []; //empty array
-        $.ajax({
-            type: 'GET',
-            url: '/Assignment/GetAllClasses/',
-            success: function (classes) {
-                console.log("GetAllClasses");
-                console.log(classes);
-                classes.forEach(function (cls) {
-                    var newClass = { label: cls.className, value: cls.id };
-                    allClasses.push(newClass);
-                });
-                //$('#classInput').autocomplete({
-                //    source: allClasses,
-                //    select: function (event, listItems) {
-                //        $('#classInput').val(listItems.item.label);
-                //        $('#classInput').attr('data-classid', listItems.item.value);
-                //        return false;
-                //    },
-                //    focus: function (event, ti) {
-                //        event.preventDefault();
-                //        $('#classInput').val(ti.item.label);
-                //    }
-                //});
-            }
-        });
-    }
+
     // #endregion
     // #region html injection
     function CreateAssignClassesToStudentGroupsOverlay(studentGroupId, studentGroupName, teamId) {
@@ -407,6 +411,7 @@ $(document).ready(function () {
         });
 
         PopulateClassesArray();
+        console.log(allClasses);
 
         var $classDuration = $('<select/>', {
             id: 'classDurationDropDown',
@@ -418,7 +423,7 @@ $(document).ready(function () {
             class: 'buttonSubmit',
             id: 'addClassButton',
             onclick: 'AddClassToCurriculum()',
-            text: 'L�gg till',
+            text: 'Lägg till',
             style: 'align-self: center',
             'data-studentGroupId': studentGroupId,
             'data-studentGroupName': studentGroupName,
@@ -433,11 +438,11 @@ $(document).ready(function () {
             style: 'align-self: center'
         });
 
-        $($classDuration).append('<option value="0" selected="selected">Hela l�s�ret</option>');
+        $($classDuration).append('<option value="0" selected="selected">Hela läsåret</option>');
         $($classDuration).append('<option value="1">HT</option>');
         $($classDuration).append('<option value="2">VT</option>');
 
-        //TODO : kursen l�ses �ver fler �n 2 terminer l�s om du vill
+        //TODO : kursen läses över fler än 2 terminer lös om du vill
 
         //lots of divs
         var $semestersDiv = $('<div/>', { id: 'semestersDiv' }).append('<h2>Vald klass: ' + studentGroupName + '</h2>');
@@ -476,13 +481,15 @@ $(document).ready(function () {
                 $('#classInput').val(ti.item.label);
             }
         });
+
+        LoadIncludedClasses(studentGroupId);
     }
     // #endregion
     // #endregion
 });
 
-var allClasses = [];
 var allChosenClasses = [];
+var allClasses = [];
 
 //Removes class from curriculum
 function RemoveClass(classId) {
@@ -492,8 +499,9 @@ function RemoveClass(classId) {
             element.remove();
         }
     });
-    var index = allChosenClasses.findIndex(function (element) { console.log(element); element.ClassId == classId; });
+    var index = allChosenClasses.findIndex(function (element) { element.ClassId == classId; });
     allChosenClasses.splice(index);
+    console.log("allChosenClasses");
     console.log(allChosenClasses);
 }
 
@@ -503,17 +511,14 @@ function SaveAddedClasses() {
     if (studentGroupId && allChosenClasses.length > 0) {
         var classDataToSend = [];
         allChosenClasses.forEach(function (cls) {
-            console.log(cls);
             var newClass = { ClassId: cls.ClassId, Duration: cls.Duration, TeamId: cls.TeamId, StudentGroupId: cls.StudentGroupId };
             classDataToSend.push(newClass);
         });
-        console.log(classDataToSend);
         $.ajax({
             type: 'POST',
             url: '/Assignment/AssignStudentGroups/',
             data: { ClassData: classDataToSend },
             success: function (result) {
-                console.log(result);
                 if (result > 0) {
                     $('#messageBoxAssignClasses').html(generateFormMessage("success", result + " kurs/kurser har blivit tillagda.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
                     $('#currentStudentGroup').empty();
@@ -525,24 +530,42 @@ function SaveAddedClasses() {
     }
 }
 
-function AddClassToCurriculum() {
+function AddClassToCurriculum(newClass) {
     //Get data
-    className = $('#classInput').val();
-    var cls = $('#classInput').val();
-    console.log(cls);
-    if (cls) {
-        var index = allClasses.findIndex(function (element) { return element.label == cls; });
-        var classId = allClasses[index].value;
-        console.log('classId: ' + classId);
+    if (newClass) {
+        var className = newClass.className;
+        var classId = newClass.classId;
+        var duration = newClass.duration;
+        var teamId = newClass.teamId;
+    } else {
+        var className = $('#classInput').val();
+        if (className) {
+            var index = allClasses.findIndex(function (element) { console.log(element); return element.label == className; });
+            if (index != -1) {
+                var classId = allClasses[index].value;
+            } else {
+                $('#messageBoxAssignClasses').html(generateFormMessage("error", "Du måste välja en kurs från listan.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+                return;
+            }
+        }
+        var duration = $('#classDurationDropDown').val();
+        var teamId = $('#addClassButton').attr('data-team-id');
     }
-    var duration = $('#classDurationDropDown').val();
+
+    //Get StudentGroup info from button
     var studentGroupId = $('#addClassButton').attr('data-studentGroupId');
     var studentGroupName = $('#addClassButton').attr('data-studentGroupName');
-    var teamId = $('#addClassButton').attr('data-team-id');
-    console.log(teamId);
 
     //Check that the user has input a valid class
-    if (allClasses.findIndex(function (element) { return element.label == className; }) !== -1) {
+    for (var c in allClasses) {
+        if (c.label == className) {
+            console.log(c);
+        }
+    }
+    console.log(allClasses);
+    console.log(className);
+    console.log(allClasses.findIndex(function (element) { return element.label == this; }, className));
+    if (allClasses.findIndex(function (element) { return element.label == this; }, className) != -1) {
         //Create the div to contain the included class information needed
         var $classDiv = $('<div/>', {
             class: 'classToStudentGroup',
@@ -563,8 +586,8 @@ function AddClassToCurriculum() {
             class: 'deleteAssignedClassButton'
         });
 
-        //Check if the class is in the class list
-        var index = allChosenClasses.findIndex(function (element) { console.log(element); return element.ClassId == classId; });
+        //Check if the class is in the chosen class list
+        var index = allChosenClasses.findIndex(function (element) { return element.ClassId == classId; });
         if (index == -1) {
             allChosenClasses.push({ "ClassName": className, "ClassId": classId, 'Duration': duration, 'TeamId': teamId, 'StudentGroupId': studentGroupId });
             $classDiv.append($classButton);
@@ -582,12 +605,54 @@ function AddClassToCurriculum() {
             $('#classInput').val('');
         }
     } else {
-        $('#messageBoxAssignClasses').html(generateFormMessage("error", "Du m�ste v�lja en kurs fr�n listan.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
-        //$('#assignedClasses').html(generateFormMessage("error", "Du m�ste v�lja en klass och eller kurser att l�gga till."));
+        //$('#messageBoxAssignClasses').html(generateFormMessage("error", "Du måste välja en kurs från listan.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+        $('#messageBoxAssignClasses').html(generateFormMessage("error", "Du måste välja en klass från listan."));
     }
-    console.log(allChosenClasses);
 }
 
+function LoadIncludedClasses(studentGroupId) {
+    $.ajax({
+        type: 'GET',
+        url: '/Wizard/GetIncludedClassByStudentGroupId/' + studentGroupId,
+    }).then(function (includedClasses) {
+        if (includedClasses) {
+            includedClasses.forEach(function (elem, ind) {
+                AddClassToCurriculum(elem);
+            });
+        } else {
+            $('#messageBoxAssignClasses').html(generateFormMessage("error", "Not success.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+        }
+    }, function () {
+        $('#messageBoxAssignClasses').html(generateFormMessage("error", "Nånting gick fel.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+    });
+}
+
+function PopulateClassesArray() {
+    allClasses = []; //empty array
+    $.ajax({
+        type: 'GET',
+        url: '/Assignment/GetAllClasses/',
+        success: function (classes) {
+            classes.forEach(function (cls) {
+                var newClass = { label: cls.className, value: cls.id };
+                allClasses.push(newClass);
+            });
+            //$('#classInput').autocomplete({
+            //    source: allClasses,
+            //    select: function (event, listItems) {
+            //        $('#classInput').val(listItems.item.label);
+            //        $('#classInput').attr('data-classid', listItems.item.value);
+            //        return false;
+            //    },
+            //    focus: function (event, ti) {
+            //        event.preventDefault();
+            //        $('#classInput').val(ti.item.label);
+            //    }
+            //});
+        }
+    });
+}
+//TODO : Load classes for a studentgroup
 //TODO : Load classes for a studentgroup
 
 //SOFIA
@@ -603,7 +668,7 @@ function GenerateStudentGroups() {
                     .append($('<div/>', { class: 'classBox', id: 'classBox' + g.name }));
                 $('#classBox' + g.name)
                     .append($('<h3/>', { text: g.name, class: 'classNameBox' }))
-                    .append($('<button/>', { class: 'classEditButton', text: 'L�gg till kurser' }));
+                    .append($('<button/>', { class: 'classEditButton', text: 'Lägg till kurser' }));
 
                 ajax({
                     type: 'GET',
