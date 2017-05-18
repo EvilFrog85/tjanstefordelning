@@ -219,6 +219,20 @@ namespace WebApp.Controllers
         {
             return await _context.GetIncludedClassesAndCompetencesByPersonnelId(id);
         }
-
+        [HttpPost]
+        internal async Task<bool> AssignClassToTeacher(int pid, int cid)
+        {
+            return await _context.AssignClassToTeacher(pid, cid);
+        }
+        [HttpPost]
+        internal async Task<bool> RemoveTeacherFromIncludedClass(int cid)
+        {
+            return await _context.RemoveTeacherFromIncludedClass(cid);
+        }
+        [HttpGet]
+        internal async Task<ClassToPersonVM[]> GetAllUnassignedClassesByPersonnelId(int id)
+        {
+            return await _context.GetAllUnassignedClassesByPersonnelId(id);
+        }
     }
 }

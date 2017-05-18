@@ -8,6 +8,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace WebApp.Models.Entities
 {
@@ -174,8 +175,6 @@ namespace WebApp.Models.Entities
 
         internal async Task<PersonnelWizardListVM[]> GetAllPersonnelToWizardList(string id)
         {
-
-            //Vi borde nog cachea svaret på anropet?
             var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
             var returnValue = await Personnel.Where(p => p.UserId == userId).Select(p => new PersonnelWizardListVM
             {
@@ -183,12 +182,11 @@ namespace WebApp.Models.Entities
                 LastName = p.LastName,
                 Id = p.Id,
                 Signature = p.Signature,
-                TeamName = p.Team.Name// Team.SingleOrDefault(t => t.Id == p.TeamId).Name
+                TeamName = p.Team.Name
             }).OrderBy(p => p.TeamName).ThenBy(p => p.FirstName).ThenBy(p => p.LastName).ToArrayAsync();
 
             return returnValue;
         }
-        //Metod som inte hör till Wizarden Nedanför!
         internal async Task<PersonnelVM[]> GetAllPersonnelToOverView(string id)
         {
             var userId = User.FirstOrDefault(u => u.SchoolId == id).Id;
@@ -673,6 +671,62 @@ namespace WebApp.Models.Entities
                 }).SingleOrDefault();
 
             return auxiliaryAssignment;
+        }
+        internal async Task<ClassToPersonVM[]> GetAllUnassignedClassesByPersonnelId(int id)
+        {
+            var classes = await IncludedClass
+                .Include(i => i.Class)
+                .Where(i => i.Assigned == false)
+                .Select(i => new ClassToPersonVM
+                {
+                    ClassName = i.Class.ClassName,
+                    Id = i.Id,
+                    Points = i.Class.Points,
+                    SubjectId = i.Class.SubjectId
+                })
+                .ToArrayAsync();
+
+            var competences = await Competence
+                .Include(p => p.Personnel)
+                .Where(c => c.Personnel.Id == id)
+                .ToListAsync();
+
+            foreach (var classs in classes)
+            {
+                foreach (var competence in competences)
+                {
+                    if (competence.SubjectId == classs.SubjectId)
+                        classs.Qualified = true;
+                }
+            }
+            return classes.OrderByDescending(c => c.Qualified).ToArray();
+        }
+        
+        internal async Task<bool> RemoveTeacherFromIncludedClass(int id)
+        {
+            var classe = await IncludedClass
+                .Include(c => c.Class)
+                .Include(c => c.Personnel)
+                .SingleOrDefaultAsync(i => i.Id == id);
+            classe.PersonnelId = null;
+            classe.Assigned = false;
+            classe.Personnel.AssignedPoints -= classe.Class.Points;
+            return await SaveChangesAsync() > 0;
+        }
+        internal async Task<bool> AssignClassToTeacher(int pid, int cid)
+        {
+            var person = Personnel
+                .Include(p => p.IncludedClass)
+                .SingleOrDefault(p => p.Id == pid);
+            var classe = IncludedClass
+                .Include(c => c.Class)
+                .SingleOrDefault(i => i.Id == cid);
+
+            classe.Assigned = true;
+            person.IncludedClass.Add(classe);
+            person.AssignedPoints += classe.Class.Points;
+
+            return await SaveChangesAsync() > 0;
         }
     }
 }
