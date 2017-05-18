@@ -353,7 +353,7 @@ $(document).ready(function () {
                         if (e.assignedPoints > 0)
                             var assignedPointsPercentage = (e.assignedPoints / 6).toFixed(1);
                         var contractType = contractEnum[e.contract];
-                        $('#personnelMainBox').append('<div class="personnelBox"><div class="personnelBoxTop"><div><img src="~/img/staff_pictures/' + e.imageUrl + '.jpg" alt="' + e.firstName + ' ' + e.lastName + '" /></div><div><button class="personnelEditButton" data-id="' + e.id + '" data-name="'+ e.firstName + ' ' + e.lastName +'">Kurser & behörighet</button><p class="personnelTeamName">' + e.teamName + '</p><p class="personnelContract">' + contractType + '</p></div></div><div class="personnelBoxCenter"><p>' + e.signature + '</p><p>' + e.firstName + ' ' + e.lastName + '</p></div><div class="personnelBoxBottom"><div class="personnelMeterBox"><p>Tjänstegrad: ' + e.availablePoints + '%</p><div class="personnelAvailableMeter"><span style="width: ' + e.availablePoints + '%;"></span></div></div><div class="personnelMeterBox"><p>Tilldelat: ' + assignedPointsPercentage + '%</p><div class="personnelAssignedMeter"><span style="width: ' + assignedPointsPercentage + '%;"></span></div></div></div><div class="personnelCompetenceBox"></div></div>');
+                        $('#personnelMainBox').append('<div class="personnelBox"><div class="personnelBoxTop"><div><img src="/img/staff_pictures/' + e.imageUrl + '.jpg" alt="' + e.firstName + ' ' + e.lastName + '" /></div><div><button class="personnelEditButton" data-id="' + e.id + '" data-name="'+ e.firstName + ' ' + e.lastName +'">Kurser & behörighet</button><p class="personnelTeamName">' + e.teamName + '</p><p class="personnelContract">' + contractType + '</p></div></div><div class="personnelBoxCenter"><p>' + e.signature + '</p><p>' + e.firstName + ' ' + e.lastName + '</p></div><div class="personnelBoxBottom"><div class="personnelMeterBox"><p>Tjänstegrad: ' + e.availablePoints + '%</p><div class="personnelAvailableMeter"><span style="width: ' + e.availablePoints + '%;"></span></div></div><div class="personnelMeterBox"><p>Tilldelat: ' + assignedPointsPercentage + '%</p><div class="personnelAssignedMeter"><span style="width: ' + assignedPointsPercentage + '%;"></span></div></div></div><div class="personnelCompetenceBox"></div></div>');
                     });
                 }
             });
@@ -368,12 +368,13 @@ $(document).ready(function () {
             type: 'GET',
             url: '/Wizard/GetPersonInfo/' + id,
             success: function (data) {
+                var isEmpty = true;
                 var $overLayData = '<h2 class="overViewName">'+ name +'</h2>';
-                console.log(data);
                 // Print competences
                 $overLayData += '<div class="overViewCompetenceBox">';
                 var obehorig = false;
                 data.competences.forEach(function (c) {
+                    isEmpty = false;
                     if(c.qualified)
                         $overLayData += '<div class="competence qualified"><p>' + c.name + '</p></div>';
                     else {
@@ -388,6 +389,7 @@ $(document).ready(function () {
                 var headersBool = true;
                 // Print available work
                 data.includedClasses.forEach(function (w) {
+                    isEmpty = false;
                     if (headersBool)
                         $overLayData += '<div class="personnelHtVtHeader"><p>HT</p><p>VT</p></div>';
                     headersBool = false;
@@ -414,6 +416,7 @@ $(document).ready(function () {
                 });
 
                 data.auxAssignments.forEach(function (aux) {
+                    isEmpty = false;
                     var times = aux.points / 50;
                     $overLayData += '<div class="personnelHtVt">';
                     for (var i = 1; i <= times; i++) {
@@ -435,7 +438,8 @@ $(document).ready(function () {
                     }
                     $overLayData += '</div>';
                 });
-
+                if (isEmpty)
+                    $overLayData += '<p>Ingen information om personen är tillagd.</p>';
                 // Hide body-scroll
                 $('html').css('overflow', 'hidden');
                 $('#mainOverLayContent').html($overLayData);
