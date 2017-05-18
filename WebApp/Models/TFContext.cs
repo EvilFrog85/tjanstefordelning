@@ -199,7 +199,7 @@ namespace WebApp.Models.Entities
                 {
                     AssignedPoints = p.AssignedPoints,
                     AvailablePoints = p.AvailablePoints,
-                    Competences = p.Competence.Select(c => new CompetenceVM { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray(),
+                    //Competences = p.Competence.Select(c => new CompetenceVM { SubjectId = c.SubjectId, Qualified = c.Qualified }).ToArray(),
                     Contract = p.Contract,
                     FirstName = p.FirstName,
                     LastName = p.LastName,

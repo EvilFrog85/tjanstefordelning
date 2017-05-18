@@ -34,6 +34,10 @@ header {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 #logo {
@@ -275,6 +279,13 @@ main {
     align-items: flex-end;
     text-align: right;
 }
+
+    .personnelBoxTop div:first-child {
+        width: 200px;
+        height: 133px;
+        text-align: center;
+        line-height: 133px;
+    }
 
     .personnelBoxTop div:last-child {
         min-width: 140px;
