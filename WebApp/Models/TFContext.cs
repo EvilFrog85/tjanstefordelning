@@ -513,10 +513,10 @@ namespace WebApp.Models.Entities
             }).ToArrayAsync();
         }
 
-        internal IncludedClassVM GetIncludedClassById(int id)
+        internal async Task<IncludedClassVM[]> GetIncludedClassByStudentGroupId(int id)
         {
-            var includedClass = IncludedClass
-                .Where(i => i.Id == id)
+            var includedClasses = await IncludedClass
+                .Where(i => i.StudentGroupId == id)
                 .Select(i => new IncludedClassVM
                 {
                     Id = i.Id,
@@ -526,9 +526,9 @@ namespace WebApp.Models.Entities
                     StudentGroupId = i.StudentGroup.Id,
                     TeamId = i.Team.Id,
                     ClassName = i.Class.ClassName
-                }).SingleOrDefault();
+                }).ToArrayAsync();
 
-            return includedClass;
+            return includedClasses;
         }
 
         internal Task<IncludedClassVM[]> GetIncludedClassesByStudentGroupId(int studentGroupId, string id)
