@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="wwwroot\css\bomb.css" />
     <Content Include="wwwroot\img\icons\add.svg" />
     <Content Include="wwwroot\img\icons\delete.svg" />
     <Content Include="wwwroot\img\icons\home.svg" />
