@@ -56,7 +56,7 @@ $(document).ready(function () {
     $('#exitWizard').on('click', function () {
         // Reset active tab
         $('.wizActive').removeClass('wizActive');
-        $('#teamCrudOpen').addClass('wizActive');//TODO Fr√•ga jonas
+        $('#teamCrudOpen').addClass('wizActive');//TODO FrÂga jonas
         $('.wizardDataBox').hide();
         $('#wizardBoxItemDesc div').hide();
         $('#overLay').fadeToggle("fast");
@@ -120,19 +120,19 @@ $(document).ready(function () {
             GetAllSubjects();
         if (target == "personnelCrud") {
             $('#addPersonnelButton').attr('onclick', 'AddNewPersonnel()');
-            $('#addPersonnelButton').text('L√§gg till personal');
+            $('#addPersonnelButton').text('L‰gg till personal');
         }
         if (target == "teamCrud") {
             $('#addTeamButton').attr('onclick', 'SubmitTeam()');
-            $('#addTeamButton').text('L√§gg till arbetslag');
+            $('#addTeamButton').text('L‰gg till arbetslag');
         }
         if (target == "studentGroupCrud") {
             $('#addStudentGroupButton').attr('onclick', 'SubmitStudentGroup()');
-            $('#addStudentGroupButton').text('L√§gg till klass');
+            $('#addStudentGroupButton').text('L‰gg till klass');
         }
         if (target == "auxiliaryAssignmentCrud") {
             $('#addAuxiliaryAssignmentButton').attr('onclick', 'SubmitAuxiliaryAssignment()');
-            $('#addAuxiliaryAssignmentButton').text('L√§gg till uppdrag');
+            $('#addAuxiliaryAssignmentButton').text('L‰gg till uppdrag');
         }
         target = target + "Form";
         $('.innerOverLay').fadeToggle("fast");
@@ -288,8 +288,8 @@ $(document).ready(function () {
                 GetAllSubjects();
 
             GetPersonToEdit(itemId);
-            // Byter ut spar-knappen mot en uppdatera-knapp och √§ndrar funktionen som kallas. Kom ih√•g att byta tillbaka efter√•t / n√§r "Add new" √∂ppnas.
-            // ImgUrl uppdateras inte i nul√§get..
+            // Byter ut spar-knappen mot en uppdatera-knapp och ‰ndrar funktionen som kallas. Kom ihÂg att byta tillbaka efterÂt / n‰r "Add new" √∂ppnas.
+            // ImgUrl uppdateras inte i nul‰get..
             $('#addPersonnelButton').attr('onclick', 'EditPersonById(' + itemId + ')');
             $('#addPersonnelButton').text('Uppdatera');
         }
@@ -353,7 +353,7 @@ $(document).ready(function () {
                         var assignedPointsPercentage = (e.assignedPoints / 6).toFixed(1);
                     console.log(e.assignedPoints + " " + assignedPointsPercentage);
                     var contractType = contractEnum[e.contract];
-                    $('#personnelMainBox').append('<div class="personnelBox"><div class="personnelBoxTop"><div><img src="~/img/staff_pictures/' + e.imageUrl + '.jpg" alt="' + e.firstName + ' ' + e.lastName + '" /></div><div><button class="personnelEditButton" data-id="' + e.id + '">Kurser & beh√∂righet</button><p class="personnelTeamName">' + e.teamName + '</p><p class="personnelContract">' + contractType + '</p></div></div><div class="personnelBoxCenter"><p>' + e.signature + '</p><p>' + e.firstName + ' ' + e.lastName + '</p></div><div class="personnelBoxBottom"><div class="personnelMeterBox"><p>Tj√§nstegrad: ' + e.availablePoints +'%</p><div class="personnelAvailableMeter"><span style="width: ' + e.availablePoints + '%;"></span></div></div><div class="personnelMeterBox"><p>Tilldelat: ' + assignedPointsPercentage + '%</p><div class="personnelAssignedMeter"><span style="width: ' + assignedPointsPercentage + '%;"></span></div></div></div><div class="personnelCompetenceBox"></div></div>');                    
+                    $('#personnelMainBox').append('<div class="personnelBox"><div class="personnelBoxTop"><div><img src="~/img/staff_pictures/' + e.imageUrl + '.jpg" alt="' + e.firstName + ' ' + e.lastName + '" /></div><div><button class="personnelEditButton" data-id="' + e.id + '">Kurser & beh√∂righet</button><p class="personnelTeamName">' + e.teamName + '</p><p class="personnelContract">' + contractType + '</p></div></div><div class="personnelBoxCenter"><p>' + e.signature + '</p><p>' + e.firstName + ' ' + e.lastName + '</p></div><div class="personnelBoxBottom"><div class="personnelMeterBox"><p>Tj‰nstegrad: ' + e.availablePoints +'%</p><div class="personnelAvailableMeter"><span style="width: ' + e.availablePoints + '%;"></span></div></div><div class="personnelMeterBox"><p>Tilldelat: ' + assignedPointsPercentage + '%</p><div class="personnelAssignedMeter"><span style="width: ' + assignedPointsPercentage + '%;"></span></div></div></div><div class="personnelCompetenceBox"></div></div>');                    
                 });
             }
         });
@@ -366,14 +366,14 @@ $(document).ready(function () {
     // #region utils
     var contractEnum = [
         'Tillsvidare',
-        'Tidsbegr√§nsad',
-        'Projektanst√§llning',
-        'Fast anst√§llning',
-        '√ñvrig'
+        'Tidsbegr‰nsad',
+        'Projektanst‰llning',
+        'Fast anst‰llning',
+        '÷vrig'
     ];
 
     var durationEnum = {
-        'Hela l√§s√•ret': 0,
+        'Hela l‰sÂret': 0,
         'HT': 1,
         'VT': 2
     };
@@ -385,14 +385,7 @@ $(document).ready(function () {
         return null;
     }
     // #endregion
-    // #region Adding and removing classes "buttons".
 
-
-
-    // #endregion
-    // #region autocomplete
-
-    // #endregion
     // #region html injection
     function CreateAssignClassesToStudentGroupsOverlay(studentGroupId, studentGroupName, teamId) {
         var $target = $('#overlayAssignClasses');
@@ -422,7 +415,7 @@ $(document).ready(function () {
             class: 'buttonSubmit',
             id: 'addClassButton',
             onclick: 'AddClassToCurriculum()',
-            text: 'L√§gg till',
+            text: 'L‰gg till',
             style: 'align-self: center',
             'data-studentGroupId': studentGroupId,
             'data-studentGroupName': studentGroupName,
@@ -437,11 +430,11 @@ $(document).ready(function () {
             style: 'align-self: center'
         });
 
-        $($classDuration).append('<option value="0" selected="selected">Hela l√§s√•ret</option>');
+        $($classDuration).append('<option value="0" selected="selected">Hela l‰sÂret</option>');
         $($classDuration).append('<option value="1">HT</option>');
         $($classDuration).append('<option value="2">VT</option>');
 
-        //TODO : kursen l√§ses √∂ver fler √§n 2 terminer l√∂s om du vill
+        //TODO : kursen l‰ses √∂ver fler ‰n 2 terminer l√∂s om du vill
 
         //lots of divs
         var $semestersDiv = $('<div/>', { id: 'semestersDiv' }).append('<h2>Vald klass: ' + studentGroupName + '</h2>');
@@ -498,9 +491,8 @@ function RemoveClass(classId) {
             element.remove();
         }
     });
-    var index = allChosenClasses.findIndex(function (element) { element.ClassId == classId; });
-    allChosenClasses.splice(index);
-    console.log("allChosenClasses");
+    allChosenClasses = jQuery.grep(allChosenClasses, function (elem, index) { return elem.ClassId != classId;} );
+    console.log("allChosenClasses");    
     console.log(allChosenClasses);
 }
 
@@ -531,19 +523,21 @@ function SaveAddedClasses() {
 
 function AddClassToCurriculum(newClass) {
     //Get data
+    var index;
     if (newClass) {
         var className = newClass.className;
         var classId = newClass.classId;
         var duration = newClass.duration;
         var teamId = newClass.teamId;
+        index = 0;
     } else {
         var className = $('#classInput').val();
         if (className) {
-            var index = allClasses.findIndex(function (element) { console.log(element); return element.label == className; });
+             index = allClasses.findIndex(function (element) { return element.label == className; });
             if (index != -1) {
                 var classId = allClasses[index].value;
             } else {
-                $('#messageBoxAssignClasses').html(generateFormMessage("error", "Du m√•ste v√§lja en kurs fr√•n listan.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+                $('#messageBoxAssignClasses').html(generateFormMessage("error", "Du mÂste v‰lja en kurs frÂn listan.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
                 return;
             }
         }
@@ -556,15 +550,7 @@ function AddClassToCurriculum(newClass) {
     var studentGroupName = $('#addClassButton').attr('data-studentGroupName');
 
     //Check that the user has input a valid class
-    for (var c in allClasses) {
-        if (c.label == className) {
-            console.log(c);
-        }
-    }
-    console.log(allClasses);
-    console.log(className);
-    console.log(allClasses.findIndex(function (element) { return element.label == this; }, className));
-    if (allClasses.findIndex(function (element) { return element.label == this; }, className) != -1) {
+    if (index != -1) {
         //Create the div to contain the included class information needed
         var $classDiv = $('<div/>', {
             class: 'classToStudentGroup',
@@ -604,8 +590,8 @@ function AddClassToCurriculum(newClass) {
             $('#classInput').val('');
         }
     } else {
-        //$('#messageBoxAssignClasses').html(generateFormMessage("error", "Du m√•ste v√§lja en kurs fr√•n listan.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
-        $('#messageBoxAssignClasses').html(generateFormMessage("error", "Du m√•ste v√§lja en klass fr√•n listan."));
+        //$('#messageBoxAssignClasses').html(generateFormMessage("error", "Du mÂste v‰lja en kurs frÂn listan.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+        $('#messageBoxAssignClasses').html(generateFormMessage("error", "Du mÂste v‰lja en klass frÂn listan."));
     }
 }
 
@@ -622,7 +608,7 @@ function LoadIncludedClasses(studentGroupId) {
             $('#messageBoxAssignClasses').html(generateFormMessage("error", "Not success.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
         }
     }, function () {
-        $('#messageBoxAssignClasses').html(generateFormMessage("error", "N√•nting gick fel.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+        $('#messageBoxAssignClasses').html(generateFormMessage("error", "NÂnting gick fel.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
     });
 }
 
@@ -651,4 +637,3 @@ function PopulateClassesArray() {
         }
     });
 }
-//TODO : Load classes for a studentgroup
