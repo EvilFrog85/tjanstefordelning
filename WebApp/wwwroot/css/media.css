@@ -1,35 +1,60 @@
-@media (max-width: 768px){
+@media (max-width: 768px) {
     #innerHeader nav {
         display: none;
     }
-    #innerHeader nav a{
-        display: block;
-        background: #888;
-        padding: 3px 6px;
-        margin: 5px 0;
-    }
-    #hamburgerBtn {
-        display: block;
-    }
-    main{
+        #innerHeader nav a {
+            display: block;
+            background: #888;
+            padding: 3px 6px;
+            margin: 5px 0;
+        }
+    main {
         width: 100%;
     }
-	
-	/* Wizard media styles */
-	#wizardLayout > nav > div{
-		font-size: 14px;
-	}
-	#counter{
-		width: calc(50% - 2px);
-		max-width: 200px;
-	}
-	#wizardBoxItemDesc{
-		display: none;
-	}
-	#addButton{
-		width: calc(50% - 2px);
-		max-width: 200px;
-	}
+    header {
+        padding: 3px;
+    }
+    #logo {
+        font-size: 16px;
+    }
+    header > nav {
+        font-size: 12px;
+    }
+    footer {
+        font-size: 14px;
+    }
+    .classBox {
+        min-width: 350px;
+    }
+    .classEditButton {
+        font-size: 12px;
+        height: 26px;
+    }
+    .classesMainBox p {
+        font-size: 12px;
+    }
+    .personnelSignatureClass {
+        margin-top: 2px;
+    }
+    p.personnelSignatureClass {
+        font-size: 9px;
+    }
+
+    /* Wizard media styles */
+    #wizardLayout > nav > div {
+        font-size: 14px;
+    }
+    #counter {
+        width: calc(50% - 2px);
+        max-width: 200px;
+    }
+    #wizardBoxItemDesc {
+        display: none;
+    }
+    #addButton {
+        width: calc(50% - 2px);
+        max-width: 200px;
+    }
     .inputText, .inputTextAuto, .inputSelect, .inputFile, .switch > div > span, .buttonSubmit {
         font-size: 14px;
     }

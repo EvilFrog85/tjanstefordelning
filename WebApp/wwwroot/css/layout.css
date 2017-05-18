@@ -1,18 +1,490 @@
 ﻿@import url('https://fonts.googleapis.com/css?family=Open+Sans');
-*{
+
+* {
     margin: 0;
     padding: 0;
 }
-html,body{
+
+html, body {
     height: 100%;
     font-family: 'Open Sans', Helvetica, sans-serif;
 }
-body{
-	position: relative;
+
+body {
+    position: relative;
+    background-image: url(../img/background.png);
+    background-repeat: no-repeat;
+    background-position: top left;
 }
-ul{
+
+ul {
     margin-left: 20px;
 }
+
+#layout {
+    height: 100%;
+    display: flex;
+}
+
+header {
+    max-height: 100%;
+    background: #4cd2ff;
+    border-right: 1px solid #000;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#logo {
+    /* background: #ffdfbf; */
+    font-weight: bold;
+    font-size: 24px;
+    font-family: verdana;
+    white-space: nowrap;
+    text-align: center;
+}
+
+header > nav {
+    height: 80%;
+    margin-bottom: 30px;
+    /* background: #ffffbf; */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+    header > nav > div {
+        border-top: 1px dotted #888;
+        border-bottom: 1px dotted #888;
+        padding: 3px 0;
+        transition: background .2s linear;
+    }
+
+.mainNavActive {
+    background: #FFF;
+}
+
+    .mainNavActive:hover {
+        background: #b2ecff;
+    }
+
+header > nav > div:hover {
+    cursor: pointer;
+    background: #FFF;
+}
+
+header > nav > div > img {
+    max-width: 70px;
+    margin: auto;
+    display: block;
+}
+
+header > nav > div > p {
+    text-align: center;
+}
+
+header #footer {
+    text-align: center;
+    font-style: italic;
+    /* background: #cfffbf; */
+}
+
+main {
+    width: 100%;
+    padding: 10px;
+    overflow: auto;
+}
+
+#mainOverLay {
+    position: fixed;
+    z-index: 18;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: none;
+}
+
+#mainOverLayBox {
+    width: 80%;
+    height: 80%;
+    position: relative;
+    top: 10%;
+    left: 10%;
+}
+
+#mainOverLayContent {
+    padding: 10px;
+    background: white;
+    height: 100%;
+    overflow-y: auto;
+    max-width: 768px;
+    margin: auto;
+    position: relative;
+}
+
+#closeMainOverLay {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    z-index: 22;
+    top: 10px;
+    right: 10px;
+    background: url(img/icons/x.svg);
+    transition: transform .2s linear;
+}
+
+    #closeMainOverLay:hover {
+        cursor: pointer;
+        transform: scale(0.9);
+    }
+
+#classesMainBox {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.classBox {
+    background: #FFF;
+    padding: 6px;
+    min-width: 500px;
+    position: relative;
+    margin: 20px;
+    box-shadow: 0 0 2px #000;
+}
+
+.classNameBox {
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+.classEditButton, .personnelEditButton {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    padding: 3px 6px;
+    height: 32px;
+    background: #4cd2ff;
+    border: none;
+    font-size: 14px;
+    display: block;
+    box-shadow: 2px 2px 0 #888;
+}
+
+    .classEditButton:hover, .personnelEditButton:hover {
+        cursor: pointer;
+        box-shadow: -2px -2px 0 #888;
+    }
+
+.allClassesBox {
+}
+
+.allClassesHeader {
+    overflow: auto;
+}
+
+    .allClassesHeader p {
+        width: 50%;
+        float: left;
+        font-weight: bold;
+        border-bottom: 2px solid #4cd2ff;
+    }
+
+        .allClassesHeader p:first-child {
+            border-bottom: 2px solid #00bf00;
+        }
+
+.fullSemesterBox {
+}
+
+.studentGroupClass {
+    display: flex;
+}
+
+.htFullBox, .vtFullBox {
+    width: 50%;
+    padding: 0 3px;
+}
+
+.vtFullBox {
+    display: flex;
+    justify-content: space-between;
+}
+
+.studentGroupClass p {
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.halfSemesterBox {
+    display: flex;
+}
+
+.htBox {
+    width: 50%;
+    padding: 3px;
+    display: flex;
+    flex-direction: column;
+}
+
+.vtBox {
+    width: 50%;
+    padding: 3px;
+    display: flex;
+    flex-direction: column;
+}
+
+.studentGroupHalfClass {
+    display: flex;
+    justify-content: space-between;
+}
+
+    .studentGroupHalfClass p {
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+.personnelSignatureClass {
+    margin-top: 6px;
+    font-size: 12px;
+    background: #FFF;
+    color: #00F;
+    padding: 0 3px;
+}
+
+
+#personnelMainBox {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.personnelBox {
+    background: #FFF;
+    padding: 6px;
+    box-shadow: 0 0 2px #000;
+    position: relative;
+    margin: 20px;
+}
+
+.personnelBoxTop {
+    display: flex;
+    align-items: flex-end;
+    text-align: right;
+}
+
+    .personnelBoxTop div:first-child {
+        width: 200px;
+        height: 133px;
+        text-align: center;
+        line-height: 133px;
+    }
+
+    .personnelBoxTop div:last-child {
+        min-width: 140px;
+    }
+
+.personnelBoxCenter {
+}
+
+    .personnelBoxCenter p:first-child {
+        color: #00abe5;
+        font-size: 12px;
+    }
+
+    .personnelBoxCenter p {
+        display: inline-block;
+    }
+
+.personnelBoxBottom {
+    margin-top: 10px;
+}
+
+.personnelMeterBox {
+}
+
+    .personnelMeterBox p {
+        margin-bottom: -8px;
+    }
+
+.personnelAvailableMeter, .personnelAssignedMeter {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: #CCC;
+    margin: 8px 0;
+    position: relative;
+    box-shadow: inset 0 0 2px #000;
+}
+
+    .personnelAvailableMeter span, .personnelAssignedMeter span {
+        height: 100%;
+        background: #00d900;
+        border-radius: 4px;
+        box-shadow: inset 0 0 2px #000;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .personnelAssignedMeter span {
+        background: #d9d900;
+    }
+
+
+#homeMainBox {
+    max-width: 900px;
+    margin: auto;
+}
+
+#header {
+    text-align: center;
+}
+
+#headerContainer {
+    padding: 10px;
+    margin: 10px auto 20px auto;
+    display: inline-block;
+    background: #FFF;
+    box-shadow: 0 0 2px #000;
+}
+
+#header h1 {
+    text-shadow: 2px 2px 0 #ccc;
+    /*
+				border-bottom: 2px solid #000;
+				display: inline-block;
+				line-height: 0.9;
+				text-shadow:
+					2px 2px white,
+					2px -2px white,
+					-2px 2px white,
+					-2px -2px white;
+				*/
+}
+
+#header h2 {
+    margin-top: -8px;
+    color: #0098cc;
+    font-size: 14px;
+}
+
+#homeFlexboxBox {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+#news {
+    min-width: 380px;
+    padding: 10px;
+    margin: 20px 0;
+    border: 1px solid #000;
+    background: #FFF;
+}
+
+    #news p {
+        font-size: 14px;
+    }
+
+#help {
+    min-width: 380px;
+    padding: 10px;
+    margin: 20px 0;
+    border: 1px solid #000;
+    background: #FFF;
+}
+
+#mainCounterBox {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin: 20px 0;
+}
+
+#mainCounterStats, #mainCounter {
+    padding: 10px;
+    background: #FFF;
+    border: 1px solid #000;
+}
+
+#mainCounterBox p {
+    min-width: 230px;
+    font-weight: bold;
+}
+
+#mainCounterBox span {
+    float: right;
+    font-weight: normal;
+}
+
+#help {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#chatBox {
+    border: 1px dotted #000;
+    min-height: 220px;
+    padding: 3px;
+    overflow-y: scroll;
+}
+
+    #chatBox span {
+        font-weight: bold;
+        padding-right: 10px;
+    }
+
+.operatorMessage {
+    color: #4cd2ff;
+}
+
+#chatBox p:not(.chatTimeStamp) {
+    margin: 0 0 10px 0;
+}
+
+p.chatTimeStamp {
+    text-align: center;
+    padding-right: 20px;
+    margin: 0 0 -4px 0;
+    font-style: italic;
+    font-size: 12px;
+    color: #888;
+}
+
+#help textarea {
+    width: calc(100% - 116px);
+    min-height: 40px;
+    padding: 3px;
+    resize: none;
+    margin-top: 10px;
+    font-family: helvetica;
+}
+
+#help button {
+    width: 100px;
+    min-height: 42px;
+    float: right;
+    margin-top: 16px;
+}
+
+
+
+
+
+
+
+
+
+/*
 #layout{
     min-height: 100%;
     position: relative;
@@ -76,7 +548,7 @@ ul{
             text-align: center;
             vertical-align: middle;
         }
-
+*/
 /* Vad ska behållas av nedanstående??? */
 
 #assignClassesToStudentGroupDiv {
@@ -84,17 +556,20 @@ ul{
     flex-direction: column;
     justify-content: center;
 }
+
 .classList {
     width: 80%;
     margin: 0 10%;
     display: flex;
     flex-direction: column;
 }
+
 .classToStudentGroup {
     display: flex;
     justify-content: space-between;
     margin: 10px 0;
 }
+
 #currentStudentGroup {
     text-align: center;
 }
@@ -108,10 +583,10 @@ ul{
     /*text-align: center;*/
 }
 
+
 #fullYearDiv {
     display: flex;
     flex-direction: row;
-
 }
 
 #containerDiv {
@@ -125,14 +600,15 @@ ul{
     justify-content: space-between;
     /*text-align: center;*/
 }
-#semestersDiv h2{
-    text-align: center;
-    color: forestgreen;
-}
-.classToStudentGroup {
 
-    
+    #semestersDiv h2 {
+        text-align: center;
+        color: forestgreen;
+    }
+
+.classToStudentGroup {
 }
+
 .deleteAssignedClassButton {
     width: 30px;
     height: 30px;

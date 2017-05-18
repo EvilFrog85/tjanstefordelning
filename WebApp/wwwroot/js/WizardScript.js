@@ -390,7 +390,7 @@ function RemovePerson(id) {
 
 //Update info-box
 function UpdateCounterInfo(data, name) {
-    $('#counterInfo').html(data.length);
+    $('#counterInfo').html(data.length + ' st');
     $('#counterHeader').html(name);
 
 }

@@ -1,17 +1,44 @@
 $(document).ready(function () {
-    function stickyFooter() {
-        $('main').css({ 'paddingBottom': $('footer').height() });
-        $('#innerFooter').css({ 'lineHeight': $('footer').height() - 20 + 'px' });
-    }
-    stickyFooter();
-    $('#hamburgerBtn').on('click', function () {
-        return $('header nav').stop().slideToggle();
-    });
-    $(window).resize(function () {
-        if ($(window).width() > 768) {
-            $('header nav').removeAttr('style');
+    $('.navItem').on('click', function () {
+        var target = $(this).attr('id');
+        var active = $('.mainNavActive').attr('id');
+
+        if (target == "navHome" && active != target) {
+            $('.navItem').removeClass('mainNavActive');
+            $('#navHome').addClass('mainNavActive');
+            $('.mainBoxItem').hide();
+            $('#homeMainBox').fadeToggle();
         }
-        stickyFooter();
+
+        // When wizard is opened
+        else if (target == "navWizard") {
+            //Get data for list - first because of possible async-delay
+            updateLists();
+            $('#overLay').fadeToggle("fast");
+            // Hide body-scroll
+            $('html').css('overflow', 'hidden');
+            // Show data for team and add description
+            $('#teamCrud').show();
+            $('#teamCrudDesc').show();
+        }
+
+        else if (target == "navClass" && active != target) {
+            $('.navItem').removeClass('mainNavActive');
+            $('#navClass').addClass('mainNavActive');
+            $('.mainBoxItem').hide();
+            $('#classesMainBox').fadeToggle();
+        }
+
+        else if (target == "navPersonnel" && active != target) {
+            $('.navItem').removeClass('mainNavActive');
+            $('#navPersonnel').addClass('mainNavActive');
+            $('.mainBoxItem').hide();
+            $('#personnelMainBox').fadeToggle();
+        }
+
+        else if (target == "navBomb") {
+            alert("Vet du verkligen vad du gör nu?");
+        }
     });
     /*
     CreateIncludedClassInput();
@@ -24,23 +51,12 @@ $(document).ready(function () {
     CreateInputCompetence();
     CreateAssignClassesToStudentGroupsOverlay();
     /* Wizard, innerLayOut Controlls */
-    // When wizard is opened
-    $('.wizard').on('click', function () {
-        //Get data for list - first because of possible async-delay
-        updateLists();
-        $('#overLay').fadeToggle("fast");
-        // Hide body-scroll
-        $('html').css('overflow', 'hidden');
-        // Show data for team and add description
-        $('#teamCrud').show();
-        $('#teamCrudDesc').show();
-    });
 
     // When wizard is exited
     $('#exitWizard').on('click', function () {
         // Reset active tab
         $('.wizActive').removeClass('wizActive');
-        $('#teamCrudOpen').addClass('wizActive');//TODO Fr�ga jonas
+        $('#teamCrudOpen').addClass('wizActive');//TODO Fråga jonas
         $('.wizardDataBox').hide();
         $('#wizardBoxItemDesc div').hide();
         $('#overLay').fadeToggle("fast");
@@ -104,19 +120,19 @@ $(document).ready(function () {
             GetAllSubjects();
         if (target == "personnelCrud") {
             $('#addPersonnelButton').attr('onclick', 'AddNewPersonnel()');
-            $('#addPersonnelButton').text('L�gg till personal');
+            $('#addPersonnelButton').text('Lägg till personal');
         }
         if (target == "teamCrud") {
             $('#addTeamButton').attr('onclick', 'SubmitTeam()');
-            $('#addTeamButton').text('L�gg till arbetslag');
+            $('#addTeamButton').text('Lägg till arbetslag');
         }
         if (target == "studentGroupCrud") {
             $('#addStudentGroupButton').attr('onclick', 'SubmitStudentGroup()');
-            $('#addStudentGroupButton').text('L�gg till klass');
+            $('#addStudentGroupButton').text('Lägg till klass');
         }
         if (target == "auxiliaryAssignmentCrud") {
             $('#addAuxiliaryAssignmentButton').attr('onclick', 'SubmitAuxiliaryAssignment()');
-            $('#addAuxiliaryAssignmentButton').text('L�gg till uppdrag');
+            $('#addAuxiliaryAssignmentButton').text('Lägg till uppdrag');
         }
         target = target + "Form";
         $('.innerOverLay').fadeToggle("fast");
@@ -156,7 +172,7 @@ $(document).ready(function () {
                     return;
             }
 
-            //alert("Genomf�r uppdatering");
+            //alert("Genomför uppdatering");
 
             if (target == "teamCrud") {
                 //alert("Uppdaterar team");
@@ -272,8 +288,8 @@ $(document).ready(function () {
                 GetAllSubjects();
 
             GetPersonToEdit(itemId);
-            // Byter ut spar-knappen mot en uppdatera-knapp och �ndrar funktionen som kallas. Kom ih�g att byta tillbaka efter�t / n�r "Add new" �ppnas.
-            // ImgUrl uppdateras inte i nul�get..
+            // Byter ut spar-knappen mot en uppdatera-knapp och ändrar funktionen som kallas. Kom ihåg att byta tillbaka efteråt / när "Add new" öppnas.
+            // ImgUrl uppdateras inte i nuläget..
             $('#addPersonnelButton').attr('onclick', 'EditPersonById(' + itemId + ')');
             $('#addPersonnelButton').text('Uppdatera');
         }
@@ -321,12 +337,43 @@ $(document).ready(function () {
                 return;
         }
     });
+
+    generatePersonnelHtml();
+
+    // #region Genereate html for personnel-page
+    function generatePersonnelHtml() {
+
+        $.ajax({
+            type: 'GET',
+            url: '/Wizard/GetAllPersonnelToOverView',
+            success: function (data) {
+                data.forEach(function (e) {
+                    var assignedPointsPercentage = 0;
+                    if (e.assignedPoints > 0)
+                        var assignedPointsPercentage = (e.assignedPoints / 6).toFixed(1);
+                    console.log(e.assignedPoints + " " + assignedPointsPercentage);
+                    var contractType = contractEnum[e.contract];
+                    $('#personnelMainBox').append('<div class="personnelBox"><div class="personnelBoxTop"><div><img src="~/img/staff_pictures/' + e.imageUrl + '.jpg" alt="' + e.firstName + ' ' + e.lastName + '" /></div><div><button class="personnelEditButton" data-id="' + e.id + '">Kurser & behörighet</button><p class="personnelTeamName">' + e.teamName + '</p><p class="personnelContract">' + contractType + '</p></div></div><div class="personnelBoxCenter"><p>' + e.signature + '</p><p>' + e.firstName + ' ' + e.lastName + '</p></div><div class="personnelBoxBottom"><div class="personnelMeterBox"><p>Tjänstegrad: ' + e.availablePoints +'%</p><div class="personnelAvailableMeter"><span style="width: ' + e.availablePoints + '%;"></span></div></div><div class="personnelMeterBox"><p>Tilldelat: ' + assignedPointsPercentage + '%</p><div class="personnelAssignedMeter"><span style="width: ' + assignedPointsPercentage + '%;"></span></div></div></div><div class="personnelCompetenceBox"></div></div>');                    
+                });
+            }
+        });
+    }
+    // #endregion
+
     /* END - Jonas lekplats */
 
     // #region class to student group
     // #region utils
+    var contractEnum = [
+        'Tillsvidare',
+        'Tidsbegränsad',
+        'Projektanställning',
+        'Fast anställning',
+        'Övrig'
+    ];
+
     var durationEnum = {
-        'Hela l�s�ret': 0,
+        'Hela läsåret': 0,
         'HT': 1,
         'VT': 2
     };
@@ -375,7 +422,7 @@ $(document).ready(function () {
             class: 'buttonSubmit',
             id: 'addClassButton',
             onclick: 'AddClassToCurriculum()',
-            text: 'L�gg till',
+            text: 'Lägg till',
             style: 'align-self: center',
             'data-studentGroupId': studentGroupId,
             'data-studentGroupName': studentGroupName,
@@ -390,11 +437,11 @@ $(document).ready(function () {
             style: 'align-self: center'
         });
 
-        $($classDuration).append('<option value="0" selected="selected">Hela l�s�ret</option>');
+        $($classDuration).append('<option value="0" selected="selected">Hela läsåret</option>');
         $($classDuration).append('<option value="1">HT</option>');
         $($classDuration).append('<option value="2">VT</option>');
 
-        //TODO : kursen l�ses �ver fler �n 2 terminer l�s om du vill
+        //TODO : kursen läses över fler än 2 terminer lös om du vill
 
         //lots of divs
         var $semestersDiv = $('<div/>', { id: 'semestersDiv' }).append('<h2>Vald klass: ' + studentGroupName + '</h2>');
@@ -496,7 +543,7 @@ function AddClassToCurriculum(newClass) {
             if (index != -1) {
                 var classId = allClasses[index].value;
             } else {
-                $('#messageBoxAssignClasses').html(generateFormMessage("error", "Du m�ste v�lja en kurs fr�n listan.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+                $('#messageBoxAssignClasses').html(generateFormMessage("error", "Du måste välja en kurs från listan.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
                 return;
             }
         }
@@ -557,8 +604,8 @@ function AddClassToCurriculum(newClass) {
             $('#classInput').val('');
         }
     } else {
-        //$('#messageBoxAssignClasses').html(generateFormMessage("error", "Du m�ste v�lja en kurs fr�n listan.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
-        $('#messageBoxAssignClasses').html(generateFormMessage("error", "Du m�ste v�lja en klass fr�n listan."));
+        //$('#messageBoxAssignClasses').html(generateFormMessage("error", "Du måste välja en kurs från listan.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+        $('#messageBoxAssignClasses').html(generateFormMessage("error", "Du måste välja en klass från listan."));
     }
 }
 
@@ -575,7 +622,7 @@ function LoadIncludedClasses(studentGroupId) {
             $('#messageBoxAssignClasses').html(generateFormMessage("error", "Not success.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
         }
     }, function () {
-        $('#messageBoxAssignClasses').html(generateFormMessage("error", "N�nting gick fel.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
+        $('#messageBoxAssignClasses').html(generateFormMessage("error", "Nånting gick fel.")).hide().fadeToggle("fast").delay(2000).fadeToggle("fast");
     });
 }
 

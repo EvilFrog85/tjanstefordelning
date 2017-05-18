@@ -214,8 +214,11 @@ namespace WebApp.Controllers
         {
             return _context.GetAuxiliaryAssignmentById(id);
         }
-
-        
+        [HttpGet]
+        public async Task<CompetencesIncludedClassesVM> GetPersonInfo(int id)
+        {
+            return await _context.GetIncludedClassesAndCompetencesByPersonnelId(id);
+        }
 
     }
 }

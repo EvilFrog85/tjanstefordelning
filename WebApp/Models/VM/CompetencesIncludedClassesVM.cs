@@ -9,5 +9,6 @@ namespace WebApp.Models.VM
     {
         public CompetenceVM[] Competences { get; set; }
         public IncludedClassVM[] IncludedClasses { get; set; }
+        public AuxiliaryAssignmentVM[] AuxAssignments { get; set; }
     }
 }
