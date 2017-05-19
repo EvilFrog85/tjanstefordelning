@@ -21,5 +21,6 @@ namespace WebApp.Models.VM
         public int StartingYear { get; set; }
         public int[] ClassId { get; set; }
         public ClassVM[] Classes { get; set; }
+
     }
 }
