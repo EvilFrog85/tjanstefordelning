@@ -427,7 +427,7 @@ $(document).ready(function () {
                                 }
                             }
                         }
-                        else if (duration == 1) {
+                        else if (w.duration == 1) {
                             if (i == times)
                                 $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p class="delete" data-type="pers" data-pid="' + id + '" data-name="' + name +'" data-id="' + w.classId + '"></p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
                             else
@@ -545,6 +545,7 @@ $(document).ready(function () {
         var time = dt.getHours() + ":" + dt.getMinutes();
         $('#chatBox').append('<p class="chatTimeStamp">19 maj - ' + time + '</p><p><span class="userMessage">Du:</span>' + message + '</p>');
         setTimeout(reply, 4200);
+        $('#chatForm textarea').val('');
     });
 
     function reply() {
@@ -870,7 +871,7 @@ function GenerateStudentGroups() {
                     url: '/Wizard/GetIncludedClassByStudentGroupId/' + g.id,
                 }).then(function (c) {
                     c.forEach(function (d) {
-
+                        var classTitle = d.className
                         if (d.className.length > 20) {
                             d.className = d.className.slice(0, 20);
                             d.className += '..';
@@ -882,9 +883,9 @@ function GenerateStudentGroups() {
                             var vtFullBox = $('<div/>', { class: 'vtFullBox', id: 'vtFullBox' + d.id });
 
                             htFullBox
-                                .append($('<p/>', { text: d.className }));
+                                .append($('<p/>', { text: d.className, title: classTitle }));
                             vtFullBox
-                                .append($('<p/>', { text: d.className }));
+                                .append($('<p/>', { text: d.className, title: classTitle }));
                             if (d.personnelSignature) {
                                 vtFullBox
                                     .append($('<p/>', { text: d.personnelSignature, class: 'personnelSignatureClass' }));
@@ -898,7 +899,7 @@ function GenerateStudentGroups() {
                             var halfClass = $('<div/>', { class: 'studentGroupHalfClass', id: 'studentGroupHalfClass' + d.id });
 
                             halfClass
-                                .append($('<p/>', { text: d.className }));
+                                .append($('<p/>', { text: d.className, title: classTitle }));
                             if (d.personnelSignature) {
                                 halfClass
                                     .append($('<p/>', { text: d.personnelSignature, class: 'personnelSignatureClass' }));
@@ -912,7 +913,7 @@ function GenerateStudentGroups() {
                             var halfClass = $('<div/>', { class: 'studentGroupHalfClass', id: 'studentGroupHalfClass' + d.id });
 
                             halfClass
-                                .append($('<p/>', { text: d.className }));
+                                .append($('<p/>', { text: d.className, title: classTitle }));
                             if (d.personnelSignature) {
                                 halfClass
                                     .append($('<p/>', { text: d.personnelSignature, class: 'personnelSignatureClass' }));
