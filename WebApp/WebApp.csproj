@@ -10,6 +10,8 @@
 
   <ItemGroup>
     <Content Include="wwwroot\css\bomb.css" />
+    <Content Include="wwwroot\favicon.ico" />
+    <Content Include="wwwroot\img\favicon.ico" />
     <Content Include="wwwroot\img\icons\add.svg" />
     <Content Include="wwwroot\img\icons\delete.svg" />
     <Content Include="wwwroot\img\icons\home.svg" />
@@ -62,6 +64,21 @@
     <Content Include="wwwroot\img\staff_pictures\Img2EnJ.jpg" />
     <Content Include="wwwroot\img\staff_pictures\Img2EnO.jpg" />
     <Content Include="wwwroot\img\staff_pictures\Img2MnE.jpg" />
+    <Content Include="wwwroot\img\staff_pictures\Img3AhAr01.jpg" />
+    <Content Include="wwwroot\img\staff_pictures\Img3AlEd01.jpg" />
+    <Content Include="wwwroot\img\staff_pictures\Img3BjGr01.jpg" />
+    <Content Include="wwwroot\img\staff_pictures\Img3BoBo01.jpg" />
+    <Content Include="wwwroot\img\staff_pictures\Img3JoBe01.jpg" />
+    <Content Include="wwwroot\img\staff_pictures\Img3JoFi01.jpg" />
+    <Content Include="wwwroot\img\staff_pictures\Img3JoJi01.jpg" />
+    <Content Include="wwwroot\img\staff_pictures\Img3KaKa01.jpg" />
+    <Content Include="wwwroot\img\staff_pictures\Img3NiNy01.jpg" />
+    <Content Include="wwwroot\img\staff_pictures\Img3PePi01.jpg" />
+    <Content Include="wwwroot\img\staff_pictures\Img3RuRe01.jpg" />
+    <Content Include="wwwroot\img\staff_pictures\Img3SoKa01.jpg" />
+    <Content Include="wwwroot\img\staff_pictures\Img3SoSo01.jpg" />
+    <Content Include="wwwroot\img\staff_pictures\Img3ThTe01.jpg" />
+    <Content Include="wwwroot\img\staff_pictures\Img3ViVh01.jpg" />
     <Content Include="wwwroot\js\ClassAssignment.js" />
     <Content Include="wwwroot\js\Data.js" />
     <Content Include="wwwroot\js\jquery-3.1.0.js" />

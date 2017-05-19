@@ -20,6 +20,19 @@ body {
 ul {
     margin-left: 20px;
 }
+    ul li{
+        margin: 10px auto;
+    }
+    ul > li > a {
+        text-decoration: none;
+        color: #0098cc;
+        transition: color .2s linear, text-decoration .2s linear;
+    }
+    ul > li > a:hover {
+        text-decoration: none;
+        color: #000;
+        text-decoration: underline;
+    }
 
 #layout {
     height: 100%;
@@ -357,6 +370,7 @@ main {
 }
 
 #header h1 {
+    font-size: 36px;
     text-shadow: 2px 2px 0 #ccc;
     /*
 				border-bottom: 2px solid #000;
@@ -371,6 +385,7 @@ main {
 }
 
 #header h2 {
+    font-size: 26px;
     margin-top: -8px;
     color: #0098cc;
     font-size: 14px;

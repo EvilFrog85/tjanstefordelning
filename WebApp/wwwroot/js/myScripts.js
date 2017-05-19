@@ -544,7 +544,14 @@ $(document).ready(function () {
         var dt = new Date();
         var time = dt.getHours() + ":" + dt.getMinutes();
         $('#chatBox').append('<p class="chatTimeStamp">19 maj - ' + time + '</p><p><span class="userMessage">Du:</span>' + message + '</p>');
+        setTimeout(reply, 4200);
     });
+
+    function reply() {
+        var dt = new Date();
+        var time = dt.getHours() + ":" + dt.getMinutes();
+        $('#chatBox').append('<p class="chatTimeStamp">19 maj - ' + time + '</p><p><span class="operatorMessage">David:</span>Vad vill du nu då?</p>');
+    }
     /* END - Jonas lekplats */
 
     // #region class to student group
