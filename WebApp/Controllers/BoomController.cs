@@ -24,6 +24,7 @@ namespace WebApp.Controllers
             _userManager = userManager;
         }
         // GET: /<controller>/
+        [HttpPost]
         public async Task BoomMethod()
         {
             var id = _userManager.GetUserId(User);

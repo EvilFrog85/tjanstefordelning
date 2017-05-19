@@ -23,12 +23,11 @@ $(document).ready(function () {
         }
 
         else if (target == "navClass" && active != target) {
+            GenerateStudentGroups();
             $('.navItem').removeClass('mainNavActive');
             $('#navClass').addClass('mainNavActive');
             $('.mainBoxItem').hide();
-            $('#classesMainBox').empty();
             $('#classesMainBox').fadeToggle();
-            GenerateStudentGroups();
         }
 
         else if (target == "navPersonnel" && active != target) {
@@ -40,7 +39,18 @@ $(document).ready(function () {
         }
 
         else if (target == "navBomb") {
-            alert("Vet du verkligen vad du gör nu?");
+            if (confirm("Vill du verkligen släppa bomben?")) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/Boom/BoomMethod',
+                    success: function (data) {
+                        alert("Jihaaa!");
+
+                        isGeneratedPersonnelHtml = false;
+                        generatePersonnelHtml();
+                    }
+                });
+            }           
         }
     });
     /*
@@ -835,98 +845,103 @@ function PopulateClassesArray() {
     });
 }
 
+$('#mainOverLayContent').on('click', '#saveAddedClassesButton', function () {
+    isGeneratedStudentsGroupHtml = false;
+});
+
+var isGeneratedStudentsGroupHtml = false;
 function GenerateStudentGroups() {
+    if (isGeneratedStudentsGroupHtml == false) {
+        $.ajax({
+            type: 'GET',
+            url: '/Wizard/GetAllStudentGroups',
+            success: function (data) {
+                data.forEach(function (g) {
+                    var htBox = $('<div/>', { class: 'htBox', id: 'htBox' + g.name });
+                    var vtBox = $('<div/>', { class: 'vtBox', id: 'vtBox' + g.name });
 
-    $.ajax({
-        type: 'GET',
-        url: '/Wizard/GetAllStudentGroups',
-        success: function (data) {
-            data.forEach(function (g) {
-                var htBox = $('<div/>', { class: 'htBox', id: 'htBox' + g.name });
-                var vtBox = $('<div/>', { class: 'vtBox', id: 'vtBox' + g.name });
+                    $('#classesMainBox')
+                        .append($('<div/>', { class: 'classBox', id: 'classBox' + g.name }));
+                    $('#classBox' + g.name)
+                        .append($('<h3/>', { text: g.name, class: 'classNameBox' }))
+                        .append($('<button/>', { class: 'classEditButton', text: 'Lägg till kurser', 'data-sgid': g.id, 'data-sgname': g.name, 'data-teamid': g.teamId, 'data-points-array': g.classes  }))
+                        .append($('<div/>', { class: 'allClassesBox', id: 'allClassesBox' + g.name }));
 
-                $('#classesMainBox')
-                    .append($('<div/>', { class: 'classBox', id: 'classBox' + g.name }));
-                $('#classBox' + g.name)
-                    .append($('<h3/>', { text: g.name, class: 'classNameBox' }))
-                    .append($('<button/>', { class: 'classEditButton', text: 'Lägg till kurser', 'data-sgid': g.id, 'data-sgname': g.name, 'data-teamid': g.teamId, 'data-points-array': g.classes  }))
-                    .append($('<div/>', { class: 'allClassesBox', id: 'allClassesBox' + g.name }));
+                    $('#allClassesBox' + g.name)
+                        .append($('<div/>', { class: 'allClassesHeader', id: 'allClassesHeader' + g.name }))
+                        .append($('<div>', { class: 'fullSemesterBox', id: 'fullSemesterBox' + g.name }))
+                        .append($('<div>', { class: 'halfSemesterBox', id: 'halfSemesterBox' + g.name }));
 
-                $('#allClassesBox' + g.name)
-                    .append($('<div/>', { class: 'allClassesHeader', id: 'allClassesHeader' + g.name }))
-                    .append($('<div>', { class: 'fullSemesterBox', id: 'fullSemesterBox' + g.name }))
-                    .append($('<div>', { class: 'halfSemesterBox', id: 'halfSemesterBox' + g.name }));
+                    $('#allClassesHeader' + g.name)
+                        .append('<p>HT</p><p>VT</p>');
 
-                $('#allClassesHeader' + g.name)
-                    .append('<p>HT</p><p>VT</p>');
+                    //$('#fullSemesterBox' + g.name)
+                    //    .append($('<div/>', { class: 'studentGroupClass', id: 'studentGroupClass' + g.name }));
 
-                //$('#fullSemesterBox' + g.name)
-                //    .append($('<div/>', { class: 'studentGroupClass', id: 'studentGroupClass' + g.name }));
+                    $('#halfSemesterBox' + g.name)
+                        .append(htBox)
+                        .append(vtBox);
+                    $.ajax({
+                        type: 'GET',
+                        url: '/Wizard/GetIncludedClassByStudentGroupId/' + g.id,
+                    }).then(function (c) {
+                        c.forEach(function (d) {
+                            var classTitle = d.className
+                            if (d.className.length > 20) {
+                                d.className = d.className.slice(0, 20);
+                                d.className += '..';
+                            }
 
-                $('#halfSemesterBox' + g.name)
-                    .append(htBox)
-                    .append(vtBox);
-                $.ajax({
-                    type: 'GET',
-                    url: '/Wizard/GetIncludedClassByStudentGroupId/' + g.id,
-                }).then(function (c) {
-                    c.forEach(function (d) {
-                        var classTitle = d.className
-                        if (d.className.length > 20) {
-                            d.className = d.className.slice(0, 20);
-                            d.className += '..';
-                        }
+                            if (d.duration == 0) {
+                                var group = $('<div/>', { class: 'studentGroupClass', id: 'studentGroupClass' + d.id });
+                                var htFullBox = $('<div/>', { class: 'htFullBox', id: 'htFullBox' + d.id });
+                                var vtFullBox = $('<div/>', { class: 'vtFullBox', id: 'vtFullBox' + d.id });
 
-                        if (d.duration == 0) {
-                            var group = $('<div/>', { class: 'studentGroupClass', id: 'studentGroupClass' + d.id });
-                            var htFullBox = $('<div/>', { class: 'htFullBox', id: 'htFullBox' + d.id });
-                            var vtFullBox = $('<div/>', { class: 'vtFullBox', id: 'vtFullBox' + d.id });
-
-                            htFullBox
-                                .append($('<p/>', { text: d.className, title: classTitle }));
-                            vtFullBox
-                                .append($('<p/>', { text: d.className, title: classTitle }));
-                            if (d.personnelSignature) {
+                                htFullBox
+                                    .append($('<p/>', { text: d.className, title: classTitle }));
                                 vtFullBox
-                                    .append($('<p/>', { text: d.personnelSignature, class: 'personnelSignatureClass' }));
+                                    .append($('<p/>', { text: d.className, title: classTitle }));
+                                if (d.personnelSignature) {
+                                    vtFullBox
+                                        .append($('<p/>', { text: d.personnelSignature, class: 'personnelSignatureClass' }));
+                                }
+                                group
+                                    .append(htFullBox)
+                                    .append(vtFullBox);
+                                $('#fullSemesterBox' + g.name).append(group);
                             }
-                            group
-                                .append(htFullBox)
-                                .append(vtFullBox);
-                            $('#fullSemesterBox' + g.name).append(group);
-                        }
-                        else if (d.duration == 1) {
-                            var halfClass = $('<div/>', { class: 'studentGroupHalfClass', id: 'studentGroupHalfClass' + d.id });
+                            else if (d.duration == 1) {
+                                var halfClass = $('<div/>', { class: 'studentGroupHalfClass', id: 'studentGroupHalfClass' + d.id });
 
-                            halfClass
-                                .append($('<p/>', { text: d.className, title: classTitle }));
-                            if (d.personnelSignature) {
                                 halfClass
-                                    .append($('<p/>', { text: d.personnelSignature, class: 'personnelSignatureClass' }));
+                                    .append($('<p/>', { text: d.className, title: classTitle }));
+                                if (d.personnelSignature) {
+                                    halfClass
+                                        .append($('<p/>', { text: d.personnelSignature, class: 'personnelSignatureClass' }));
+                                }
+                                htBox
+                                    .append(halfClass);
+                                //$('#halfSemesterBox' + g.name)
+                                //    .append(htBox);
                             }
-                            htBox
-                                .append(halfClass);
-                            //$('#halfSemesterBox' + g.name)
-                            //    .append(htBox);
-                        }
-                        else {
-                            var halfClass = $('<div/>', { class: 'studentGroupHalfClass', id: 'studentGroupHalfClass' + d.id });
+                            else {
+                                var halfClass = $('<div/>', { class: 'studentGroupHalfClass', id: 'studentGroupHalfClass' + d.id });
 
-                            halfClass
-                                .append($('<p/>', { text: d.className, title: classTitle }));
-                            if (d.personnelSignature) {
                                 halfClass
-                                    .append($('<p/>', { text: d.personnelSignature, class: 'personnelSignatureClass' }));
+                                    .append($('<p/>', { text: d.className, title: classTitle }));
+                                if (d.personnelSignature) {
+                                    halfClass
+                                        .append($('<p/>', { text: d.personnelSignature, class: 'personnelSignatureClass' }));
+                                }
+                                vtBox
+                                    .append(halfClass)
                             }
-                            vtBox
-                                .append(halfClass)
-                        }
 
-                    })
+                        })
+                    });
                 });
-            });
-        }
-    });
-
-
+            }
+        });
+        isGeneratedStudentsGroupHtml = true;
+    }
 }
