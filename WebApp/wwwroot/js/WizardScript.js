@@ -225,17 +225,17 @@ function GetAllPersonnel() {
                 allPersonnel.push(newPersonnel);
             });
             console.log(allPersonnel);
-            $('#auxiliaryAssignmentPersonnel').autocomplete({
-                source: allPersonnel,
-                select: function (event, ti) {
-                    event.preventDefault();
-                    $('#auxiliaryAssignmentPersonnel').val(ti.item.label)
-                },
-                focus: function (event, ti) {
-                    event.preventDefault();
-                    $('#auxiliaryAssignmentPersonnel').val(ti.item.label)
-                }
-            });
+            //$('#auxiliaryAssignmentPersonnel').autocomplete({
+            //    source: allPersonnel,
+            //    select: function (event, ti) {
+            //        event.preventDefault();
+            //        $('#auxiliaryAssignmentPersonnel').val(ti.item.label)
+            //    },
+            //    focus: function (event, ti) {
+            //        event.preventDefault();
+            //        $('#auxiliaryAssignmentPersonnel').val(ti.item.label)
+            //    }
+            //});
         }
     });
 }
@@ -1046,6 +1046,19 @@ function CreateAuxiliaryAssignmentInput() {
     $target.append($personnelInput);
     $target.append($submitBtn);
 
+    //Set up autocomplete
+    $('#auxiliaryAssignmentPersonnel').autocomplete({
+        source: allPersonnel,
+        select: function (event, listItems) {
+            $('#auxiliaryAssignmentPersonnel').val(listItems.item.label);
+            $('#auxiliaryAssignmentPersonnel').attr('data-classid', listItems.item.value);
+            return false;
+        },
+        focus: function (event, ti) {
+            event.preventDefault();
+            $('#auxiliaryAssignmentPersonnel').val(ti.item.label);
+        }
+    });
 }
 /* END Auxiliary_assignments */
 // #endregion

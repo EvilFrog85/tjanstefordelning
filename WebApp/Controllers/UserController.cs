@@ -32,9 +32,9 @@ namespace WebApp.Controllers
         public async Task<IActionResult> Login()
         {
 
-            await _signInManager.PasswordSignInAsync("boom", "123", false, false);
+            //await _signInManager.PasswordSignInAsync("boom", "123", false, false);
             //await _userManager.CreateAsync(new IdentityUser { UserName = "empty" }, "123");
-            //await _signInManager.PasswordSignInAsync("empty", "123", false, false);
+            await _signInManager.PasswordSignInAsync("empty", "123", false, false);
 
             return Redirect("/home/index");
 
