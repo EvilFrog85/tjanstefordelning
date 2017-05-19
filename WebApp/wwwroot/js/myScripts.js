@@ -833,7 +833,6 @@ function GenerateStudentGroups() {
                 var htBox = $('<div/>', { class: 'htBox', id: 'htBox' + g.name });
                 var vtBox = $('<div/>', { class: 'vtBox', id: 'vtBox' + g.name });
 
-
                 $('#classesMainBox')
                     .append($('<div/>', { class: 'classBox', id: 'classBox' + g.name }));
                 $('#classBox' + g.name)
@@ -860,7 +859,7 @@ function GenerateStudentGroups() {
                     url: '/Wizard/GetIncludedClassByStudentGroupId/' + g.id,
                 }).then(function (c) {
                     c.forEach(function (d) {
-
+                        var classTitle = d.className
                         if (d.className.length > 20) {
                             d.className = d.className.slice(0, 20);
                             d.className += '..';
@@ -872,9 +871,9 @@ function GenerateStudentGroups() {
                             var vtFullBox = $('<div/>', { class: 'vtFullBox', id: 'vtFullBox' + d.id });
 
                             htFullBox
-                                .append($('<p/>', { text: d.className }));
+                                .append($('<p/>', { text: d.className, title: classTitle }));
                             vtFullBox
-                                .append($('<p/>', { text: d.className }));
+                                .append($('<p/>', { text: d.className, title: classTitle }));
                             if (d.personnelSignature) {
                                 vtFullBox
                                     .append($('<p/>', { text: d.personnelSignature, class: 'personnelSignatureClass' }));
@@ -888,7 +887,7 @@ function GenerateStudentGroups() {
                             var halfClass = $('<div/>', { class: 'studentGroupHalfClass', id: 'studentGroupHalfClass' + d.id });
                             
                             halfClass
-                                .append($('<p/>', { text: d.className }));
+                                .append($('<p/>', { text: d.className, title: classTitle }));
                             if (d.personnelSignature) {
                                 halfClass
                                     .append($('<p/>', { text: d.personnelSignature, class: 'personnelSignatureClass' }));
@@ -902,7 +901,7 @@ function GenerateStudentGroups() {
                             var halfClass = $('<div/>', { class: 'studentGroupHalfClass', id: 'studentGroupHalfClass' + d.id });
                             
                             halfClass
-                                .append($('<p/>', { text: d.className }));
+                                .append($('<p/>', { text: d.className, title: classTitle }));
                             if (d.personnelSignature) {
                                 halfClass
                                     .append($('<p/>', { text: d.personnelSignature, class: 'personnelSignatureClass' }));
