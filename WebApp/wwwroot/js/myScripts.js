@@ -427,7 +427,7 @@ $(document).ready(function () {
                                 }
                             }
                         }
-                        else if (duration == 1) {
+                        else if (w.duration == 1) {
                             if (i == times)
                                 $overLayData += '<div class="personnelHtBox"><div class="HtVtLeftSide"><p class="delete" data-type="pers" data-pid="' + id + '" data-name="' + name +'" data-id="' + w.classId + '"></p><p title="' + w.className + '">' + w.className + ' (' + w.points + ')</p></div><div class="HtVtRightSide"><p>' + w.studentGroupName + '</p><p>' + w.teamName + '</p></div></div>';
                             else
@@ -544,6 +544,7 @@ $(document).ready(function () {
         var dt = new Date();
         var time = dt.getHours() + ":" + dt.getMinutes();
         $('#chatBox').append('<p class="chatTimeStamp">19 maj - ' + time + '</p><p><span class="userMessage">Du:</span>' + message + '</p>');
+        $('#chatForm textarea').val('');
     });
     /* END - Jonas lekplats */
 
