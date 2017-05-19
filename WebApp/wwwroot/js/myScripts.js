@@ -75,7 +75,8 @@ $(document).ready(function () {
         $('#overLay').fadeToggle("fast");
         $('html').css('overflow', 'auto');
         isGeneratedPersonnelHtml = false;
-        generatePersonnelHtml();
+        if ($('.mainNavActive').attr('id') == "navPersonnel")
+            generatePersonnelHtml();
     });
 
     // When menu-item in wizard is pushed

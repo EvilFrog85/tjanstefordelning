@@ -3,124 +3,143 @@ select:-moz-focusring {
     color: transparent;
     text-shadow: 0 0 0 #000;
 }
-.inputText, .inputTextAuto, .inputSelect, .inputFile{
-	display: block;
-	width: 100%;
-	max-width: 600px;
-	margin: 10px auto;
-	box-shadow: 0 0 2px #888;
+
+.inputText, .inputTextAuto, .inputSelect, .inputFile {
+    display: block;
+    width: 100%;
+    max-width: 600px;
+    margin: 10px auto;
+    box-shadow: 0 0 2px #888;
     padding: 6px 12px;
-	border: 1px solid #000;
-	font-size: 20px;
-	outline: 0 none;
-	background: #FFF;
+    border: 1px solid #000;
+    font-size: 20px;
+    outline: 0 none;
+    background: #FFF;
 }
-.inputText, .inputTextAuto, .inputFile{
-	width: calc(100% - 26px);
-	max-width: 576px;
+
+.inputText, .inputTextAuto, .inputFile {
+    width: calc(100% - 26px);
+    max-width: 576px;
     /* input type="text" deals with padding in a diffrent way from other inputs --> adding the padding (as it should be for ex. a div) on top of the width */
 }
-	.inputText:focus, .inputSelect:focus, .inputFile:focus{
-		border: 1px solid #0F0;
-	}
-.inputTextAuto{
-	border: 1px solid #00F;
+
+    .inputText:focus, .inputSelect:focus, .inputFile:focus {
+        border: 1px solid #0F0;
+    }
+
+.inputTextAuto {
+    border: 1px solid #00F;
 }
-.inputSelect{
-	/* Style using jQuery UI */
+
+.inputSelect {
+    /* Style using jQuery UI */
 }
-.inputError{
-	border: 1px solid #F00;
+
+.inputError {
+    border: 1px solid #F00;
 }
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
 }
-input[type=number] { 
-  -moz-appearance: textfield;
-  appearance: textfield;
+
+input[type=number] {
+    -moz-appearance: textfield;
+    appearance: textfield;
 }
-.labelCheckbox{
-	width: calc(50% - 5px);
-	height: 42px;
-	line-height: 42px;
-	vertical-align: middle;
-	padding-right: 10px;
-	text-align: right;
-	display: block;
-	float: left;
-	-webkit-user-select: none;
-	   -moz-user-select: none;
-		-ms-user-select: none;
-			user-select: none;
+
+.labelCheckbox {
+    width: calc(50% - 5px);
+    height: 42px;
+    line-height: 42px;
+    vertical-align: middle;
+    padding-right: 10px;
+    text-align: right;
+    display: block;
+    float: left;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
+
 .switch {
-	position: relative;
-	display: inline-block;
-	width: 78px;
-	height: 42px;
+    position: relative;
+    display: inline-block;
+    width: 78px;
+    height: 42px;
 }
-	.switch input {
-		display:none;
-	}
-	.slider {
-		position: absolute;
-		cursor: pointer;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background-color: #ccc;
-		-webkit-transition: .4s;
-		transition: .4s;
-		/* border-radius: 22px; */
-	}
-	.slider:before {
-		position: absolute;
-			z-index: 5;
-		content: "";
-		height: 34px;
-		width: 34px;
-		left: 4px;
-		bottom: 4px;
-		background-color: #FFF;
-		-webkit-transition: .4s;
-		transition: .4s;
-		/* border-radius: 17px; */
-	}
-		input:checked + .slider {
-			background-color: #4cd2ff;
-		}
-		input:focus + .slider {
-			box-shadow: 0 0 1px #4cd2ff;
-		}
-		input:checked + .slider:before {
-			-webkit-transform: translateX(36px);
-				-ms-transform: translateX(36px);
-					transform: translateX(36px);
-		}
-			.switch > div > span{
-				width: 50%;
-				height: 42px;
-				line-height: 42px;
-				position: absolute;
-					z-index: 4;
-					left: 0;
-				font-size: 16px;
-				text-align: center;
-				font-family: helvetica;
-				-webkit-user-select: none;
-				   -moz-user-select: none;
-					-ms-user-select: none;
-						user-select: none;
-			}
-			.switch > div > span:last-child{
-				left: auto;
-				right: 0;
-			}
-			.switch > div > span:hover{
-				cursor: pointer;
-			}
+
+    .switch input {
+        display: none;
+    }
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    /* border-radius: 22px; */
+}
+
+    .slider:before {
+        position: absolute;
+        z-index: 5;
+        content: "";
+        height: 34px;
+        width: 34px;
+        left: 4px;
+        bottom: 4px;
+        background-color: #FFF;
+        -webkit-transition: .4s;
+        transition: .4s;
+        /* border-radius: 17px; */
+    }
+
+input:checked + .slider {
+    background-color: #4cd2ff;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #4cd2ff;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(36px);
+    -ms-transform: translateX(36px);
+    transform: translateX(36px);
+}
+
+.switch > div > span {
+    width: 50%;
+    height: 42px;
+    line-height: 42px;
+    position: absolute;
+    z-index: 4;
+    left: 0;
+    font-size: 16px;
+    text-align: center;
+    font-family: helvetica;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+    .switch > div > span:last-child {
+        left: auto;
+        right: 0;
+    }
+
+    .switch > div > span:hover {
+        cursor: pointer;
+    }
 /* END - Input styles */
 
 /* Button styles */
@@ -129,42 +148,45 @@ input[type=number] {
     width: 50px;
     background-color: red;
 }
-.wizButtonContainer{
-	text-align: center;
-	margin: 40px 0 0 0;
+
+.wizButtonContainer {
+    text-align: center;
+    margin: 40px 0 0 0;
 }
 /* Is buttonCancel reduntant if we have "Close-buttons". Leaving it here for now. */
-	.buttonSubmit/*, .buttonCancel*/{
-		display: inline-block;
-		min-width: 40%;
-		max-width: 300px;
-		padding: 6px 0;
-		margin: 0 0 20px 0;
-		font-family: 'Open Sans', Helvetica, sans-serif;
-		font-size: 20px;
-		text-shadow: 1px 1px 0 #777;
-	}
-	.buttonSubmit{
-		white-space: pre;
-		color: #3e5706;
-		background: #a5cd4e;
-		background: -moz-linear-gradient(top,  #a5cd4e 0%, #6b8f1a 100%);
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a5cd4e), color-stop(100%,#6b8f1a));
-		background: -webkit-linear-gradient(top,  #a5cd4e 0%,#6b8f1a 100%);
-		background: -o-linear-gradient(top,  #a5cd4e 0%,#6b8f1a 100%);
-		background: -ms-linear-gradient(top,  #a5cd4e 0%,#6b8f1a 100%);
-		background: linear-gradient(top,  #a5cd4e 0%,#6b8f1a 100%);
-	}
-	.buttonSubmit:hover{
-		background: #a5cd4e;
-		background: -moz-linear-gradient(top,  #6b8f1a 0%, #a5cd4e 100%);
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#6b8f1a), color-stop(100%,#a5cd4e));
-		background: -webkit-linear-gradient(top,  #6b8f1a 0%,#a5cd4e 100%);
-		background: -o-linear-gradient(top,  #6b8f1a 0%,#a5cd4e 100%);
-		background: -ms-linear-gradient(top,  #6b8f1a 0%,#a5cd4e 100%);
-		background: linear-gradient(top,  #6b8f1a 0%,#a5cd4e 100%);
-	}
-	/*.buttonCancel{
+.buttonSubmit /*, .buttonCancel*/ {
+    display: inline-block;
+    min-width: 40%;
+    max-width: 300px;
+    padding: 6px 0;
+    margin: 0 0 20px 0;
+    font-family: 'Open Sans', Helvetica, sans-serif;
+    font-size: 20px;
+    text-shadow: 1px 1px 0 #777;
+}
+
+.buttonSubmit {
+    white-space: pre;
+    color: #3e5706;
+    background: #a5cd4e;
+    background: -moz-linear-gradient(top, #a5cd4e 0%, #6b8f1a 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a5cd4e), color-stop(100%,#6b8f1a));
+    background: -webkit-linear-gradient(top, #a5cd4e 0%,#6b8f1a 100%);
+    background: -o-linear-gradient(top, #a5cd4e 0%,#6b8f1a 100%);
+    background: -ms-linear-gradient(top, #a5cd4e 0%,#6b8f1a 100%);
+    background: linear-gradient(top, #a5cd4e 0%,#6b8f1a 100%);
+}
+
+    .buttonSubmit:hover {
+        background: #a5cd4e;
+        background: -moz-linear-gradient(top, #6b8f1a 0%, #a5cd4e 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#6b8f1a), color-stop(100%,#a5cd4e));
+        background: -webkit-linear-gradient(top, #6b8f1a 0%,#a5cd4e 100%);
+        background: -o-linear-gradient(top, #6b8f1a 0%,#a5cd4e 100%);
+        background: -ms-linear-gradient(top, #6b8f1a 0%,#a5cd4e 100%);
+        background: linear-gradient(top, #6b8f1a 0%,#a5cd4e 100%);
+    }
+    /*.buttonCancel{
 		color: #AA5706;
 		background: #FFaa4e;
 		background: -moz-linear-gradient(top,  #FFaa4e 0%, #FF5706 100%);
@@ -183,9 +205,10 @@ input[type=number] {
 		background: -ms-linear-gradient(top,  #FF5706 0%,#FFaa4e 100%);
 		background: linear-gradient(top,  #FF5706 0%,#FFaa4e 100%);
 	}*/
-	.buttonSubmit:hover/*, .buttonCancel:hover*/{
-		cursor: pointer;
-	}
+    .buttonSubmit:hover /*, .buttonCancel:hover*/ {
+        cursor: pointer;
+    }
+
 .add, .edit, .delete, .done, .wizard {
     width: 30px;
     height: 30px;
@@ -194,26 +217,32 @@ input[type=number] {
     background-size: 85%;
     background-position: center;
 }
-.add{
-	background-image: url(../img/icons/add.svg);
+
+.add {
+    background-image: url(../img/icons/add.svg);
 }
-.edit{
-	background-image: url(../img/icons/edit.svg);
+
+.edit {
+    background-image: url(../img/icons/edit.svg);
 }
-.delete{
-	background-image: url(../img/icons/delete.svg);
+
+.delete {
+    background-image: url(../img/icons/delete.svg);
 }
-.done{
-	background-image: url(../img/icons/done.svg);
+
+.done {
+    background-image: url(../img/icons/done.svg);
 }
-.wizard{
-	background-image: url(../img/icons/wizard.svg);
-	transition: transform .2s linear;
+
+.wizard {
+    background-image: url(../img/icons/wizard.svg);
+    transition: transform .2s linear;
 }
-.wizard:hover{
-	cursor: pointer;
-	transform: rotate(360deg);
-}	
+
+    .wizard:hover {
+        cursor: pointer;
+        transform: rotate(360deg);
+    }
 /* END - Button styles */
 
 /* Competence area and buttons */
@@ -223,12 +252,15 @@ input[type=number] {
     margin: 0 auto 20px auto;
     overflow: auto;
 }
-    #competenceButtonContainer .labelCheckbox{
+
+    #competenceButtonContainer .labelCheckbox {
         width: auto;
     }
+
 #IsCompetenceQualifiedBox {
-        display: inline-block;
-    }
+    display: inline-block;
+}
+
 #addCompetenceButton {
     padding: 3px 6px;
     height: 42px;
@@ -240,15 +272,18 @@ input[type=number] {
     margin-left: 30px;
     box-shadow: 2px 2px 0 #888;
 }
+
     #addCompetenceButton:hover {
         cursor: pointer;
         box-shadow: -2px -2px 0 #888;
     }
+
 #competenceList {
     width: calc(100% - 26px);
     max-width: 576px;
     margin: auto;
 }
+
 .competence {
     background: #e5e500;
     display: inline-block;
@@ -257,10 +292,12 @@ input[type=number] {
     padding: 3px 6px 3px 6px;
     transition: all .2s linear;
 }
+
     .competence:hover {
         margin: 5px 15px 5px 0;
         padding-right: 36px;
     }
+
     .competence p {
         overflow: auto;
         height: 30px;
@@ -271,6 +308,7 @@ input[type=number] {
         -ms-user-select: none;
         user-select: none;
     }
+
     .competence button {
         position: absolute;
         top: 3px;
@@ -283,6 +321,7 @@ input[type=number] {
         background: transparent;
         transition: background .2s linear;
     }
+
     .competence:hover > button {
         background-color: #b2b200;
         background-image: url(../img/icons/x.svg);
@@ -290,63 +329,74 @@ input[type=number] {
         background-repeat: no-repeat;
         background-position: center center;
     }
+
 .qualified:hover > button {
     background-color: #00d936;
 }
+
 .competence button:hover {
     cursor: pointer;
 }
+
 .qualified {
     background: #26ff5c;
 }
 /* END - Competence area and buttons */
-			
+
 /* jQuery UI Autocomplete style */
 .ui-autocomplete {
-	position: absolute;
-	    top: 0;
-	    left: 0;
-        z-index: 9999;
-	cursor: default;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    cursor: default;
 }
-	.ui-menu {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-		display: block;
-		outline: 0;
-	}
-	.ui-menu .ui-menu {
-		position: absolute;
-	}
-	.ui-menu .ui-menu-item {
-		margin: 0;
-		cursor: pointer;
-	}
-	.ui-menu .ui-menu-item-wrapper {
-		position: relative;
-		padding: 3px 1em 3px .4em;
-	}
-	.ui-menu .ui-menu-divider {
-		margin: 5px 0;
-		height: 0;
-		font-size: 0;
-		line-height: 0;
-		border-width: 1px 0 0 0;
-	}
-	.ui-menu .ui-state-focus,
-	.ui-menu .ui-state-active {
-		margin: -1px;
-	}
-	.ui-widget-content {
-		border: 1px solid #000;
-		border-top: none;
-		background: #FFF;
-	}
-	.ui-state-active,
-	.ui-button:active{
-		border: 1px solid #a5cd4e;
-		background: #6b8f1a;
-		color: #FFF;
-	}
+
+.ui-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: block;
+    outline: 0;
+}
+
+    .ui-menu .ui-menu {
+        position: absolute;
+    }
+
+    .ui-menu .ui-menu-item {
+        margin: 0;
+        cursor: pointer;
+    }
+
+    .ui-menu .ui-menu-item-wrapper {
+        position: relative;
+        padding: 3px 1em 3px .4em;
+    }
+
+    .ui-menu .ui-menu-divider {
+        margin: 5px 0;
+        height: 0;
+        font-size: 0;
+        line-height: 0;
+        border-width: 1px 0 0 0;
+    }
+
+    .ui-menu .ui-state-focus,
+    .ui-menu .ui-state-active {
+        margin: -1px;
+    }
+
+.ui-widget-content {
+    border: 1px solid #000;
+    border-top: none;
+    background: #FFF;
+}
+
+.ui-state-active,
+.ui-button:active {
+    border: 1px solid #a5cd4e;
+    background: #6b8f1a;
+    color: #FFF;
+}
 /* END jQuery UI Autocomplete styles */

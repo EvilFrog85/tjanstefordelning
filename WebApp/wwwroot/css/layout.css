@@ -20,19 +20,22 @@ body {
 ul {
     margin-left: 20px;
 }
-    ul li{
+
+    ul li {
         margin: 10px auto;
     }
+
     ul > li > a {
         text-decoration: none;
         color: #0098cc;
         transition: color .2s linear, text-decoration .2s linear;
     }
-    ul > li > a:hover {
-        text-decoration: none;
-        color: #000;
-        text-decoration: underline;
-    }
+
+        ul > li > a:hover {
+            text-decoration: none;
+            color: #000;
+            text-decoration: underline;
+        }
 
 #layout {
     height: 100%;
@@ -129,9 +132,10 @@ main {
     max-width: 788px;
     height: 80%;
     position: relative;
-        top: 10%;
+    top: 10%;
     margin: auto;
 }
+
 #mainOverLayContent {
     padding: 10px;
     background: white;
@@ -496,141 +500,87 @@ p.chatTimeStamp {
 .personnelHtVtHeader {
     overflow: auto;
 }
-    .overViewName {
-        margin: 10px 0 20px 0;
-    } 
-    .overViewCompetenceBox .competence{
-        margin-right: 5px;
-    }
-    .overViewCompetenceBox .competence:hover{
+
+.overViewName {
+    margin: 10px 0 20px 0;
+}
+
+.overViewCompetenceBox .competence {
+    margin-right: 5px;
+}
+
+    .overViewCompetenceBox .competence:hover {
         margin: 5px 5px 5px 0;
         padding: 3px 6px;
     }
-    .personnelHtVtHeader p {
-        width: 45%;
-        margin-top: 20px;
-        padding: 4px 4px 0 4px;
-        text-align: center;
-        float: left;
-        font-weight: bold;
-    }
-    .personnelHtVtHeader p:first-child{
+
+.personnelHtVtHeader p {
+    width: 45%;
+    margin-top: 20px;
+    padding: 4px 4px 0 4px;
+    text-align: center;
+    float: left;
+    font-weight: bold;
+}
+
+    .personnelHtVtHeader p:first-child {
         margin-right: calc(10% - 16px);
     }
-    
-    .personnelHtVt {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
+
+.personnelHtVt {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+    .personnelHtVt .delete {
+        float: left;
+        background-color: transparent;
+        transition: transform .2s linear;
     }
-        .personnelHtVt .delete {
-            float: left;
-            background-color: transparent;
-            transition: transform .2s linear;
-        }
+
         .personnelHtVt .delete:hover {
             cursor: pointer;
             transform: scale(0.9);
         }
-        .deleteFakeBox{
-            width: 30px;
-            height: 30px;
-            float: left;
-            text-align: center;
-        }
-    .personnelVtBox, .personnelHtBox {
-        width: 45%;
-        padding: 3px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: #99ffff;
-        border: 1px solid #000;
-    }
 
-        .HtVtLeftSide p:last-child{
-            white-space: nowrap;
-            overflow: hidden;
-            line-height: 30px;
-        }
-
-        .HtVtRightSide {
-            font-size: 14px;
-        }
-
-    .personnelHtBox {
-        background: #9999ff;
-        border: 1px solid #000;
-    }
-    .personnelAuxColor {
-        background: #ffdc73;
-    }
-/* END - Personnel page style*/
-/*
-#layout{
-    min-height: 100%;
-    position: relative;
+.deleteFakeBox {
+    width: 30px;
+    height: 30px;
+    float: left;
+    text-align: center;
 }
-    header{
-        background: #ccc;
-    }
-        #innerHeader {
-            max-width: 748px;
-            padding: 10px;
-            margin: auto;
-        } 
-            #hamburgerBtn {
-                display: none;
-                width: 24px;
-                height: 24px;
-                padding: 3px;
-                background: #666;
-                border-radius: 3px;
-                box-shadow: 1px 1px 0 #000;
-            }
-                #hamburgerBtn div {
-                    height: 4px;
-                    border-radius: 4px;
-                    background: #FFF;
-                    margin: 3px 0;
-                }
-            #hamburgerBtn:hover {
-                cursor: pointer;
-                box-shadow: inset 1px 1px 0 #000;
-            }
-            #innerHeader nav{
-            }
-                #innerHeader > nav > a{
-                    text-decoration: none;
-                }
-                #innerHeader > nav > a:hover{
-                    color: #F00;
-                }
-    main{
-        max-width: 768px;
-        margin: auto;
-        background: #eee;
-    }
-        section{
-        }
-            article {
-                padding: 10px;
-            }
-    footer{
-        width: 100%;
-        position: absolute;
-            bottom: 0;
-        background: #888;
-    }
-        #innerFooter {
-            max-width: 748px;
-            padding: 10px;
-            margin: auto;
-            color: #FFF;
-            text-align: center;
-            vertical-align: middle;
-        }
-*/
+
+.personnelVtBox, .personnelHtBox {
+    width: 45%;
+    padding: 3px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #99ffff;
+    border: 1px solid #000;
+}
+
+.HtVtLeftSide p:last-child {
+    white-space: nowrap;
+    overflow: hidden;
+    line-height: 30px;
+}
+
+.HtVtRightSide {
+    font-size: 14px;
+}
+
+.personnelHtBox {
+    background: #9999ff;
+    border: 1px solid #000;
+}
+
+.personnelAuxColor {
+    background: #ffdc73;
+}
+/* END - Personnel page style*/
+
 /* Vad ska behållas av nedanstående??? */
 #assignClassesToStudentGroupDiv {
     display: flex;
@@ -695,44 +645,3 @@ p.chatTimeStamp {
     height: 30px;
     background-color: red;
 }
-/*
-.competenceList, .studentGroupList {
-    display: flex;
-    width: 50%;
-    margin: auto;
-    flex-wrap: wrap;
-}
-
-.competence {
-    height: 30px;
-    position: relative;
-    background-color: yellow;
-    min-width: 5px;
-    margin-right: 5px;
-    margin-bottom: 5px;
-}
-.qualifiedCompetence, .groupToClass {
-    height: 30px;
-    position: relative;
-    background-color: green;
-    min-width: 5px;
-    margin-right: 5px;
-    margin-bottom: 5px;
-}
-    .competence p, .qualifiedCompetence p, .groupToClass p {
-        padding: 7px 16px 7px 7px;
-    }
-
-    .competence button, .qualifiedCompetence button, .groupToClass button {
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 16px;
-        height: 16px;
-        background-color: transparent;
-        border: none;
-    }
-        .competence button:hover, .qualifiedCompetence button:hover, .groupToClass button:hover {
-            background-color: darkseagreen;
-        }
-*/
